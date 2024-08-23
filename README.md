@@ -9,6 +9,7 @@ The part was taken from the YouTube channel [Kodi Simpson](https://www.youtube.c
 
 
 # Установка | Install
+(Вероятно сейчас не работает) | (Probably not working right now)
 ```groovy
 repositories {
     maven {
