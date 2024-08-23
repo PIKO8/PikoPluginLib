@@ -25,14 +25,16 @@ public final class Main extends PikoPlugin {
     }
 
     @Override
-    public void onStart() {
-        plugin = this;
-        // Дополнительная инициализация, если потребуется
-    }
+    public void onStart() {}
 
     @Override
-    public void onStop() {
-        // Очистка ресурсов, если потребуется
+    public void onStop() {}
+
+    @Override
+    public void onEnable() {
+        plugin = this;
+        this.pluginId = getPluginId();
+        addPikoPlugin(pluginId, this);
     }
 
     public static Main getPlugin() {
