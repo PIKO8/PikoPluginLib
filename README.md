@@ -9,7 +9,8 @@ The part was taken from the YouTube channel [Kodi Simpson](https://www.youtube.c
 
 
 # Установка | Install
-(Вероятно сейчас не работает) | (Probably not working right now)
+(Вероятно сейчас не работает) | (Probably not working right now)<br>
+[![](https://jitpack.io/v/PIKO8/PikoPluginLib.svg)](https://jitpack.io/#PIKO8/PikoPluginLib)
 ```groovy
 repositories {
     maven {
