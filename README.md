@@ -9,15 +9,14 @@ The part was taken from the YouTube channel [Kodi Simpson](https://www.youtube.c
 
 
 # Установка | Install
-(Вероятно сейчас не работает) | (Probably not working right now)
 ```groovy
 repositories {
-    maven {
-        url = uri("https://maven.pkg.github.com/PIKO8/PikoPluginLib")
-    }
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    implementation 'ru.piko:pikopluginlib:0.1.0'
+    implementation 'com.github.PIKO8:PikoPluginLib:master-SNAPSHOT'
 }
 ```
+или [![](https://jitpack.io/v/PIKO8/PikoPluginLib.svg)](https://jitpack.io/#PIKO8/PikoPluginLib)
