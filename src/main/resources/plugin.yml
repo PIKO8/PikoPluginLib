@@ -1,4 +1,4 @@
 name: PikoPluginLib
-version: '0.1-SNAPSHOT'
+version: ${version}
 main: ru.piko.pikopluginlib.Main
 api-version: '1.20'
