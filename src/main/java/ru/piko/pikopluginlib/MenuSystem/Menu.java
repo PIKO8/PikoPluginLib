@@ -1,17 +1,13 @@
 package ru.piko.pikopluginlib.MenuSystem;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import ru.piko.pikopluginlib.Items.ItemBuilder;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
-
-import static ru.piko.pikopluginlib.Utils.UItem.makeItem;
 
 public abstract class Menu implements InventoryHolder {
 
@@ -55,7 +51,7 @@ public abstract class Menu implements InventoryHolder {
     }
 
     @Override
-    public @NotNull Inventory getInventory() {
+    public Inventory getInventory() {
         return inventory;
     }
 }
