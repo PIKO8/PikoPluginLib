@@ -21,9 +21,9 @@ public class PlayerData {
      *
      * <p>Example key: "magic_piko.menu.staff"</p>
      *
-     * <p>The value is an instance of {@link IPlayerData}, which represents the data associated with that specific plugin and subsystem for the player.</p>
+     * <p>The value is an instance of {@link APlayerData}, which represents the data associated with that specific plugin and subsystem for the player.</p>
      */
-    private final Map<String, IPlayerData> playerDataMap;
+    private final Map<String, APlayerData> playerDataMap;
 
     public PlayerData(Player owner) {
         this.owner = owner;
@@ -34,18 +34,18 @@ public class PlayerData {
         return owner;
     }
 
-    public void addData(String id, IPlayerData data) {
+    public void addData(String id, APlayerData data) {
         playerDataMap.put(id, data);
     }
 
-    public <T extends IPlayerData> Optional<T> tryGetData(String id) {
+    public <T extends APlayerData> Optional<T> tryGetData(String id) {
         if (hasData(id)) {
             return Optional.of((T) getData(id));
         }
         return Optional.empty();
     }
 
-    public IPlayerData getData(String id) {
+    public APlayerData getData(String id) {
         return playerDataMap.get(id);
     }
 

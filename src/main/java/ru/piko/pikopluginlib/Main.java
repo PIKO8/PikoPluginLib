@@ -1,7 +1,7 @@
 package ru.piko.pikopluginlib;
 
 import org.bukkit.Bukkit;
-import ru.piko.pikopluginlib.PlayersData.IPlayerData;
+import ru.piko.pikopluginlib.PlayersData.APlayerData;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
 
 import java.util.HashMap;
@@ -71,12 +71,12 @@ public final class Main extends PikoPlugin {
         playerDataMap.put(owner, data);
         return data;
     }
-    public IPlayerData getPlayerData(UUID owner, String id) {
+    public APlayerData getPlayerData(UUID owner, String id) {
         PlayerData playerData = getPlayerData(owner);
         return playerData != null ? playerData.getData(pluginId) : null;
     }
 
-    public void setPlayerData(UUID owner, String id, IPlayerData data) {
+    public void setPlayerData(UUID owner, String id, APlayerData data) {
         PlayerData playerData = getPlayerData(owner);
         if (playerData != null) {
             playerData.addData(id, data);
