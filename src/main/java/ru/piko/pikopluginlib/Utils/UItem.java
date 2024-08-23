@@ -1,4 +1,4 @@
-package ru.piko.allpikoplugin.Utils;
+package ru.piko.pikopluginlib.Utils;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -6,7 +6,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 
-import static ru.piko.allpikoplugin.Utils.UText.*;
+import static ru.piko.pikopluginlib.Utils.UText.*;
 
 public class UItem {
 

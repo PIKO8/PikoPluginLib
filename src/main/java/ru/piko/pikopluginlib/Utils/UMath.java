@@ -1,4 +1,4 @@
-package ru.piko.allpikoplugin.Utils;
+package ru.piko.pikopluginlib.Utils;
 
 public class UMath {
 

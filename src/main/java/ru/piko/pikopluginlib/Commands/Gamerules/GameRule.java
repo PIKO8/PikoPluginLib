@@ -1,21 +1,20 @@
 package ru.piko.pikopluginlib.Commands.Gamerules;
 
-import org.bukkit.command.CommandSender;
-
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static ru.piko.pikopluginlib.Utils.UText.color;
-
 public class GameRule {
 
-    private String name;
-    private String helpMessage;
-    private Supplier<String> getValue;
-    private Consumer<String> setValue;
-    private List<String> possibleValues;
-    private boolean isBooleanRule;
+    private final String name;
+    private String helpMessage = "Сообщение для этого правила не устоновлено";
+    private Supplier<String> getValue = null;
+    private Consumer<String> setValue = null;
+    private List<String> possibleValues = null;
+    private Supplier<List<String>> dynamicPossibleValues = null;
+    private boolean isBooleanRule = false;
+    private String permission = null;
+    private boolean isCustomPermission = false;
 
     public GameRule(String name) {
         this.name = name;
@@ -41,9 +40,25 @@ public class GameRule {
         return this;
     }
 
+    public GameRule setDynamicPossibleValues(Supplier<List<String>> dynamicPossibleValues) {
+        this.dynamicPossibleValues = dynamicPossibleValues;
+        return this;
+    }
+
     public GameRule setBooleanRule(boolean isBooleanRule) {
         this.isBooleanRule = isBooleanRule;
         return this;
+    }
+
+    public GameRule setPermission(String permission, boolean isCustomPermission) {
+        this.permission = permission;
+        this.isCustomPermission = isCustomPermission;
+        return this;
+    }
+
+    public <T extends AGameRuleModification> T modify(T modification) {
+        modification.gameRule = this;
+        return modification;
     }
 
     public String getName() {
@@ -65,22 +80,18 @@ public class GameRule {
     }
 
     public List<String> getPossibleValues() {
-        return possibleValues;
+        return dynamicPossibleValues != null ? dynamicPossibleValues.get() : possibleValues;
     }
 
     public boolean isBooleanRule() {
         return isBooleanRule;
     }
 
-    public void performRule(CommandSender sender, String action, String value) {
-        switch (action.toLowerCase()) {
-            case "get" -> sender.sendMessage(color("&f" + getName() + ": &6" + getValue()));
-            case "set" -> {
-                setValue(value);
-                sender.sendMessage(color("&f" + getName() + ": &6" + getValue()));
-            }
-            case "help" -> sender.sendMessage(color(getHelpMessage()));
-            default -> sender.sendMessage(color("&cНеизвестная команда: " + action));
-        }
+    public String getPermission() {
+        return permission;
+    }
+
+    public boolean isCustomPermission() {
+        return isCustomPermission;
     }
 }

@@ -1,4 +1,4 @@
-package ru.piko.allpikoplugin.Utils;
+package ru.piko.pikopluginlib.Utils;
 
 import org.bukkit.ChatColor;
 
@@ -18,6 +18,4 @@ public class UText {
         }
         return result;
     }
-
-
 }

@@ -1,9 +1,8 @@
-package ru.piko.allpikoplugin.Files;
+package ru.piko.pikopluginlib.Files;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import ru.piko.allpikoplugin.Main;
+import ru.piko.pikopluginlib.Main;
 
 import java.io.File;
 
@@ -12,11 +11,13 @@ public abstract class CustomConfigFile {
     protected File file;
     protected FileConfiguration fileConfiguration;
 
-    public CustomConfigFile(String nameFile) {
-        Main plugin = Main.getPlugin();
-        file = new File(plugin.getDataFolder(), nameFile + ".yml");
-        if (!plugin.getDataFolder().exists()) {
-            plugin.getDataFolder().mkdir();
+    public CustomConfigFile(String relativePath) {
+        this(Main.getPlugin().getDataFolder(), relativePath);
+    }
+    public CustomConfigFile(File dataFolder, String relativePath) {
+        file = new File(dataFolder, relativePath + ".yml");
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
         }
         if (!file.exists()) {
             try {
@@ -27,6 +28,7 @@ public abstract class CustomConfigFile {
         }
         fileConfiguration = YamlConfiguration.loadConfiguration(file);
     }
+
     public void save() {
         try {
             fileConfiguration.save(file);

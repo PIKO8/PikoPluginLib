@@ -1,4 +1,4 @@
-package ru.piko.allpikoplugin.Commands;
+package ru.piko.pikopluginlib.Commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -6,21 +6,43 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ru.piko.pikopluginlib.PikoPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.piko.allpikoplugin.Utils.UText.color;
+import static ru.piko.pikopluginlib.Utils.UText.color;
 
 public class CommandManager implements TabExecutor {
 
-    private ArrayList<SubCommand> subCommands = new ArrayList<>();
+    private final String namePikoPlugin;
+    private final String commandName;
+    private final ArrayList<SubCommand> subCommands = new ArrayList<>();
     public ArrayList<SubCommand> getSubCommands(){
         return subCommands;
     }
-    public void addSubCommand(SubCommand command) { if (!subCommands.contains(command)) { subCommands.add(command); } }
+    public void addSubCommand(SubCommand command) {
+        if (!subCommands.contains(command))
+        {
+            command.setCommandManager(this);
+            subCommands.add(command);
+        }
+    }
     public void clearSubCommands() {
         subCommands.clear();
+    }
+
+    public CommandManager(String namePikoPlugin, String commandName) {
+        this.namePikoPlugin = namePikoPlugin;
+        this.commandName = commandName;
+    }
+
+    public String getNamePikoPlugin() {
+        return namePikoPlugin;
+    }
+
+    public String getCommandName() {
+        return commandName;
     }
 
     @Override
@@ -29,11 +51,9 @@ public class CommandManager implements TabExecutor {
         if (strings.length > 0){
             for (int i = 0; i < getSubCommands().size(); i++){
                 if (strings[0].equalsIgnoreCase(getSubCommands().get(i).getName())){
-                    if (commandSender instanceof Player p) {
-                        if (!p.hasPermission(getSubCommands().get(i).getPermission())) {
-                            p.sendMessage(color("Недостаточно прав!"));
-                            return true;
-                        }
+                    if (!getSubCommands().get(i).hasPermission(commandSender, strings)) {
+                        commandSender.sendMessage(color("Недостаточно прав!"));
+                        return true;
                     }
                     getSubCommands().get(i).perform(commandSender, strings);
                 }
@@ -49,7 +69,7 @@ public class CommandManager implements TabExecutor {
             ArrayList<String> subcommandsArguments = new ArrayList<>();
 
             for (int i = 0; i < getSubCommands().size(); i++){
-                if (commandSender.hasPermission(getSubCommands().get(i).getPermission())) {
+                if (!getSubCommands().get(i).hasPermission(commandSender, strings)) {
                     subcommandsArguments.add(getSubCommands().get(i).getName());
                 }
             }
