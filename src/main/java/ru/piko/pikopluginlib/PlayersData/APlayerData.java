@@ -13,4 +13,6 @@ public abstract class APlayerData {
     public Player getPlayer() {
         return data.getOwner();
     }
+
+    public abstract String getId();
 }
