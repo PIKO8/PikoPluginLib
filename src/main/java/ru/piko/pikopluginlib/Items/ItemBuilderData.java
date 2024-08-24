@@ -80,9 +80,10 @@ public class ItemBuilderData extends AItemBuilderModification {
      * @param key The key to use for storing the data.
      * @param items The list of ItemStacks to store.
      */
-    public void setItemStackList(String key, List<ItemStack> items) {
+    public ItemBuilderData setItemStackList(String key, List<ItemStack> items) {
         String json = gson.toJson(items, new TypeToken<List<ItemStack>>() {}.getType());
         setData(key, PersistentDataType.STRING, json);
+        return this;
     }
 
     /**
@@ -116,9 +117,10 @@ public class ItemBuilderData extends AItemBuilderModification {
      * @param key The key to use for storing the data.
      * @param item The ItemStack to store.
      */
-    public void setItemStack(String key, ItemStack item) {
+    public ItemBuilderData setItemStack(String key, ItemStack item) {
         String json = gson.toJson(item);
         setData(key, PersistentDataType.STRING, json);
+        return this;
     }
 
     /**
