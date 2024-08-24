@@ -24,7 +24,7 @@ public abstract class SubCommand {
     public abstract List<String> getSubCommandArguments(CommandSender sender, String args[]);
     public boolean hasPermission(CommandSender sender, String[] args) {
         String permission = getPermission(sender, args);
-        return !(permission == null || sender.hasPermission(permission));
+        return permission == null || sender.hasPermission(permission);
     }
 
     @Override

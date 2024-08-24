@@ -2,3 +2,4 @@ name: PikoPluginLib
 version: ${version}
 main: ru.piko.pikopluginlib.Main
 api-version: '1.20'
+depend: [NBTAPI]
