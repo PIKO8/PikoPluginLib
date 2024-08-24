@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.PIKO8:PikoPluginLib:master-SNAPSHOT'
+    implementation 'com.github.PIKO8:PikoPluginLib:v0.1.1-SNAPSHOT'
 }
 ```
 или [![](https://jitpack.io/v/PIKO8/PikoPluginLib.svg)](https://jitpack.io/#PIKO8/PikoPluginLib)
