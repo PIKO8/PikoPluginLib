@@ -1,6 +1,7 @@
 package ru.piko.pikopluginlib;
 
 import org.bukkit.Bukkit;
+import ru.piko.pikopluginlib.Listeners.MenuEvent;
 import ru.piko.pikopluginlib.PlayersData.APlayerData;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
 
@@ -35,6 +36,7 @@ public final class Main extends PikoPlugin {
         plugin = this;
         this.pluginId = getPluginId();
         addPikoPlugin(pluginId, this);
+        getServer().getPluginManager().registerEvents(new MenuEvent(), this);
     }
 
     public static Main getPlugin() {
