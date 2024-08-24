@@ -21,8 +21,7 @@ public class ItemBuilderNBT extends AItemBuilderModification {
 
     @Override
     public void onExitModify() {
-        ItemStack item = builder.getItem();
-        item.setItemMeta(nbtItem.getItem().getItemMeta());
+        builder = new ItemBuilder(nbtItem.getItem());
     }
 
     /**
