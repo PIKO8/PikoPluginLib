@@ -1,6 +1,7 @@
 package ru.piko.pikopluginlib;
 
 import org.bukkit.NamespacedKey;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.piko.pikopluginlib.Commands.CommandManager;
 import ru.piko.pikopluginlib.Commands.Gamerules.GameRuleStandardSave;
@@ -64,9 +65,17 @@ public abstract class PikoPlugin extends JavaPlugin {
      *
      * @param mainCommand The main command associated with the CommandManager.
      * @return A new instance of CommandManager.
+     * @throws IllegalArgumentException if the command is not registered.
      */
     public CommandManager createCommandManager(String mainCommand) {
-        return new CommandManager(pluginId, mainCommand);
+        CommandManager commandManager = new CommandManager(pluginId, mainCommand);
+        PluginCommand command = getCommand(mainCommand);
+        if (command != null) {
+            command.setExecutor(commandManager);
+        } else {
+            throw new IllegalArgumentException("Command '" + mainCommand + "' is not registered.");
+        }
+        return commandManager;
     }
 
     /**
