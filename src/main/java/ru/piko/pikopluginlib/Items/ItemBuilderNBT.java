@@ -1,6 +1,7 @@
 package ru.piko.pikopluginlib.Items;
 
 import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBTType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Consumer;
@@ -27,7 +28,7 @@ public class ItemBuilderNBT extends AItemBuilderModification {
      * Provides access to the NBT data for modification using a lambda.
      *
      * @param action The lambda that accepts an NBTBuilder to perform operations.
-     * @return The current ItemBuilderNBTModification instance for further modifications.
+     * @return The current ItemBuilderNBT instance for further modifications.
      */
     public ItemBuilderNBT withNBT(Consumer<NBTBuilder> action) {
         action.accept(nbtBuilder);
@@ -52,5 +53,18 @@ public class ItemBuilderNBT extends AItemBuilderModification {
     public boolean has(String key) {
         return nbtBuilder.has(key);
     }
-}
 
+    /**
+     * Checks if the given NBT object exists.
+     *
+     * @param key The key of the object to check.
+     * @return True if the object exists, false otherwise.
+     */
+    public boolean hasObject(String key) {
+        return nbtBuilder.hasObject(key);
+    }
+
+    public boolean hasTag(String key, NBTType type) {
+        return nbtBuilder.hasTag(key, type);
+    }
+}

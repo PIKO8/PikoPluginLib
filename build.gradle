@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'ru.piko'
-version = '0.1.3a-SNAPSHOT'
+version = '0.1.3c-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -28,7 +28,7 @@ publishing {
             from components.java
             groupId = 'ru.piko'
             artifactId = 'pikopluginlib'
-            version = '0.1.3a-SNAPSHOT'
+            version = '0.1.3c-SNAPSHOT'
         }
     }
 
