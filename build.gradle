@@ -62,6 +62,14 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
+task printEnv {
+    doLast {
+        println "USERNAME: ${System.getenv('USERNAME')}"
+        println "TOKEN: ${System.getenv('TOKEN')}"
+    }
+}
+
+
 processResources {
     def props = [version: version]
     inputs.properties props
