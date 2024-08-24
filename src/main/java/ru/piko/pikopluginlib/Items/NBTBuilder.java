@@ -48,6 +48,11 @@ public class NBTBuilder {
         return this;
     }
 
+    // Method for checking if a key exists
+    public boolean has(String key) {
+        return compound.hasTag(key);
+    }
+
     // Methods for working with nested objects
     public NBTBuilder createObject(String key) {
         return new NBTBuilder(compound, key, this);

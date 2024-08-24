@@ -42,5 +42,15 @@ public class ItemBuilderNBT extends AItemBuilderModification {
     public NBTBuilder getNBT() {
         return nbtBuilder;
     }
+
+    /**
+     * Checks if the given NBT key exists.
+     *
+     * @param key The key to check in the NBT data.
+     * @return True if the key exists, false otherwise.
+     */
+    public boolean has(String key) {
+        return nbtBuilder.has(key);
+    }
 }
 
