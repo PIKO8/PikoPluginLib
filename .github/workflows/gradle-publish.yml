@@ -43,5 +43,5 @@ jobs:
     - name: Publish to GitHub Packages
       run: ./gradlew publish --debug
       env:
-        USERNAME: ${{ github.actor }}
+        USERNAME: PIKO8
         TOKEN: ${{ secrets.BUILD_GITHUB_TOKEN }}
