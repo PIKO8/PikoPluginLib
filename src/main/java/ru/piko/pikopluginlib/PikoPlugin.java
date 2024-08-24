@@ -4,8 +4,10 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.piko.pikopluginlib.Commands.CommandManager;
 import ru.piko.pikopluginlib.Commands.Gamerules.GameRuleStandardSave;
+import ru.piko.pikopluginlib.PlayersData.PlayerData;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public abstract class PikoPlugin extends JavaPlugin {
 
@@ -120,5 +122,13 @@ public abstract class PikoPlugin extends JavaPlugin {
             gameRuleStandardSave = new GameRuleStandardSave(pluginId);
         }
         return gameRuleStandardSave;
+    }
+
+    public PlayerData getPlayerData(UUID owner) {
+        return Main.getPlugin().getPlayerData(owner);
+    }
+
+    public void removePlayerData(UUID owner) {
+        Main.getPlugin().removePlayerData(owner);
     }
 }

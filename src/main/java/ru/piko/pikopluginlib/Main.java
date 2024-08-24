@@ -71,18 +71,6 @@ public final class Main extends PikoPlugin {
         playerDataMap.put(owner, data);
         return data;
     }
-    public APlayerData getPlayerData(UUID owner, String id) {
-        PlayerData playerData = getPlayerData(owner);
-        return playerData != null ? playerData.getData(pluginId) : null;
-    }
-
-    public void setPlayerData(UUID owner, String id, APlayerData data) {
-        PlayerData playerData = getPlayerData(owner);
-        if (playerData != null) {
-            playerData.addData(id, data);
-        }
-    }
-
 
     public void removePlayerData(UUID owner) {
         playerDataMap.remove(owner);
