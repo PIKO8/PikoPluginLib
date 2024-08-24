@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'ru.piko'
-version = '0.1.2a-SNAPSHOT'
+version = '0.1.2b-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -24,7 +24,7 @@ publishing {
             from components.java
             groupId = 'ru.piko'
             artifactId = 'pikopluginlib'
-            version = '0.1.2a-SNAPSHOT'
+            version = '0.1.2b-SNAPSHOT'
         }
     }
 
@@ -42,6 +42,7 @@ publishing {
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
+    implementation 'com.google.code.gson:gson:2.8.8'
 }
 
 def targetJavaVersion = 17
