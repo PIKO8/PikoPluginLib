@@ -5,6 +5,7 @@ import de.tr7zw.nbtapi.NBTType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ItemBuilderNBT extends AItemBuilderModification {
 
@@ -30,8 +31,8 @@ public class ItemBuilderNBT extends AItemBuilderModification {
      * @param action The lambda that accepts an NBTBuilder to perform operations.
      * @return The current ItemBuilderNBT instance for further modifications.
      */
-    public ItemBuilderNBT withNBT(Consumer<NBTBuilder> action) {
-        action.accept(nbtBuilder);
+    public ItemBuilderNBT withNBT(Function<NBTBuilder, NBTBuilder> action) {
+        nbtBuilder = action.apply(nbtBuilder);
         return this;
     }
 
