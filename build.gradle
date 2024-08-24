@@ -34,7 +34,7 @@ publishing {
             url = uri("https://maven.pkg.github.com/PIKO8/PikoPluginLib")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
+                password = project.findProperty("gpr.token") ?: System.getenv("BUILD_GITHUB_TOKEN")
             }
         }
     }
