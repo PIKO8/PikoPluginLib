@@ -3,6 +3,7 @@ package ru.piko.pikopluginlib.MenuSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +25,8 @@ public abstract class Menu implements InventoryHolder {
     public abstract String getMenuName();
     public abstract int getSlots();
     public abstract void setMenuItems();
-    public abstract void handleMenu(InventoryClickEvent e);
+    public abstract void clickMenu(InventoryClickEvent e);
+    public abstract void closeMenu(InventoryCloseEvent e);
 
     public void open() {
         inventory = Bukkit.createInventory(this, getSlots(), getMenuName());

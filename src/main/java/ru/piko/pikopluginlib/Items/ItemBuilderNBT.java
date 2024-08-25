@@ -21,6 +21,7 @@ public class ItemBuilderNBT extends AItemBuilderModification {
 
     @Override
     public void onExitModify() {
+        nbtItem = (NBTItem) nbtBuilder.getCompound();
         builder = new ItemBuilder(nbtItem.getItem());
     }
 

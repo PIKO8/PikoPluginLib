@@ -126,4 +126,12 @@ public class NBTBuilder {
     public boolean hasTag(String key, NBTType type) {
         return compound.hasTag(key, type);
     }
+
+    public NBTCompound getCompound() {
+        return compound;
+    }
+
+    public NBTBuilder getParentBuilder() {
+        return parentBuilder;
+    }
 }
