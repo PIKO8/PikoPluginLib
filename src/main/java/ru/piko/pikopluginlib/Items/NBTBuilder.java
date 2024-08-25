@@ -1,11 +1,13 @@
 package ru.piko.pikopluginlib.Items;
 
-import de.tr7zw.nbtapi.NBTCompound;
-import de.tr7zw.nbtapi.NBTItem;
-import de.tr7zw.nbtapi.NBTType;
+import de.tr7zw.nbtapi.*;
+import de.tr7zw.nbtapi.iface.ReadWriteNBT;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static de.tr7zw.nbtapi.NBTType.NBTTagList;
 
 public class NBTBuilder {
 
@@ -56,9 +58,7 @@ public class NBTBuilder {
     }
 
     public NBTBuilder setItemArray(String key, ItemStack[] items) {
-        for (int i = 0; i < items.length; i++) {
-            compound.addCompound(key + "_" + i).setItemStack("item", items[i]);
-        }
+        compound.setItemStackArray(key, items);
         return this;
     }
 
@@ -83,16 +83,12 @@ public class NBTBuilder {
         return compound.getItemStack(key);
     }
 
-    public ItemStack[] getItemArray(String key, int length) {
-        ItemStack[] items = new ItemStack[length];
-        for (int i = 0; i < length; i++) {
-            items[i] = compound.getCompound(key + "_" + i).getItemStack("item");
-        }
-        return items;
+    public ItemStack[] getItemArray(String key) {
+        return compound.getItemStackArray(key);
     }
 
-    public List<ItemStack> getItemList(String key, int length) {
-        return List.of(getItemArray(key, length));
+    public List<ItemStack> getItemList(String key) {
+        return List.of(getItemArray(key));
     }
 
     // Methods for nested objects
@@ -117,6 +113,10 @@ public class NBTBuilder {
     // Methods for checking existence
     public boolean has(String key) {
         return compound.hasTag(key);
+    }
+
+    public boolean hasArray(String key) {
+        return compound.hasTag(key, NBTTagList);
     }
 
     public boolean hasObject(String key) {
