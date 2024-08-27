@@ -17,6 +17,16 @@ public class NBTBuilder {
     /**
      * Creates a root NBTBuilder.
      *
+     * @param compound The NBT compound.
+     */
+    public NBTBuilder(NBTCompound compound) {
+        this.compound = compound;
+        this.parentBuilder = null;
+    }
+
+    /**
+     * Creates a root NBTBuilder.
+     *
      * @param item The NBTItem to modify.
      */
     public NBTBuilder(NBTItem item) {
@@ -97,6 +107,14 @@ public class NBTBuilder {
         return subCompound != null ? new NBTBuilder(subCompound, key, this) : null;
     }
 
+    public NBTBuilder getOrCreateObject(String key) {
+        NBTCompound subCompound = compound.getCompound(key);
+        if (subCompound == null) {
+            return createObject(key);
+        }
+        return new NBTBuilder(subCompound, key, this);
+    }
+
     public NBTBuilder createObject(String key) {
         return new NBTBuilder(compound, key, this);
     }
@@ -133,5 +151,102 @@ public class NBTBuilder {
 
     public NBTBuilder getParentBuilder() {
         return parentBuilder;
+    }
+
+    // Glow effect methods
+
+    /**
+     * Adds the "glow" effect to the item by manipulating NBT data.
+     * If the item already has real enchantments, the glow is considered permanent.
+     *
+     * @return The current NBTBuilder instance for further modifications.
+     */
+    public NBTBuilder addGlow() {
+        if (!hasRealEnchantments()) {
+            compound.mergeCompound(new NBTContainer("{Enchantments:[{id:\"\",lvl:0}]}"));
+        }
+        return this;
+    }
+
+    /**
+     * Removes the "glow" effect from the item by manipulating NBT data.
+     * If the item has real enchantments, the glow cannot be removed.
+     *
+     * @return The current NBTBuilder instance for further modifications.
+     */
+    public NBTBuilder removeGlow() {
+        if (hasRealEnchantments()) {
+            return this; // Can't remove glow if there are real enchantments
+        }
+
+        NBTCompoundList enchantments = compound.getCompoundList("Enchantments");
+        List<ReadWriteNBT> newEnchantments = new ArrayList<>();
+
+        for (ReadWriteNBT enchantment : enchantments) {
+            String id = enchantment.getString("id");
+            if (!id.isEmpty()) {
+                newEnchantments.add(enchantment);
+            }
+        }
+
+        compound.setObject("Enchantments", newEnchantments);
+        return this;
+    }
+
+    /**
+     * Checks if the item has the "glow" effect by analyzing NBT data.
+     * The item glows if it has real enchantments or an empty enchantment entry.
+     *
+     * @return true if the item has the "glow" effect, false otherwise.
+     */
+    public boolean isGlow() {
+        if (hasRealEnchantments()) {
+            return true; // If there are real enchantments, the item is glowing
+        }
+
+        NBTCompoundList enchantments = compound.getCompoundList("Enchantments");
+        for (ReadWriteNBT enchantment : enchantments) {
+            String id = enchantment.getString("id");
+            if (id.isEmpty()) {
+                return true; // If there's an empty enchantment, the item is glowing
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Toggles the "glow" effect on the item. If the item has real enchantments, the glow is considered permanent.
+     * If the item has no real enchantments, the glow can be toggled.
+     *
+     * @return The current NBTBuilder instance for further modifications.
+     */
+    public NBTBuilder toggleGlow() {
+        if (hasRealEnchantments()) {
+            return this; // Can't toggle glow if there are real enchantments
+        }
+
+        if (isGlow()) {
+            removeGlow();
+        } else {
+            addGlow();
+        }
+        return this;
+    }
+
+    /**
+     * Checks if the item has real enchantments (non-empty id).
+     *
+     * @return true if the item has real enchantments, false otherwise.
+     */
+    public boolean hasRealEnchantments() {
+        NBTCompoundList enchantments = compound.getCompoundList("Enchantments");
+        for (ReadWriteNBT enchantment : enchantments) {
+            String id = enchantment.getString("id");
+            if (id != null && !id.isEmpty()) {
+                return true; // Найдено настоящее зачарование
+            }
+        }
+        return false; // Нет настоящих зачарований
     }
 }

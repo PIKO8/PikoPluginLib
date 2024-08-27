@@ -66,7 +66,7 @@ public class CommandManager implements TabExecutor {
             ArrayList<String> subcommandsArguments = new ArrayList<>();
 
             for (int i = 0; i < getSubCommands().size(); i++){
-                if (!getSubCommands().get(i).hasPermission(commandSender, strings)) {
+                if (getSubCommands().get(i).hasPermission(commandSender, strings)) {
                     subcommandsArguments.add(getSubCommands().get(i).getName());
                 }
             }

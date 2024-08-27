@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class PlayerData {
     private final Player owner;
@@ -55,5 +56,17 @@ public class PlayerData {
 
     public void removeData(String id) {
         playerDataMap.remove(id);
+    }
+
+    /**
+     * Retrieves existing data or creates it if absent.
+     *
+     * @param id The identifier for the data.
+     * @param factory The factory method to create the data if it doesn't exist.
+     * @param <T> The type of the data.
+     * @return The existing or newly created data.
+     */
+    public <T extends APlayerData> T getOrCreateData(String id, Supplier<T> factory) {
+        return (T) playerDataMap.computeIfAbsent(id, k -> factory.get());
     }
 }

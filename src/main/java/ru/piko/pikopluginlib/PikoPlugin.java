@@ -1,12 +1,14 @@
 package ru.piko.pikopluginlib;
 
 import org.bukkit.NamespacedKey;
+import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.piko.pikopluginlib.Commands.CommandManager;
 import ru.piko.pikopluginlib.Commands.Gamerules.GameRuleStandardSave;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
 
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,6 +19,8 @@ public abstract class PikoPlugin extends JavaPlugin {
      * Manages the standard save state of game rules.
      */
     private GameRuleStandardSave gameRuleStandardSave;
+
+    private final HashMap<String, CommandManager> commandManagerMap = new HashMap<>();
 
     /**
      * Unique identifier for the plugin.
@@ -72,10 +76,31 @@ public abstract class PikoPlugin extends JavaPlugin {
         PluginCommand command = getCommand(mainCommand);
         if (command != null) {
             command.setExecutor(commandManager);
+            commandManagerMap.put(mainCommand, commandManager);
         } else {
             throw new IllegalArgumentException("Command '" + mainCommand + "' is not registered.");
         }
         return commandManager;
+    }
+
+    public CommandManager getCommandManager(String mainCommand) {
+        if (commandManagerMap.containsKey(mainCommand)) {
+            return commandManagerMap.get(mainCommand);
+        }
+        return null;
+    }
+
+    public boolean hasCommandManager(String mainCommand) {
+        return commandManagerMap.containsKey(mainCommand);
+    }
+
+    public void addCommandManager(String mainCommand, CommandManager manager) {
+        if (!commandManagerMap.containsKey(mainCommand)) {
+            commandManagerMap.put(mainCommand, manager);
+        }
+        else {
+            commandManagerMap.replace(mainCommand, manager);
+        }
     }
 
     /**

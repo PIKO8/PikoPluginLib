@@ -1,16 +1,10 @@
 package ru.piko.pikopluginlib.Items;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import ru.piko.pikopluginlib.PikoPlugin;
-
-import java.lang.reflect.Type;
-import java.util.List;
+import org.bukkit.inventory.ItemStack;
 
 public class ItemBuilderData extends AItemBuilderModification {
 
@@ -71,5 +65,16 @@ public class ItemBuilderData extends AItemBuilderModification {
     public <T, Z> boolean hasData(String key, PersistentDataType<T, Z> type) {
         NamespacedKey namespacedKey = new NamespacedKey(plugin, key);
         return data.has(namespacedKey, type);
+    }
+
+    public <T, Z> ItemBuilderData removeData(String key, PersistentDataType<T, Z> type) {
+        NamespacedKey namespacedKey = new NamespacedKey(plugin, key);
+        data.remove(namespacedKey);
+        return this;
+    }
+
+    public ItemBuilderData clearData() {
+        data.getKeys().forEach(data::remove);
+        return this;
     }
 }
