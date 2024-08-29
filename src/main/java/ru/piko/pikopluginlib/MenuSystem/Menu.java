@@ -37,17 +37,17 @@ public abstract class Menu implements InventoryHolder {
     }
 
     public void setFillerGlass(){
-        for (int i = 0; i < getSlots(); i++) {
-            if (inventory.getItem(i) == null){
-                inventory.setItem(i, FILLER_GLASS);
-            }
-        }
+        setFillerItem(FILLER_GLASS);
     }
 
     public void setFillerLightGlass() {
+        setFillerItem(FILLER_LIGHT_GLASS);
+    }
+
+    public void setFillerItem(ItemStack item) {
         for (int i = 0; i < getSlots(); i++) {
             if (inventory.getItem(i) == null){
-                inventory.setItem(i, FILLER_LIGHT_GLASS);
+                inventory.setItem(i, item);
             }
         }
     }
