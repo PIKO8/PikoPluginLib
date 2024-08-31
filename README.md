@@ -19,4 +19,8 @@ dependencies {
     implementation 'com.github.PIKO8:PikoPluginLib:v0.1.4b'
 }
 ```
-или [![](https://jitpack.io/v/PIKO8/PikoPluginLib.svg)](https://jitpack.io/#PIKO8/PikoPluginLib)
+или | or
+[![](https://jitpack.io/v/PIKO8/PikoPluginLib.svg)](https://jitpack.io/#PIKO8/PikoPluginLib)
+# Вики | Wiki
+Wiki only in Russian<br>
+https://github.com/PIKO8/PikoPluginLib/wiki
