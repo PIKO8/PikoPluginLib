@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.PIKO8:PikoPluginLib:v0.1.4b'
+    implementation 'com.github.PIKO8:PikoPluginLib:v0.1.4c'
 }
 ```
 или | or
