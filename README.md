@@ -20,7 +20,13 @@ dependencies {
 }
 ```
 или | or
-[![](https://jitpack.io/v/PIKO8/PikoPluginLib.svg)](https://jitpack.io/#PIKO8/PikoPluginLib)
+[![](https://jitpack.io/v/PIKO8/PikoPluginLib.svg)](https://jitpack.io/#PIKO8/PikoPluginLib)<br>
+<br>
+И добавить в `plugin.yml`<br>
+And add to `plugin.yml`<br>
+```yml
+depend: [PikoPluginLib]
+```
 # Вики | Wiki
 Wiki only in Russian<br>
 https://github.com/PIKO8/PikoPluginLib/wiki
