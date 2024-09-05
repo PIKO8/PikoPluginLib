@@ -54,7 +54,6 @@ public final class Main extends PikoPlugin {
         if (!pikoPluginMap.containsKey(pluginId)) {
             pikoPluginMap.put(pluginId, pikoPlugin);
         } else {
-            // Логирование или обработка ситуации, когда плагин уже зарегистрирован
             System.out.println("Плагин с идентификатором " + pluginId + " уже зарегистрирован.");
         }
     }

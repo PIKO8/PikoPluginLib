@@ -73,7 +73,7 @@ public abstract class PikoPlugin extends JavaPlugin {
      */
     public CommandManager createCommandManager(String mainCommand) {
         CommandManager commandManager = new CommandManager(pluginId, mainCommand);
-        PluginCommand command = getCommand(mainCommand);
+        PluginCommand command = this.getCommand(mainCommand);
         if (command != null) {
             command.setExecutor(commandManager);
             commandManagerMap.put(mainCommand, commandManager);
