@@ -16,11 +16,17 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.PIKO8:PikoPluginLib:v0.1.4b'
+    implementation 'com.github.PIKO8:PikoPluginLib:v0.1.4c'
 }
 ```
 или | or
-[![](https://jitpack.io/v/PIKO8/PikoPluginLib.svg)](https://jitpack.io/#PIKO8/PikoPluginLib)
+[![](https://jitpack.io/v/PIKO8/PikoPluginLib.svg)](https://jitpack.io/#PIKO8/PikoPluginLib)<br>
+<br>
+И добавить в `plugin.yml`<br>
+And add to `plugin.yml`<br>
+```yml
+depend: [PikoPluginLib]
+```
 # Вики | Wiki
 Wiki only in Russian<br>
 https://github.com/PIKO8/PikoPluginLib/wiki
