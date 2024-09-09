@@ -56,6 +56,11 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GIT_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Set VERSION variable
+      run: |
+        VERSION=$(git describe --tags --abbrev=0 | sed 's/^v//')
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
     - name: Upload jar file to release
       uses: actions/upload-artifact@v3
       with:
