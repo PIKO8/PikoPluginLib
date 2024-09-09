@@ -51,11 +51,10 @@ jobs:
 
     - name: Create tag and push
       run: |
-        env:
-          GITHUB_TOKEN: ${{ secrets.BUILD_GITHUB_TOKEN }}
         git tag "v${VERSION}"
         git push origin "v${VERSION}"
       env:
+        USERNAME: ${{ secrets.USERNAME }}
         GITHUB_TOKEN: ${{ secrets.BUILD_GITHUB_TOKEN }}
 
     - name: Upload jar file to release
