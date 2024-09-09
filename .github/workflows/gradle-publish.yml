@@ -48,11 +48,13 @@ jobs:
 
     - name: Create tag and push
       run: |
+        git config --global credential.helper store
         git tag "v${VERSION}"
         git push origin "v${VERSION}"
       env:
         USERNAME: ${{ secrets.USERNAME }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GIT_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload jar file to release
       uses: actions/upload-artifact@v3
