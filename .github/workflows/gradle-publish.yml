@@ -62,10 +62,13 @@ jobs:
         echo "VERSION=$VERSION" >> $GITHUB_ENV
 
     - name: Upload jar file to release
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-release-asset@v1
       with:
-        name: PikoPluginLib-${{ env.VERSION }}
-        path: build/libs/PikoPluginLib-${{ env.VERSION }}.jar
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/libs/PikoPluginLib-${{ env.VERSION }}.jar
+        asset_name: PikoPluginLib-${{ env.VERSION }}.jar
+        asset_content_type: application/java-archive
 
     - name: Create release
       uses: actions/create-release@v1
