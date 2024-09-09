@@ -55,7 +55,7 @@ jobs:
         git push origin "v${VERSION}"
       env:
         USERNAME: ${{ secrets.USERNAME }}
-        GITHUB_TOKEN: ${{ secrets.BUILD_GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload jar file to release
       uses: actions/upload-artifact@v3
@@ -66,16 +66,16 @@ jobs:
     - name: Create release
       uses: actions/create-release@v1
       with:
-        github_token: ${{ secrets.BUILD_GITHUB_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         tag_name: "v${VERSION}"
         release_name: "Release v${VERSION}"
         draft: false
         prerelease: false
       env:
-        GITHUB_TOKEN: ${{ secrets.BUILD_GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Publish to GitHub Packages
       run: ./gradlew publish
       env:
         USERNAME: ${{ secrets.USERNAME }}
-        GITHUB_TOKEN: ${{ secrets.BUILD_GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
