@@ -53,6 +53,8 @@ jobs:
       run: |
         git tag "v${VERSION}"
         git push origin "v${VERSION}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.BUILD_GITHUB_TOKEN }}
 
     - name: Upload jar file to release
       uses: actions/upload-artifact@v3
