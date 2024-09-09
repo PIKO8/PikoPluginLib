@@ -62,9 +62,10 @@ jobs:
         echo "VERSION=$VERSION" >> $GITHUB_ENV
 
     - name: Create release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       uses: actions/create-release@v1
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
         tag_name: "v${{ env.VERSION }}"
         release_name: "Release v${{ env.VERSION }}"
         draft: false
