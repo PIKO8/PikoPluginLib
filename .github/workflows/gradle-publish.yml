@@ -46,7 +46,7 @@ jobs:
         VERSION=$(./gradlew -q --console=plain printVersion)
         echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-    - name: Create tag and push
+    - name: Create tag and push v2
       run: |
         git config --global credential.helper store
         git tag "v${VERSION}"
