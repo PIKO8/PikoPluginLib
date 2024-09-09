@@ -75,3 +75,9 @@ processResources {
         expand props
     }
 }
+
+task printVersion {
+    doLast {
+        println project.version
+    }
+}
