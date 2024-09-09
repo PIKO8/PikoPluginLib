@@ -64,15 +64,15 @@ jobs:
     - name: Upload jar file to release
       uses: actions/upload-artifact@v3
       with:
-        name: PikoPluginLib-${VERSION}
-        path: build/libs/PikoPluginLib-${VERSION}.jar
+        name: PikoPluginLib-${{ env.VERSION }}
+        path: build/libs/PikoPluginLib-${{ env.VERSION }}.jar
 
     - name: Create release
       uses: actions/create-release@v1
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        tag_name: "v${VERSION}"
-        release_name: "Release v${VERSION}"
+        tag_name: "v${{ env.VERSION }}"
+        release_name: "Release v${{ env.VERSION }}"
         draft: false
         prerelease: false
       env:
