@@ -10,6 +10,11 @@ name: Gradle Package
 on:
   push:
     branches: [ "master" ]
+    paths:
+      - '**/gradle/**'
+      - '**/build.gradle'
+      - '**/settings.gradle'
+      - '**/*.java'
 
 jobs:
   build:
@@ -37,6 +42,34 @@ jobs:
 
     - name: Build with Gradle
       run: ./gradlew build
+
+    - name: Get version from build.gradle
+      id: get_version
+      run: |
+        VERSION=$(./gradlew -q --console=plain printVersion)
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+    - name: Create tag and push
+      run: |
+        git tag "v${VERSION}"
+        git push origin "v${VERSION}"
+
+    - name: Upload jar file to release
+      uses: actions/upload-artifact@v3
+      with:
+        name: PikoPluginLib-$VERSION
+        path: build/libs/PikoPluginLib-$VERSION.jar
+
+    - name: Create release
+      uses: actions/create-release@v1
+      with:
+        github_token: ${{ secrets.BUILD_GITHUB_TOKEN }}
+        tag_name: "v${VERSION}"
+        release_name: "Release v${VERSION}"
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.BUILD_GITHUB_TOKEN }}
 
     - name: Publish to GitHub Packages
       run: ./gradlew publish
