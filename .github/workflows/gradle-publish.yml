@@ -59,8 +59,8 @@ jobs:
     - name: Upload jar file to release
       uses: actions/upload-artifact@v3
       with:
-        name: PikoPluginLib-$VERSION
-        path: build/libs/PikoPluginLib-$VERSION.jar
+        name: PikoPluginLib-${VERSION}
+        path: build/libs/PikoPluginLib-${VERSION}.jar
 
     - name: Create release
       uses: actions/create-release@v1
