@@ -1,22 +1,12 @@
 package ru.piko.pikopluginlib;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
-import ru.piko.pikopluginlib.Items.ItemBuilder;
-import ru.piko.pikopluginlib.Items.ItemBuilderData;
-import ru.piko.pikopluginlib.Items.ItemBuilderNBT;
+import org.bukkit.plugin.java.JavaPlugin;
 import ru.piko.pikopluginlib.Listeners.MenuEvent;
-import ru.piko.pikopluginlib.PlayersData.APlayerData;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
 
 import java.util.*;
 
-public final class Main extends PikoPlugin {
+public final class Main extends JavaPlugin {
 
     private static Main plugin;
 
@@ -26,23 +16,10 @@ public final class Main extends PikoPlugin {
      */
     private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
 
-
-    @Override
-    public String getPluginId() {
-        return "lib";
-    }
-
-    @Override
-    public void onStart() {}
-
-    @Override
-    public void onStop() {}
-
     @Override
     public void onEnable() {
         plugin = this;
-        this.pluginId = getPluginId();
-        addPikoPlugin(pluginId, this);
+        System.out.println("PikoPluginLib загружен!");
         getServer().getPluginManager().registerEvents(new MenuEvent(), this);
     }
 
@@ -75,13 +52,16 @@ public final class Main extends PikoPlugin {
         if (playerDataMap.containsKey(owner)) {
             return playerDataMap.get(owner);
         }
-        Player player = Bukkit.getPlayer(owner);
-        if (player == null) {
-            return null;
-        }
-        PlayerData data = new PlayerData(player);
+        PlayerData data = new PlayerData(owner);
         playerDataMap.put(owner, data);
         return data;
+    }
+
+    public boolean hasOnlinePlayerData(UUID owner) {
+        if (playerDataMap.containsKey(owner)) {
+            return playerDataMap.get(owner).getOwner() != null;
+        }
+        return getServer().getPlayer(owner) != null;
     }
 
     public void removePlayerData(UUID owner) {

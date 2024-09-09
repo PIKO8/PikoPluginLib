@@ -1,7 +1,6 @@
 package ru.piko.pikopluginlib;
 
 import org.bukkit.NamespacedKey;
-import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.piko.pikopluginlib.Commands.CommandManager;
@@ -50,7 +49,12 @@ public abstract class PikoPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         this.pluginId = getPluginId();
-        Main.getPlugin().addPikoPlugin(pluginId, this);
+        Main plugin = Main.getPlugin();
+        if (plugin != null) {
+            plugin.addPikoPlugin(pluginId, this);
+        } else {
+            System.out.println("Не получилось добавить " + getPluginId() + " в систему PikoPlugins");
+        }
         onStart();
     }
 
@@ -156,6 +160,10 @@ public abstract class PikoPlugin extends JavaPlugin {
             gameRuleStandardSave = new GameRuleStandardSave(pluginId);
         }
         return gameRuleStandardSave;
+    }
+
+    public boolean hasOnlinePlayerData(UUID owner) {
+        return Main.getPlugin().hasOnlinePlayerData(owner);
     }
 
     public PlayerData getPlayerData(UUID owner) {
