@@ -23,7 +23,7 @@ public final class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MenuEvent(), this);
     }
 
-    public static Main getPlugin() {
+    static Main getPlugin() {
         return plugin;
     }
 
