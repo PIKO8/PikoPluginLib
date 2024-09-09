@@ -51,6 +51,8 @@ jobs:
 
     - name: Create tag and push
       run: |
+        env:
+          GITHUB_TOKEN: ${{ secrets.BUILD_GITHUB_TOKEN }}
         git tag "v${VERSION}"
         git push origin "v${VERSION}"
       env:
