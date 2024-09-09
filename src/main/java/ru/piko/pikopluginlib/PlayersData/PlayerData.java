@@ -1,14 +1,16 @@
 package ru.piko.pikopluginlib.PlayersData;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class PlayerData {
-    private final Player owner;
+    private final UUID uuid;
 
     /**
      * A map that stores player-specific data for various plugins and subsystems.
@@ -26,13 +28,17 @@ public class PlayerData {
      */
     private final Map<String, APlayerData> playerDataMap;
 
-    public PlayerData(Player owner) {
-        this.owner = owner;
+    public PlayerData(UUID owner) {
+        this.uuid = owner;
         this.playerDataMap = new HashMap<>();
     }
 
+    public UUID getUUID() {
+        return uuid;
+    }
+
     public Player getOwner() {
-        return owner;
+        return Bukkit.getPlayer(uuid);
     }
 
     public void addData(String id, APlayerData data) {
