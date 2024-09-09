@@ -49,8 +49,8 @@ jobs:
     - name: Create tag and push v2
       run: |
         git config --global credential.helper store
-        git tag "v${VERSION}"
-        git push origin "v${VERSION}"
+        git tag "v${VERSION}" || true
+        git push origin "v${VERSION}" --force
       env:
         USERNAME: ${{ secrets.USERNAME }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
