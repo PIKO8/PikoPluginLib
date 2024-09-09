@@ -1,10 +1,11 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 group = 'ru.piko'
-version = '0.1.4e'
+version = '0.1.5-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -28,7 +29,6 @@ publishing {
             from components.java
             groupId = 'ru.piko'
             artifactId = 'pikopluginlib'
-            version = '0.1.4e'
         }
     }
 
