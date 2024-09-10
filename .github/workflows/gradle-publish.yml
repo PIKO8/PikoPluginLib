@@ -72,14 +72,19 @@ jobs:
           | jq '.id' | wc -l)
         if [ $RELEASE_ID -gt 0 ]; then
           # Update existing release
+          RELEASE_URL=$(curl -s -X GET \
+            https://api.github.com/repos/${GITHUB_REPO}/releases/tags/${tag_name} \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/json" \
+            | jq '.url' | tr -d '"')
           curl -s -X PATCH \
-            https://api.github.com/repos/${GITHUB_REPO}/releases/${RELEASE_ID} \
+            $RELEASE_URL \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "Accept: application/json" \
             -d '{"name":"Release v${{ env.VERSION }}","tag_name":"v${{ env.VERSION }}","prerelease":false,"draft":false}'
           # Update release assets
           curl -s -X POST \
-            https://api.github.com/repos/${GITHUB_REPO}/releases/${RELEASE_ID}/assets \
+            $RELEASE_URL/assets \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "Accept: application/json" \
             -H "Content-Type: application/octet-stream" \
@@ -92,6 +97,8 @@ jobs:
             release_name: "Release v${{ env.VERSION }}"
             draft: false
             prerelease: false
+          id: create_release
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
         fi
       id: create_release
 
