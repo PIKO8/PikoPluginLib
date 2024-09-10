@@ -61,15 +61,38 @@ jobs:
         VERSION=$(git describe --tags --abbrev=0 | sed 's/^v//')
         echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-    - name: Create release
+    - name: Create or update release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      uses: actions/create-release@v1
-      with:
-        tag_name: "v${{ env.VERSION }}"
-        release_name: "Release v${{ env.VERSION }}"
-        draft: false
-        prerelease: false
+      run: |
+        RELEASE_ID=$(curl -s -X GET \
+          https://api.github.com/repos/${GITHUB_REPO}/releases/tags/${tag_name} \
+          -H "Authorization: Bearer $GITHUB_TOKEN" \
+          -H "Accept: application/json" \
+          | jq '.id' | wc -l)
+        if [ $RELEASE_ID -gt 0 ]; then
+          # Update existing release
+          curl -s -X PATCH \
+            https://api.github.com/repos/${GITHUB_REPO}/releases/${RELEASE_ID} \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/json" \
+            -d '{"name":"Release v${{ env.VERSION }}","tag_name":"v${{ env.VERSION }}","prerelease":false,"draft":false}'
+          # Update release assets
+          curl -s -X POST \
+            https://api.github.com/repos/${GITHUB_REPO}/releases/${RELEASE_ID}/assets \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/octet-stream" \
+            --data-binary @build/libs/PikoPluginLib-${{ env.VERSION }}.jar
+        else
+          # Create new release
+          uses: actions/create-release@v1
+          with:
+            tag_name: "v${{ env.VERSION }}"
+            release_name: "Release v${{ env.VERSION }}"
+            draft: false
+            prerelease: false
+        fi
       id: create_release
 
     - name: Upload jar file to release
