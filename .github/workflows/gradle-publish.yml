@@ -73,24 +73,21 @@ jobs:
         fi
 
     - name: Create new release
-      id: create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        tag_name="v${{ env.VERSION }}"
-        response=$(curl -s -X POST \
-          https://api.github.com/repos/${{ github.repository }}/releases \
-          -H "Authorization: Bearer $GITHUB_TOKEN" \
-          -H "Accept: application/json" \
-          -d "{\"tag_name\":\"$tag_name\",\"name\":\"Release $tag_name\",\"draft\":false,\"prerelease\":false}")
-        upload_url=$(echo "$response" | jq -r '.upload_url' | sed "s/{?name,label}//")
-        echo "upload_url=$upload_url" >> $GITHUB_ENV
-
+      uses: actions/create-release@v1
+      with:
+        token: ${{ env.GITHUB_TOKEN }}
+        tag_name: "v${{ env.VERSION }}"
+        release_name: "Release v${{ env.VERSION }}"
+        draft: false
+        prerelease: false
+      id: create_release
+      
     - name: Upload jar file to release
-      if: env.upload_url
       uses: actions/upload-release-asset@v1
       with:
-        upload_url: ${{ env.upload_url }}
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: build/libs/PikoPluginLib-${{ env.VERSION }}.jar
         asset_name: PikoPluginLib-${{ env.VERSION }}.jar
         asset_content_type: application/java-archive
