@@ -28,12 +28,10 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        server-id: github
-        settings-path: ${{ github.workspace }}
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
-      
+      uses: gradle/actions/setup-gradle@v4
+
     - name: Set execute permissions on gradlew
       run: chmod +x ./gradlew
 
@@ -49,63 +47,46 @@ jobs:
     - name: Create tag and push
       run: |
         git config --global credential.helper store
-        git tag "v${VERSION}" || true
-        git push origin "v${VERSION}" --force
+        git tag "v${{ env.VERSION }}" || true
+        git push origin "v${{ env.VERSION }}" --force
       env:
-        USERNAME: ${{ secrets.USERNAME }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GIT_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Set VERSION variable
-      run: |
-        VERSION=$(git describe --tags --abbrev=0 | sed 's/^v//')
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
 
     - name: Create or update release
+      id: create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        RELEASE_ID=$(curl -s -X GET \
-          https://api.github.com/repos/${GITHUB_REPO}/releases/tags/${tag_name} \
+        tag_name="v${{ env.VERSION }}"
+        release_url=$(curl -s -X GET \
+          https://api.github.com/repos/${{ github.repository }}/releases/tags/${tag_name} \
           -H "Authorization: Bearer $GITHUB_TOKEN" \
           -H "Accept: application/json" \
-          | jq '.id' | wc -l)
-        if [ $RELEASE_ID -gt 0 ]; then
-          # Update existing release
-          RELEASE_URL=$(curl -s -X GET \
-            https://api.github.com/repos/${GITHUB_REPO}/releases/tags/${tag_name} \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -H "Accept: application/json" \
-            | jq '.url' | tr -d '"')
+          | jq -r '.url')
+
+        if [ "$release_url" != "null" ]; then
+          echo "Updating existing release..."
           curl -s -X PATCH \
-            $RELEASE_URL \
+            $release_url \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "Accept: application/json" \
-            -d '{"name":"Release v${{ env.VERSION }}","tag_name":"v${{ env.VERSION }}","prerelease":false,"draft":false}'
-          # Update release assets
-          curl -s -X POST \
-            $RELEASE_URL/assets \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -H "Accept: application/json" \
-            -H "Content-Type: application/octet-stream" \
-            --data-binary @build/libs/PikoPluginLib-${{ env.VERSION }}.jar
+            -d "{\"name\":\"Release $tag_name\",\"tag_name\":\"$tag_name\",\"prerelease\":false,\"draft\":false}"
         else
-          # Create new release
-          uses: actions/create-release@v1
-          with:
-            tag_name: "v${{ env.VERSION }}"
-            release_name: "Release v${{ env.VERSION }}"
-            draft: false
-            prerelease: false
-          id: create_release
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          echo "Creating new release..."
+          response=$(curl -s -X POST \
+            https://api.github.com/repos/${{ github.repository }}/releases \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/json" \
+            -d "{\"tag_name\":\"$tag_name\",\"name\":\"Release $tag_name\",\"draft\":false,\"prerelease\":false}")
+          upload_url=$(echo "$response" | jq -r '.upload_url' | sed "s/{?name,label}//")
+          echo "upload_url=$upload_url" >> $GITHUB_ENV
         fi
-      id: create_release
 
     - name: Upload jar file to release
+      if: env.upload_url
       uses: actions/upload-release-asset@v1
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        upload_url: ${{ env.upload_url }}
         asset_path: build/libs/PikoPluginLib-${{ env.VERSION }}.jar
         asset_name: PikoPluginLib-${{ env.VERSION }}.jar
         asset_content_type: application/java-archive
