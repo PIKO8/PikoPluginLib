@@ -66,11 +66,19 @@ jobs:
 
         if [ "$release_url" != "null" ]; then
           echo "Updating existing release..."
-          curl -s -X PATCH \
-            $release_url \
+          # Remove existing jar asset if present
+          assets=$(curl -s -X GET \
+            $release_url/assets \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -H "Accept: application/json" \
-            -d "{\"name\":\"Release $tag_name\",\"tag_name\":\"$tag_name\",\"prerelease\":false,\"draft\":false}"
+            -H "Accept: application/json")
+          asset_id=$(echo "$assets" | jq -r '.[] | select(.name == "PikoPluginLib-${{ env.VERSION }}.jar") | .id')
+          if [ "$asset_id" != "null" ]; then
+            echo "Deleting existing asset..."
+            curl -s -X DELETE \
+              https://api.github.com/repos/${{ github.repository }}/releases/assets/$asset_id \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Accept: application/json"
+          fi
         else
           echo "Creating new release..."
           response=$(curl -s -X POST \
@@ -78,9 +86,11 @@ jobs:
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "Accept: application/json" \
             -d "{\"tag_name\":\"$tag_name\",\"name\":\"Release $tag_name\",\"draft\":false,\"prerelease\":false}")
+          release_url=$(echo "$response" | jq -r '.url')
           upload_url=$(echo "$response" | jq -r '.upload_url' | sed "s/{?name,label}//")
           echo "upload_url=$upload_url" >> $GITHUB_ENV
         fi
+        echo "release_url=$release_url" >> $GITHUB_ENV
 
     - name: Upload jar file to release
       if: env.upload_url
