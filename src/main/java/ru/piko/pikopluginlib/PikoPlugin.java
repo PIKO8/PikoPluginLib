@@ -87,6 +87,13 @@ public abstract class PikoPlugin extends JavaPlugin {
         return commandManager;
     }
 
+    public CommandManager getOrCreateCommandManager(String mainCommand) {
+        if (hasCommandManager(mainCommand)) {
+            return getCommandManager(mainCommand);
+        }
+        return createCommandManager(mainCommand);
+    }
+
     public CommandManager getCommandManager(String mainCommand) {
         if (commandManagerMap.containsKey(mainCommand)) {
             return commandManagerMap.get(mainCommand);
