@@ -99,7 +99,9 @@ jobs:
         asset_content_type: application/java-archive
         
     - name: Publish to GitHub Packages
-      run: ./gradlew publish
+      run: |
+        ./gradlew publishToMavenLocal
+        ./gradlew publish
       env:
         USERNAME: ${{ secrets.USERNAME }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
