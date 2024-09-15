@@ -1,6 +1,7 @@
 package ru.piko.pikopluginlib.Commands.Gamerules;
 
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 import ru.piko.pikopluginlib.Commands.SubCommand;
 
 import java.util.ArrayList;
@@ -38,13 +39,13 @@ public class GameRuleSubCommand extends SubCommand {
     }
 
     @Override
-    public String getPermission(CommandSender sender, String[] args) {
+    public String getPermission(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
 
         return null;
     }
 
     @Override
-    public void perform(CommandSender sender, String[] args) {
+    public void perform(@NotNull CommandSender sender, String @NotNull [] args) {
         if (args.length < 3 || args.length > 4) {
             sender.sendMessage(color("&cНеправильное количество аргументов. Использование: " + getSyntax()));
             return;
@@ -81,7 +82,7 @@ public class GameRuleSubCommand extends SubCommand {
     }
 
     @Override
-    public List<String> getSubCommandArguments(CommandSender sender, String[] args) {
+    public List<String> getSubCommandArguments(@NotNull CommandSender sender, String @NotNull [] args) {
         List<String> arguments = new ArrayList<>();
 
         if (args.length == 2) {

@@ -1,12 +1,14 @@
 package ru.piko.pikopluginlib;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import ru.piko.pikopluginlib.Items.ItemDataBuilder;
 import ru.piko.pikopluginlib.Listeners.MenuEvent;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
 
 import java.util.*;
 
-public final class Main extends JavaPlugin {
+public final class Main extends PikoPlugin {
 
     private static Main plugin;
 
@@ -17,9 +19,22 @@ public final class Main extends JavaPlugin {
     private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
 
     @Override
+    public String getPluginId() {
+        return "lib";
+    }
+
+    @Override
+    public void onStart() {}
+
+    @Override
+    public void onStop() {}
+
+    @Override
     public void onEnable() {
         plugin = this;
-        System.out.println("PikoPluginLib загружен!");
+        this.pluginId = getPluginId();
+        addPikoPlugin(this.pluginId, this);
+        System.out.println("PikoPluginLib load!");
         getServer().getPluginManager().registerEvents(new MenuEvent(), this);
     }
 
@@ -27,28 +42,28 @@ public final class Main extends JavaPlugin {
         return plugin;
     }
 
-    public void addPikoPlugin(String pluginId, PikoPlugin pikoPlugin) {
+    public void addPikoPlugin(@NotNull String pluginId, @NotNull PikoPlugin pikoPlugin) {
         if (!pikoPluginMap.containsKey(pluginId)) {
             pikoPluginMap.put(pluginId, pikoPlugin);
         } else {
-            System.out.println("Плагин с идентификатором " + pluginId + " уже зарегистрирован.");
+            System.out.println("PikoPlugin with id: " + pluginId + " already registered.");
         }
     }
 
-    public boolean hasPikoPlugin(String id) {
+    public boolean hasPikoPlugin(@NotNull String id) {
         return pikoPluginMap.containsKey(id);
     }
 
-    public PikoPlugin getPikoPlugin(String id) {
+    public PikoPlugin getPikoPlugin(@NotNull String id) {
         return pikoPluginMap.get(id);
     }
 
-    public void removePikoPlugin(String id) {
+    public void removePikoPlugin(@NotNull String id) {
         pikoPluginMap.remove(id);
     }
 
     // PLAYER DATA
-    public PlayerData getPlayerData(UUID owner) {
+    public @NotNull PlayerData getPlayerData(@NotNull UUID owner) {
         if (playerDataMap.containsKey(owner)) {
             return playerDataMap.get(owner);
         }
@@ -57,14 +72,14 @@ public final class Main extends JavaPlugin {
         return data;
     }
 
-    public boolean hasOnlinePlayerData(UUID owner) {
+    public boolean hasOnlinePlayerData(@NotNull UUID owner) {
         if (playerDataMap.containsKey(owner)) {
             return playerDataMap.get(owner).getOwner() != null;
         }
         return getServer().getPlayer(owner) != null;
     }
 
-    public void removePlayerData(UUID owner) {
+    public void removePlayerData(@NotNull UUID owner) {
         playerDataMap.remove(owner);
     }
 

@@ -1,6 +1,8 @@
 package ru.piko.pikopluginlib.Commands;
 
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -19,10 +21,10 @@ public abstract class SubCommand {
     public abstract String getName();
     public abstract String getDescription();
     public abstract String getSyntax();
-    public abstract String getPermission(CommandSender sender, String[] args);
-    public abstract void perform(CommandSender sender, String args[]);
-    public abstract List<String> getSubCommandArguments(CommandSender sender, String args[]);
-    public boolean hasPermission(CommandSender sender, String[] args) {
+    public abstract String getPermission(@NotNull CommandSender sender, @NotNull String[] args);
+    public abstract void perform(@NotNull CommandSender sender, @NotNull String[] args);
+    public abstract List<String> getSubCommandArguments(@NotNull CommandSender sender, @NotNull String[] args);
+    public boolean hasPermission(@NotNull CommandSender sender, @NotNull String[] args) {
         String permission = getPermission(sender, args);
         return permission == null || sender.hasPermission(permission);
     }

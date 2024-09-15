@@ -3,6 +3,7 @@ package ru.piko.pikopluginlib;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import ru.piko.pikopluginlib.Commands.CommandManager;
 import ru.piko.pikopluginlib.Commands.Gamerules.GameRuleStandardSave;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
@@ -53,7 +54,7 @@ public abstract class PikoPlugin extends JavaPlugin {
         if (plugin != null) {
             plugin.addPikoPlugin(pluginId, this);
         } else {
-            System.out.println("Не получилось добавить " + getPluginId() + " в систему PikoPlugins");
+            System.out.println("I couldn 't add it " + getPluginId() + " to the PikoPlugins system");
         }
         onStart();
     }
@@ -75,7 +76,7 @@ public abstract class PikoPlugin extends JavaPlugin {
      * @return A new instance of CommandManager.
      * @throws IllegalArgumentException if the command is not registered.
      */
-    public CommandManager createCommandManager(String mainCommand) {
+    public CommandManager createCommandManager(@NotNull String mainCommand) {
         CommandManager commandManager = new CommandManager(pluginId, mainCommand);
         PluginCommand command = this.getCommand(mainCommand);
         if (command != null) {
@@ -87,25 +88,25 @@ public abstract class PikoPlugin extends JavaPlugin {
         return commandManager;
     }
 
-    public CommandManager getOrCreateCommandManager(String mainCommand) {
+    public CommandManager getOrCreateCommandManager(@NotNull String mainCommand) {
         if (hasCommandManager(mainCommand)) {
             return getCommandManager(mainCommand);
         }
         return createCommandManager(mainCommand);
     }
 
-    public CommandManager getCommandManager(String mainCommand) {
+    public CommandManager getCommandManager(@NotNull String mainCommand) {
         if (commandManagerMap.containsKey(mainCommand)) {
             return commandManagerMap.get(mainCommand);
         }
         return null;
     }
 
-    public boolean hasCommandManager(String mainCommand) {
+    public boolean hasCommandManager(@NotNull String mainCommand) {
         return commandManagerMap.containsKey(mainCommand);
     }
 
-    public void addCommandManager(String mainCommand, CommandManager manager) {
+    public void addCommandManager(@NotNull String mainCommand, @NotNull CommandManager manager) {
         if (!commandManagerMap.containsKey(mainCommand)) {
             commandManagerMap.put(mainCommand, manager);
         }
@@ -120,7 +121,7 @@ public abstract class PikoPlugin extends JavaPlugin {
      * @param id The ID of the plugin to retrieve.
      * @return The PikoPlugin instance, or null if not found.
      */
-    public Optional<PikoPlugin> tryGetPikoPlugin(String id) {
+    public Optional<PikoPlugin> tryGetPikoPlugin(@NotNull String id) {
         if (Main.getPlugin().hasPikoPlugin(id)) {
             return Optional.of(Main.getPlugin().getPikoPlugin(id));
         }
@@ -133,7 +134,7 @@ public abstract class PikoPlugin extends JavaPlugin {
      * @param id The ID of the plugin to retrieve.
      * @return The PikoPlugin instance.
      */
-    public PikoPlugin getPikoPlugin(String id) {
+    public PikoPlugin getPikoPlugin(@NotNull String id) {
         return Main.getPlugin().getPikoPlugin(id);
     }
 
@@ -143,7 +144,7 @@ public abstract class PikoPlugin extends JavaPlugin {
      * @param id The ID of the plugin to check.
      * @return True if the plugin exists, false otherwise.
      */
-    public boolean hasPikoPlugin(String id) {
+    public boolean hasPikoPlugin(@NotNull String id) {
         return Main.getPlugin().hasPikoPlugin(id);
     }
 
@@ -153,7 +154,7 @@ public abstract class PikoPlugin extends JavaPlugin {
      * @param id The ID to use in the NamespacedKey.
      * @return A new NamespacedKey associated with this plugin.
      */
-    public NamespacedKey getNamespacedKey(String id) {
+    public NamespacedKey getNamespacedKey(@NotNull String id) {
         return new NamespacedKey(this, id);
     }
 
@@ -162,7 +163,7 @@ public abstract class PikoPlugin extends JavaPlugin {
      *
      * @return The GameRuleStandardSave instance associated with this plugin.
      */
-    public GameRuleStandardSave getOrCreateGameRuleStandardSave() {
+    public @NotNull GameRuleStandardSave getOrCreateGameRuleStandardSave() {
         if (gameRuleStandardSave == null) {
             gameRuleStandardSave = new GameRuleStandardSave(pluginId);
         }

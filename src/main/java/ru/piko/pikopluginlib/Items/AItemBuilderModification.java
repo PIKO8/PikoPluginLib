@@ -1,5 +1,9 @@
 package ru.piko.pikopluginlib.Items;
 
+/**
+ * @deprecated Using AItemBuilder
+ */
+@Deprecated
 public abstract class AItemBuilderModification {
 
     public ItemBuilder builder;

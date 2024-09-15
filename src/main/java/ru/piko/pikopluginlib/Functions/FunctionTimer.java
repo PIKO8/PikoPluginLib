@@ -12,15 +12,31 @@ public class FunctionTimer {
 
     private static final List<FunctionTimer> timerList = new ArrayList<>();
 
+    // Лямда-функция была перенесена в конец для удобного использования на котлин
+    // The lambda function has been moved to the end for convenient use on kotlin
+    @Deprecated
     public static FunctionTimer create(Runnable action, int delayTicks) {
-        return create(action, delayTicks, "", false);
+        return create(delayTicks, "", false, action);
     }
 
+    // Лямда-функция была перенесена в конец для удобного использования на котлин
+    // The lambda function has been moved to the end for convenient use on kotlin
+    @Deprecated
     public static FunctionTimer create(Runnable action, int delayTicks, String functionName) {
-        return create(action, delayTicks, functionName, false);
+        return create(delayTicks, functionName, false, action);
     }
 
+    // Лямда-функция была перенесена в конец для удобного использования на котлин
+    // The lambda function has been moved to the end for convenient use on kotlin
+    @Deprecated
     public static FunctionTimer create(Runnable action, int delayTicks, String functionName, boolean stopAllWithSameName) {
+        return create(delayTicks, functionName, stopAllWithSameName, action);
+    }
+
+
+    // Лямда-функция была перенесена в конец для удобного использования на котлин
+    // The lambda function has been moved to the end for convenient use on kotlin
+    public static FunctionTimer create(int delayTicks, String functionName, boolean stopAllWithSameName, Runnable action) {
         if (stopAllWithSameName) {
             stopAllTimersWithName(functionName);
         }
@@ -32,26 +48,24 @@ public class FunctionTimer {
         return funcTimer;
     }
 
+    public static FunctionTimer create(int delayTicks, String functionName, Runnable action) {
+        return create(delayTicks, functionName, false, action);
+    }
+
+    public static FunctionTimer create(int delayTicks, Runnable action) {
+        return create(delayTicks, "", action);
+    }
+
     public static void removeTimer(FunctionTimer funcTimer) {
         timerList.remove(funcTimer);
     }
 
     public static void stopAllTimersWithName(String functionName) {
-        for (int i = 0; i < timerList.size(); i++) {
-            if (timerList.get(i).functionName.equals(functionName)) {
-                timerList.remove(i);
-                i--;
-            }
-        }
+        timerList.removeIf(timer -> timer.functionName.equals(functionName));
     }
 
     public static void stopFirstTimerWithName(String functionName) {
-        for (int i = 0; i < timerList.size(); i++) {
-            if (timerList.get(i).functionName.equals(functionName)) {
-                timerList.remove(i);
-                return;
-            }
-        }
+        timerList.removeIf(timer -> timer.functionName.equals(functionName));
     }
 
     private Runnable action;
@@ -67,31 +81,5 @@ public class FunctionTimer {
     private void run() {
         action.run();
         removeTimer(this);
-    }
-
-    // Create a function to manually update (if necessary, though Spigot tasks are more automated)
-    public static class FunctionTimerObject {
-
-        private int ticks;
-        private Runnable callback;
-
-        public FunctionTimerObject(Runnable callback, int ticks) {
-            this.callback = callback;
-            this.ticks = ticks;
-        }
-
-        public boolean update() {
-            ticks--;
-            if (ticks <= 0) {
-                callback.run();
-                return true;
-            }
-            return false;
-        }
-    }
-
-    // Create a FunctionTimerObject that must be manually updated
-    public static FunctionTimerObject createObject(Runnable callback, int ticks) {
-        return new FunctionTimerObject(callback, ticks);
     }
 }

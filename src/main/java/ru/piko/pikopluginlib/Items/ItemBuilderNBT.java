@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * @deprecated Using ItemNBTBuilder
+ */
+@Deprecated
 public class ItemBuilderNBT extends AItemBuilderModification {
 
     private NBTItem nbtItem;
@@ -28,23 +32,43 @@ public class ItemBuilderNBT extends AItemBuilderModification {
         builder = new ItemBuilder(nbtItem.getItem());
     }
 
+    /**
+     * @deprecated Using ItemNBTBuilder
+     */
+    @Deprecated
     public ItemBuilderNBT withNBT(Function<NBTBuilder, NBTBuilder> action) {
         nbtBuilder = action.apply(nbtBuilder);
         return this;
     }
 
+    /**
+     * @deprecated Using ItemNBTBuilder
+     */
+    @Deprecated
     public NBTBuilder getNBT() {
         return nbtBuilder;
     }
 
+    /**
+     * @deprecated Using ItemNBTBuilder
+     */
+    @Deprecated
     public boolean has(String key) {
         return nbtBuilder.has(key);
     }
 
+    /**
+     * @deprecated Using ItemNBTBuilder
+     */
+    @Deprecated
     public boolean hasObject(String key) {
         return nbtBuilder.hasObject(key);
     }
 
+    /**
+     * @deprecated Using ItemNBTBuilder
+     */
+    @Deprecated
     public boolean hasTag(String key, NBTType type) {
         return nbtBuilder.hasTag(key, type);
     }

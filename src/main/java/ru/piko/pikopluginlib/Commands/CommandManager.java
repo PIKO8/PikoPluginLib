@@ -3,13 +3,13 @@ package ru.piko.pikopluginlib.Commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static ru.piko.pikopluginlib.Utils.UText.color;
 
-@SuppressWarnings("NullableProblems")
 public class CommandManager implements TabExecutor {
 
     private final String namePikoPlugin;
@@ -43,8 +43,8 @@ public class CommandManager implements TabExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        if (strings == null) return true;
         if (strings.length > 0){
             for (int i = 0; i < getSubCommands().size(); i++){
                 if (strings[0].equalsIgnoreCase(getSubCommands().get(i).getName())){
@@ -61,7 +61,7 @@ public class CommandManager implements TabExecutor {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if (strings.length == 1){
             ArrayList<String> subcommandsArguments = new ArrayList<>();
 
@@ -79,6 +79,6 @@ public class CommandManager implements TabExecutor {
             }
         }
 
-        return null;
+        return List.of("Неверные_предыдущие_значения!");
     }
 }

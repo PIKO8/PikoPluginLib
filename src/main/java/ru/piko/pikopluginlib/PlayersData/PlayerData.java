@@ -37,6 +37,10 @@ public class PlayerData {
         return uuid;
     }
 
+    public boolean hasPlayerOnline() {
+        return getOwner() != null;
+    }
+
     public Player getOwner() {
         return Bukkit.getPlayer(uuid);
     }

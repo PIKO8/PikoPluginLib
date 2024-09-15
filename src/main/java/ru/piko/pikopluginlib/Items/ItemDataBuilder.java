@@ -1,31 +1,46 @@
 package ru.piko.pikopluginlib.Items;
 
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 import ru.piko.pikopluginlib.PikoPlugin;
-import org.bukkit.inventory.ItemStack;
 
-/**
- * @deprecated Using ItemDataBuilder
- */
-@Deprecated
-public class ItemBuilderData extends AItemBuilderModification {
+public class ItemDataBuilder extends AItemBuilder<ItemDataBuilder> {
 
     private PersistentDataContainer data;
     private final PikoPlugin plugin;
 
-    public ItemBuilderData(PikoPlugin plugin) {
+    /**
+     * Use it to create a clean instance <br>
+     * Используйте для создания чистого экземпляра
+     * @param item the item that needs to be edited | для предмета который надо редактировать
+     * @param plugin plugin for creating a NamespacedKey | плагин для создания NamespacedKey
+     */
+    public ItemDataBuilder(@NotNull ItemStack item, @NotNull PikoPlugin plugin) {
+        super(item);
+        this.plugin = plugin;
+        init();
+    }
+
+    /**
+     * Use it for `to()` from `AItemBuilder` <br>
+     * Используйте для метода `to()` из `AItemBuilder`
+     *
+     * @param plugin - plugin for creating a NamespacedKey | плагин для создания NamespacedKey
+     */
+    public ItemDataBuilder(@NotNull PikoPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public void onModify() {
-        data = builder.getMeta().getPersistentDataContainer();
+    public void init() {
+        data = meta.getPersistentDataContainer();
     }
 
     @Override
-    public void onExitModify() {}
+    public void finish() {}
 
     /**
      * Sets a value of any supported type in the PersistentDataContainer of the item.
@@ -37,7 +52,7 @@ public class ItemBuilderData extends AItemBuilderModification {
      * @param value The value to store.
      * @return The current ItemBuilderData instance.
      */
-    public <T, Z> ItemBuilderData setData(String key, PersistentDataType<T, Z> type, Z value) {
+    public <T, Z> @NotNull ItemDataBuilder setData(@NotNull String key, @NotNull PersistentDataType<T, Z> type, Z value) {
         NamespacedKey namespacedKey = new NamespacedKey(plugin, key);
         data.set(namespacedKey, type, value);
         return this;
@@ -52,7 +67,7 @@ public class ItemBuilderData extends AItemBuilderModification {
      * @param type The PersistentDataType representing the data type of the value.
      * @return The value associated with the given key, or null if not present.
      */
-    public <T, Z> Z getData(String key, PersistentDataType<T, Z> type) {
+    public <T, Z> Z getData(@NotNull String key, @NotNull PersistentDataType<T, Z> type) {
         NamespacedKey namespacedKey = new NamespacedKey(plugin, key);
         return data.get(namespacedKey, type);
     }
@@ -66,18 +81,18 @@ public class ItemBuilderData extends AItemBuilderModification {
      * @param type The PersistentDataType representing the data type of the value.
      * @return true if the data exists, false otherwise.
      */
-    public <T, Z> boolean hasData(String key, PersistentDataType<T, Z> type) {
+    public <T, Z> boolean hasData(@NotNull String key, @NotNull PersistentDataType<T, Z> type) {
         NamespacedKey namespacedKey = new NamespacedKey(plugin, key);
         return data.has(namespacedKey, type);
     }
 
-    public <T, Z> ItemBuilderData removeData(String key, PersistentDataType<T, Z> type) {
+    public <T, Z> ItemDataBuilder removeData(@NotNull String key, @NotNull PersistentDataType<T, Z> type) {
         NamespacedKey namespacedKey = new NamespacedKey(plugin, key);
         data.remove(namespacedKey);
         return this;
     }
 
-    public ItemBuilderData clearData() {
+    public @NotNull ItemDataBuilder clearData() {
         data.getKeys().forEach(data::remove);
         return this;
     }

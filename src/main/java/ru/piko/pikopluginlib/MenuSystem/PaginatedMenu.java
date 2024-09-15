@@ -1,7 +1,9 @@
 package ru.piko.pikopluginlib.MenuSystem;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import ru.piko.pikopluginlib.Items.ItemBuilder;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
 
@@ -15,9 +17,8 @@ public abstract class PaginatedMenu extends Menu {
     protected boolean hasVerticalColumns = true;
     protected boolean hasTopRow = true;
 
-    public PaginatedMenu(PlayerData playerData) {
+    public PaginatedMenu(@NotNull PlayerData playerData) {
         super(playerData);
-        calculateMaxItemsPerPage();
     }
 
     /**
@@ -27,7 +28,6 @@ public abstract class PaginatedMenu extends Menu {
      */
     public void setVerticalColumns(boolean hasVerticalColumns) {
         this.hasVerticalColumns = hasVerticalColumns;
-        calculateMaxItemsPerPage();
     }
 
     /**
@@ -37,7 +37,16 @@ public abstract class PaginatedMenu extends Menu {
      */
     public void setTopRow(boolean hasTopRow) {
         this.hasTopRow = hasTopRow;
-        calculateMaxItemsPerPage();
+    }
+
+    @Override
+    public void open() {
+        inventory = Bukkit.createInventory(this, getSlots(), getMenuName());
+
+        this.setMenuItems();
+        this.playerData.getOwner().sendMessage(String.valueOf(maxItemsPerPage));
+
+        playerData.getOwner().openInventory(inventory);
     }
 
     /**
@@ -66,7 +75,7 @@ public abstract class PaginatedMenu extends Menu {
         // Vertical columns filler
         if (hasVerticalColumns) {
             for (int i = 9; i < slots; i += 9) {
-                if (i < slots && inventory.getItem(i) == null) {
+                if (inventory.getItem(i) == null) {
                     inventory.setItem(i, filler);
                 }
                 if (i + 8 < slots && inventory.getItem(i + 8) == null) {
@@ -81,6 +90,7 @@ public abstract class PaginatedMenu extends Menu {
                 inventory.setItem(i, filler);
             }
         }
+        this.calculateMaxItemsPerPage();
     }
 
     /**
@@ -88,25 +98,23 @@ public abstract class PaginatedMenu extends Menu {
      * the current inventory size and layout configuration.
      */
     private void calculateMaxItemsPerPage() {
-        int slots = getSlots();
-        int rows = slots / 9;
-        int rowsForItems = rows - 1;  // Вычитаем одну строку для навигации
-
-        // Учитываем верхнюю строку, если она включена
-        if (hasTopRow) {
-            rowsForItems -= 1;
+        if (inventory == null) {
+            maxItemsPerPage = getSlots()-9;
+            return;
         }
+        int slots = getSlots();
+        int emptySlots = 0;
 
-        // Проверяем, есть ли строки для предметов
-        if (rowsForItems <= 0) {
-            maxItemsPerPage = 0;
-        } else {
-            if (hasVerticalColumns) {
-                maxItemsPerPage = rowsForItems * 7;
-            } else {
-                maxItemsPerPage = rowsForItems * 9;
+        // Iterate through each slot
+        for (int i = 0; i < slots; i++) {
+            // Check if the slot is empty
+            if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR) {
+                emptySlots++;
             }
         }
+
+        // Set the maximum items per page to the number of empty slots
+        maxItemsPerPage = emptySlots;
     }
 
     /**
