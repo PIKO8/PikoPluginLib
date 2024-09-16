@@ -9,8 +9,8 @@ import java.util.function.Function;
 
 public class ItemNBTBuilder extends AItemBuilder<ItemNBTBuilder> {
 
-    private NBTItem nbtItem;
-    private NBTBuilder nbtBuilder;
+    protected NBTItem nbtItem;
+    protected NBTBuilder nbtBuilder;
 
     /**
      * EN: <br>

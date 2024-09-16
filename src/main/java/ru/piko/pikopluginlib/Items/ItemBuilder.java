@@ -84,6 +84,11 @@ public class ItemBuilder extends AItemBuilder<ItemBuilder> {
         return this;
     }
 
+    public @NotNull ItemBuilder setMaterial(@NotNull Material material) {
+        item.setType(material);
+        return this;
+    }
+
     public @NotNull ItemBuilder setLore(@NotNull String... lore) {
         meta.setLore(color(Arrays.asList(lore)));
         return this;

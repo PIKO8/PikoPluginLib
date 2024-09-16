@@ -9,8 +9,8 @@ import ru.piko.pikopluginlib.PikoPlugin;
 
 public class ItemDataBuilder extends AItemBuilder<ItemDataBuilder> {
 
-    private PersistentDataContainer data;
-    private final PikoPlugin plugin;
+    protected PersistentDataContainer data;
+    protected final PikoPlugin plugin;
 
     /**
      * Use it to create a clean instance <br>

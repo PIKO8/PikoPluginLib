@@ -11,8 +11,8 @@ import static de.tr7zw.nbtapi.NBTType.NBTTagList;
 
 public class NBTBuilder {
 
-    private final NBTCompound compound;
-    private final NBTBuilder parentBuilder;
+    protected final NBTCompound compound;
+    protected final NBTBuilder parentBuilder;
 
     /**
      * Creates a root NBTBuilder.
