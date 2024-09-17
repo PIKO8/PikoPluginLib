@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-public class ItemNBTBuilder extends AItemBuilder<ItemNBTBuilder> {
+public class ItemNBTBuilder extends AItemBuilder {
 
     protected NBTItem nbtItem;
     protected NBTBuilder nbtBuilder;
@@ -24,7 +24,7 @@ public class ItemNBTBuilder extends AItemBuilder<ItemNBTBuilder> {
      *
      * @param item the item that needs to be edited | для предмета который надо редактировать
      */
-    protected ItemNBTBuilder(@NotNull ItemStack item) {
+    public ItemNBTBuilder(@NotNull ItemStack item) {
         super(item);
         init();
     }
@@ -39,7 +39,7 @@ public class ItemNBTBuilder extends AItemBuilder<ItemNBTBuilder> {
      *
      * @see ItemNBTBuilder#ItemNBTBuilder(ItemStack)
      */
-    protected ItemNBTBuilder() {}
+    public ItemNBTBuilder() {}
 
     @Override
     public void init() {

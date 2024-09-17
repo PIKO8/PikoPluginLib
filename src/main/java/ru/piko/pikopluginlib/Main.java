@@ -1,7 +1,10 @@
 package ru.piko.pikopluginlib;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import ru.piko.pikopluginlib.Items.ItemBuilder;
 import ru.piko.pikopluginlib.Items.ItemDataBuilder;
 import ru.piko.pikopluginlib.Listeners.MenuEvent;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
@@ -24,7 +27,17 @@ public final class Main extends PikoPlugin {
     }
 
     @Override
-    public void onStart() {}
+    public void onStart() {
+
+        ItemStack item = new ItemBuilder(Material.DIRT)
+                .to(new ItemDataBuilder(this))
+                .build();
+
+        new ItemDataBuilder(new ItemStack(Material.DIRT), this)
+
+
+                .build();
+    }
 
     @Override
     public void onStop() {}

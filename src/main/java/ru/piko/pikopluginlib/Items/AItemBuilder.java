@@ -4,7 +4,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AItemBuilder<T extends AItemBuilder<T>> {
+public abstract class AItemBuilder {
 
     protected ItemStack item;
     protected ItemMeta meta;
@@ -15,15 +15,15 @@ public abstract class AItemBuilder<T extends AItemBuilder<T>> {
         init();
     }
 
-    public AItemBuilder(@NotNull ItemStack item, @NotNull ItemMeta meta) {
+    protected AItemBuilder(@NotNull ItemStack item, @NotNull ItemMeta meta) {
         this.item = item;
         this.meta = meta;
         init();
     }
 
-    public AItemBuilder() {}
+    protected AItemBuilder() {}
 
-    public <U extends AItemBuilder<U>> U to(@NotNull U builder) {
+    public <T extends AItemBuilder> T to(@NotNull T builder) {
         finish();
         builder.setItem(item);
         builder.setMeta(meta);

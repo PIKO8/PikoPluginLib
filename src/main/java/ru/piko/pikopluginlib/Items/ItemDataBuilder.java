@@ -7,7 +7,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import ru.piko.pikopluginlib.PikoPlugin;
 
-public class ItemDataBuilder extends AItemBuilder<ItemDataBuilder> {
+public class ItemDataBuilder extends AItemBuilder {
 
     protected PersistentDataContainer data;
     protected final PikoPlugin plugin;
