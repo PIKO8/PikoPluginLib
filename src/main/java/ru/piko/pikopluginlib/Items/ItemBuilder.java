@@ -33,6 +33,7 @@ public class ItemBuilder extends AItemBuilder {
      */
     public ItemBuilder(@NotNull Material material) {
         super(new ItemStack(material));
+        init();
     }
 
     /**

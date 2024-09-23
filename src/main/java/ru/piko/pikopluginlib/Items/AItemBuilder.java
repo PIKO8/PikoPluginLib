@@ -12,13 +12,11 @@ public abstract class AItemBuilder {
     protected AItemBuilder(@NotNull ItemStack item) {
         this.item = item;
         this.meta = item.getItemMeta();
-        init();
     }
 
     protected AItemBuilder(@NotNull ItemStack item, @NotNull ItemMeta meta) {
         this.item = item;
         this.meta = meta;
-        init();
     }
 
     protected AItemBuilder() {}
