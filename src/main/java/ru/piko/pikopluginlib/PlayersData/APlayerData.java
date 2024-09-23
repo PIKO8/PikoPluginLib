@@ -18,6 +18,13 @@ public abstract class APlayerData {
 
     public abstract String getId();
 
+    public <T extends APlayerData> T to(Class<T> data) {
+        if (this.getClass().equals(data)) {
+            return (T) this;
+        } else {
+            throw new UnsupportedOperationException("Cannot convert to " + data.getName());
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public <T> T getVariable(String name, Class<T> type) {
