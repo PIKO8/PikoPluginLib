@@ -44,7 +44,7 @@ public abstract class PaginatedMenu extends Menu {
         inventory = Bukkit.createInventory(this, getSlots(), getMenuName());
 
         this.setMenuItems();
-        this.playerData.getOwner().sendMessage(String.valueOf(maxItemsPerPage));
+        //this.playerData.getOwner().sendMessage(String.valueOf(maxItemsPerPage));
 
         playerData.getOwner().openInventory(inventory);
     }
