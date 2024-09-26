@@ -4,6 +4,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import ru.piko.pikopluginlib.Commands.SubCommands.ReloadSubCommand;
 import ru.piko.pikopluginlib.Listeners.MenuEvent;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
 
@@ -12,7 +13,6 @@ import java.util.*;
 public final class Main extends PikoPlugin {
 
     private static Main plugin;
-
     private final Map<String, PikoPluginData> pikoPluginDataMap = new HashMap<>();
     /**
      * A map that stores player data for each player by their UUID.
@@ -39,14 +39,7 @@ public final class Main extends PikoPlugin {
         System.out.println("PikoPluginLib load!");
         getServer().getPluginManager().registerEvents(new MenuEvent(), this);
 
-        //getOrCreateCommandManager("piko");
-
-        for (Plugin plugin : getServer().getPluginManager().getPlugins()) {
-            if (plugin != this && plugin instanceof JavaPlugin javaPlugin && javaPlugin instanceof PikoPlugin pikoPlugin) {
-                // found a PikoPlugin instance, do something with it
-                pikoPlugin.registerPikoLib();
-            }
-        }
+        getOrCreateCommandManager("piko").addSubCommand(new ReloadSubCommand());
     }
 
     public static Main getPlugin() {

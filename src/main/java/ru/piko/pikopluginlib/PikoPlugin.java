@@ -67,7 +67,12 @@ public abstract class PikoPlugin extends JavaPlugin {
         } else {
             System.out.println("I couldn 't add it " + getPluginId() + " to the PikoPlugins system");
         }
-        onRegister();
+        try {
+            onRegister();
+        } catch (Exception e) {
+            System.out.println("Plugin - " + getPluginId() + " in onRegister error message: " + e.getMessage() + " stack track:");
+            e.printStackTrace();
+        }
     }
     /**
      * Called by Bukkit when the plugin is disabled. Calls {@link #onStop()} and removes the plugin from the main registry.
