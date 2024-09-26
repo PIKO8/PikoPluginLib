@@ -8,13 +8,14 @@ import ru.piko.pikopluginlib.Commands.CommandManager;
 import ru.piko.pikopluginlib.Commands.Gamerules.GameRuleStandardSave;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
 public abstract class PikoPlugin extends JavaPlugin {
 
-
+    // <editor-fold defaultstate="collapsed" desc="Variables">
     /**
      * Manages the standard save state of game rules.
      */
@@ -25,8 +26,10 @@ public abstract class PikoPlugin extends JavaPlugin {
     /**
      * Unique identifier for the plugin.
      */
-    public String pluginId;
+    protected String pluginId;
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Abstracts">
     /**
      * Returns the unique identifier for this plugin.
      *
@@ -43,12 +46,20 @@ public abstract class PikoPlugin extends JavaPlugin {
      * Called when the plugin is shutting down. Should be overridden to define shutdown behavior.
      */
     public abstract void onStop();
+    public abstract void onRegister();
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="onEnable & onDisable">
     /**
      * Called by Bukkit when the plugin is enabled. Initializes the plugin ID and calls {@link #onStart()}.
      */
     @Override
     public void onEnable() {
+        registerPikoLib();
+        onStart();
+    }
+
+    public void registerPikoLib() {
         this.pluginId = getPluginId();
         Main plugin = Main.getPlugin();
         if (plugin != null) {
@@ -56,19 +67,24 @@ public abstract class PikoPlugin extends JavaPlugin {
         } else {
             System.out.println("I couldn 't add it " + getPluginId() + " to the PikoPlugins system");
         }
-        onStart();
+        onRegister();
     }
-
     /**
      * Called by Bukkit when the plugin is disabled. Calls {@link #onStop()} and removes the plugin from the main registry.
      */
     @Override
     public void onDisable() {
-        onStop();
-        Main.getPlugin().removePikoPlugin(pluginId);
+        try {
+            onStop();
+        } catch (Exception e) {
+            System.out.println("Plugin - " + getPluginId() + " in onStop error message: " + e.getMessage() + " stack track:");
+            e.printStackTrace();
+        }
+        Main.getPlugin().disablePikoPlugin(pluginId);
     }
+    // </editor-fold>
 
-
+    // <editor-fold defaultstate="collapsed" desc="Command Manager">
     /**
      * Creates a CommandManager for handling commands related to this plugin.
      *
@@ -114,13 +130,17 @@ public abstract class PikoPlugin extends JavaPlugin {
             commandManagerMap.replace(mainCommand, manager);
         }
     }
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Piko Plugin">
     /**
      * Attempts to retrieve a PikoPlugin by its ID.
      *
      * @param id The ID of the plugin to retrieve.
      * @return The PikoPlugin instance, or null if not found.
+     * @deprecated see {@link #tryGetPikoPluginData(String)}
      */
+    @Deprecated
     public Optional<PikoPlugin> tryGetPikoPlugin(@NotNull String id) {
         if (Main.getPlugin().hasPikoPlugin(id)) {
             return Optional.of(Main.getPlugin().getPikoPlugin(id));
@@ -133,7 +153,9 @@ public abstract class PikoPlugin extends JavaPlugin {
      *
      * @param id The ID of the plugin to retrieve.
      * @return The PikoPlugin instance.
+     * @deprecated see {@link #getPikoPluginData(String)}
      */
+    @Deprecated
     public PikoPlugin getPikoPlugin(@NotNull String id) {
         return Main.getPlugin().getPikoPlugin(id);
     }
@@ -146,6 +168,44 @@ public abstract class PikoPlugin extends JavaPlugin {
      */
     public boolean hasPikoPlugin(@NotNull String id) {
         return Main.getPlugin().hasPikoPlugin(id);
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Piko Plugin Data">
+
+    /**
+     * Retrieves a PikoPlugin by its ID.
+     *
+     * @param id The ID of the plugin to retrieve.
+     * @return The PikoPluginData instance.
+     */
+    public PikoPluginData getPikoPluginData(@NotNull String id) {
+        return Main.getPlugin().getPikoPluginData(id);
+    }
+
+    /**
+     * Attempts to retrieve a PikoPlugin by its ID.
+     *
+     * @param id The ID of the plugin to retrieve.
+     * @return The PikoPlugin instance, or null if not found.
+     */
+    public Optional<PikoPluginData> tryGetPikoPluginData(@NotNull String id) {
+        if (Main.getPlugin().hasPikoPlugin(id)) {
+            return Optional.of(Main.getPlugin().getPikoPluginData(id));
+        }
+        return Optional.empty();
+    }
+
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Other">
+
+    public EStatusPlugin getStatus() {
+        return Main.getPlugin().getPikoPluginData(pluginId).getStatus();
+    }
+
+    public File getPluginFile() {
+        return getFile();
     }
 
     /**
@@ -169,7 +229,9 @@ public abstract class PikoPlugin extends JavaPlugin {
         }
         return gameRuleStandardSave;
     }
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Player Data">
     public boolean hasOnlinePlayerData(UUID owner) {
         return Main.getPlugin().hasOnlinePlayerData(owner);
     }
@@ -181,4 +243,5 @@ public abstract class PikoPlugin extends JavaPlugin {
     public void removePlayerData(UUID owner) {
         Main.getPlugin().removePlayerData(owner);
     }
+    // </editor-fold>
 }
