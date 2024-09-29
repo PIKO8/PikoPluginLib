@@ -1,5 +1,6 @@
 package ru.piko.pikopluginlib.Utils;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;

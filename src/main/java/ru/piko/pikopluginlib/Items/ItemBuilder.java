@@ -1,5 +1,6 @@
 package ru.piko.pikopluginlib.Items;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -39,10 +40,10 @@ public class ItemBuilder extends AItemBuilder {
     /**
      * EN: <br>
      * Use it to create a clean instance <br>
-     * For the `to()` method from `AItemBuilder`, use a different constructor <br>
+     * For the {@link AItemBuilder#to(AItemBuilder)} method use a different constructor <br>
      * RU: <br>
      * Используйте для создания чистого экземпляра <br>
-     * Для  метода `to()` из `AItemBuilder` используйте другой конструктор
+     * Для  метода `{@link AItemBuilder#to(AItemBuilder)} используйте другой конструктор
      *
      * @see ItemBuilder#ItemBuilder()
      *
@@ -54,10 +55,10 @@ public class ItemBuilder extends AItemBuilder {
 
     /**
      * EN: <br>
-     * Use it for `to()` from `AItemBuilder` <br>
+     * Use it for {@link AItemBuilder#to(AItemBuilder)} <br>
      * Don't use this to create a clean instance! <br>
      * RU:<br>
-     * Используйте для метода `to()` из `AItemBuilder` <br>
+     * Используйте для метода {@link AItemBuilder#to(AItemBuilder)} <br>
      * Не используёте это для создания чистого экземпляра!
      *
      * @see ItemBuilder#ItemBuilder(ItemStack)
@@ -75,10 +76,7 @@ public class ItemBuilder extends AItemBuilder {
         this.item.setItemMeta(this.meta);
     }
 
-    public @NotNull ItemBuilder setDisplayName(@NotNull String name) {
-        meta.setDisplayName(color(name));
-        return this;
-    }
+
 
     public @NotNull ItemBuilder setCustomModelData(int data) {
         meta.setCustomModelData(data);
@@ -90,21 +88,67 @@ public class ItemBuilder extends AItemBuilder {
         return this;
     }
 
+    // <editor-fold desc="Deprecated name & lore">
+    /**
+     * @deprecated see {@link #displayName(Component)}
+     */
+    @Deprecated
+    public @NotNull ItemBuilder setDisplayName(@NotNull String name) {
+        meta.setDisplayName(color(name));
+        return this;
+    }
+
+    /**
+     * @deprecated see {@link #lore(Component...)}
+     */
+    @Deprecated
     public @NotNull ItemBuilder setLore(@NotNull String... lore) {
         meta.setLore(color(Arrays.asList(lore)));
         return this;
     }
 
+    /**
+     * @deprecated see {@link #lore(List)}
+     */
+    @Deprecated
     public @NotNull ItemBuilder setLore(@NotNull List<String> lore) {
         meta.setLore(color(lore));
         return this;
     }
 
+    /**
+     * @deprecated see {@link #lore(Function)}
+     */
+    @Deprecated
     public @NotNull ItemBuilder editLore(@NotNull Function<List<String>, List<String>> func) {
         List<String> lore = meta.getLore();
         meta.setLore(color(func.apply(lore)));
         return this;
     }
+    // </editor-fold>
+
+    // <editor-fold desc="Component name & lore">
+    public @NotNull ItemBuilder displayName(@NotNull Component name) {
+        meta.displayName(name);
+        return this;
+    }
+
+    public @NotNull ItemBuilder lore(@NotNull Component... lore) {
+        meta.lore(Arrays.asList(lore));
+        return this;
+    }
+
+    public @NotNull ItemBuilder lore(@NotNull List<Component> lore) {
+        meta.lore(lore);
+        return this;
+    }
+
+    public @NotNull ItemBuilder lore(@NotNull Function<List<Component>, List<Component>> func) {
+        List<Component> lore = meta.lore();
+        meta.lore(func.apply(lore));
+        return this;
+    }
+    // </editor-fold>
 
     public @NotNull ItemBuilder addEnchantment(@NotNull Enchantment enchantment, int level) {
         meta.addEnchant(enchantment, level, true);
