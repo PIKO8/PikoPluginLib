@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-public class ItemNBTBuilder extends AItemBuilder {
+public class ItemNBTBuilder extends AItemBuilder<ItemNBTBuilder> {
 
     protected NBTItem nbtItem;
     protected NBTBuilder nbtBuilder;

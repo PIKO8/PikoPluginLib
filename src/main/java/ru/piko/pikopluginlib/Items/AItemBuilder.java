@@ -4,7 +4,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AItemBuilder {
+import java.util.function.Function;
+
+public abstract class AItemBuilder<T extends AItemBuilder<T>> {
 
     protected ItemStack item;
     protected ItemMeta meta;
@@ -21,12 +23,29 @@ public abstract class AItemBuilder {
 
     protected AItemBuilder() {}
 
-    public <T extends AItemBuilder> T to(@NotNull T builder) {
+    public T self() {
+        return (T) this;
+    }
+
+    public <U extends AItemBuilder> U to(@NotNull U builder) {
         finish();
         builder.setItem(item);
         builder.setMeta(meta);
         builder.init();
         return builder;
+    }
+
+    public T conf(Function<T, T> function) {
+        try {
+            return function.apply(self());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return this.self();
+        }
+    }
+
+    public T configure(Function<T, T> function) {
+        return conf(function);
     }
 
     public ItemStack build() {

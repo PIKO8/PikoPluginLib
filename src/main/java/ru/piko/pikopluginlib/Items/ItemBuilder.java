@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 import static ru.piko.pikopluginlib.Utils.UText.color;
 
-public class ItemBuilder extends AItemBuilder {
+public class ItemBuilder extends AItemBuilder<ItemBuilder> {
 
     /**
      * EN: <br>
