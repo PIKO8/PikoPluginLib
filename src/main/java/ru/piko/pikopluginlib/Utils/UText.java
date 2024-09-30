@@ -25,36 +25,26 @@ public class UText {
     /**
      * RU: Возвращает компонент, представляющий название элемента, с учетом его отображаемого имени, ключа перевода и цвета редкости. <br>
      * EN: Returns a Component representing the item's name, taking into account its display name, translation key, and rarity color. <br> <br>
-     * RU: Более читабельный код: <br>
-     * EN: More readable code:
-     * <pre>{@code public static Component itemNameComponent(ItemStack item) {
-     *     Component component;
-     *     if (item.getItemMeta().hasDisplayName() && !item.displayName().toString().isEmpty()) {
-     *         component = item.displayName();
-     *     } else {
-     *         String translationKey = item.getType().getItemTranslationKey();
-     *         Component itemNameComponent;
-     *         if (translationKey != null) {
-     *             itemNameComponent = Component.translatable(translationKey);
-     *         } else {
-     *             itemNameComponent = Component.text(item.getType().name().toLowerCase());
-     *         }
-     *         itemNameComponent = itemNameComponent.color(item.getRarity().getColor());
-     *         component = itemNameComponent;
-     *     }
-     *     component = component.hoverEvent(item);
-     *     return component;
-     * }}</pre>
      *
      * @param item the ItemStack to generate the component for
      * @return a Component representing the item's name
      */
     public static Component itemNameComponent(ItemStack item) {
-        return  (item.getItemMeta().hasDisplayName() && !item.displayName().toString().isEmpty())
-                ? item.displayName()
-                : (item.getType().getItemTranslationKey() != null
-                ? Component.translatable(item.getType().getItemTranslationKey())
-                : Component.text(item.getType().name().toLowerCase()))
-                .color(item.getRarity().getColor());
+        Component component;
+        if (item.getItemMeta().hasDisplayName() && !item.displayName().toString().isEmpty()) {
+            component = item.displayName();
+        } else {
+            String translationKey = item.getType().getItemTranslationKey();
+            Component itemNameComponent;
+            if (translationKey != null) {
+                itemNameComponent = Component.translatable(translationKey);
+            } else {
+                itemNameComponent = Component.text(item.getType().name().toLowerCase());
+            }
+            itemNameComponent = itemNameComponent.color(item.getRarity().getColor());
+            component = itemNameComponent;
+        }
+        component = component.hoverEvent(item);
+        return component;
     }
 }
