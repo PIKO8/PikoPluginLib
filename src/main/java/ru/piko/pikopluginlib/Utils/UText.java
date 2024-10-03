@@ -31,7 +31,7 @@ public class UText {
      */
     public static Component itemNameComponent(ItemStack item) {
         Component component;
-        if (item.getItemMeta().hasDisplayName() && !item.displayName().toString().isEmpty()) {
+        if (item.getItemMeta() != null && item.getItemMeta().hasDisplayName() && !item.displayName().toString().isEmpty()) {
             component = item.displayName();
         } else {
             String translationKey = item.getType().getItemTranslationKey();

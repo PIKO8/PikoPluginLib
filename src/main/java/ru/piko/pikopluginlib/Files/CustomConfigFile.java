@@ -36,4 +36,8 @@ public abstract class CustomConfigFile {
             e.printStackTrace();
         }
     }
+
+    public void reload() {
+        fileConfiguration = YamlConfiguration.loadConfiguration(file);
+    }
 }

@@ -1,5 +1,6 @@
 package ru.piko.pikopluginlib.Items;
 
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +31,7 @@ public abstract class AItemBuilder<T extends AItemBuilder<T>> {
     public <U extends AItemBuilder> U to(@NotNull U builder) {
         finish();
         builder.setItem(item);
+        meta = meta == null ? Bukkit.getItemFactory().getItemMeta(this.item.getType()) : meta;
         builder.setMeta(meta);
         builder.init();
         return builder;

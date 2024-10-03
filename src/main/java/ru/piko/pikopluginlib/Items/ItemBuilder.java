@@ -1,6 +1,7 @@
 package ru.piko.pikopluginlib.Items;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -68,7 +69,7 @@ public class ItemBuilder extends AItemBuilder<ItemBuilder> {
 
     @Override
     public void init() {
-        this.meta = this.item.getItemMeta();
+        this.meta = this.item.getItemMeta() == null ? Bukkit.getItemFactory().getItemMeta(this.item.getType()) : this.item.getItemMeta();
     }
 
     @Override
