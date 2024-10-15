@@ -8,7 +8,6 @@ plugins {
 group = 'ru.piko'
 version = '0.1.5-SNAPSHOT'
 
-
 repositories {
     mavenCentral()
     maven {
