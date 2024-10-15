@@ -3,17 +3,17 @@ package ru.piko.pikopluginlib.Functions
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
- * Пока передаётся true будет работать раз в ticks
+ * Выполняет цепочку функций
+ * TODO Возвращать не Unit а enum: None, Continue, Break
  */
-class FunctionPeriodic private constructor(plugin: JavaPlugin, ticks: Long, delay: Long = 0, id: String = "", stopAllWithId: Boolean, val function: () -> Boolean)
-    : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId)
-{
-    /**
-     * EN: If the function returns false, then end  <br>
-     * RU: Если функция вернёт false то завершаем
-     */
+class FunctionChain private constructor(plugin: JavaPlugin, ticks: Long, delay: Long = 0, id: String = "", stopAllWithId: Boolean, val functions: List<() -> Unit>)
+    : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {
+    private var functionIndex = 0
+
     override fun run() {
-        if (!function.invoke()) {
+        functions[functionIndex].invoke()
+        functionIndex++
+        if (functionIndex >= functions.size) {
             destroySelf()
         }
     }
@@ -27,22 +27,21 @@ class FunctionPeriodic private constructor(plugin: JavaPlugin, ticks: Long, dela
         list.add(this)
     }
 
-
     companion object {
-        val list : MutableList<FunctionPeriodic> = ArrayList()
+        val list : MutableList<FunctionChain> = ArrayList()
 
-        fun create(plugin: JavaPlugin, ticks: Long, delay: Long = 0, id: String = "", stopAllWithId: Boolean = false, function: () -> Boolean): FunctionPeriodic {
+        fun create(plugin: JavaPlugin, ticks: Long, delay: Long = 0, id: String = "", stopAllWithId: Boolean = false, functions: List<() -> Unit>): FunctionChain {
             if (stopAllWithId) {
                 destroyAll(plugin, id)
             }
 
-            val functionPeriodic = FunctionPeriodic(plugin, ticks, delay, id, stopAllWithId, function)
-            functionPeriodic.initFunction()
-            return functionPeriodic
+            val functionChain = FunctionChain(plugin, ticks, delay, id, stopAllWithId, functions)
+            functionChain.initFunction()
+            return functionChain
         }
 
-        fun destroy(periodic: FunctionPeriodic) {
-            FunctionAbstract.destroy(periodic)
+        fun destroy(chain: FunctionChain) {
+            FunctionAbstract.destroy(chain)
         }
 
         @NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")

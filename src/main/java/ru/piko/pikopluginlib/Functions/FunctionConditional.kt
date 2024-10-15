@@ -2,13 +2,13 @@ package ru.piko.pikopluginlib.Functions
 
 import org.bukkit.plugin.java.JavaPlugin
 
-/**
- * Сработает один раз через delay
- */
-class FunctionTimer(plugin: JavaPlugin, delay: Long, id: String, stopAllWithId: Boolean, val function: () -> Unit) : FunctionAbstract(plugin, 1, delay, id, stopAllWithId) {
+class FunctionConditional private constructor(plugin: JavaPlugin, ticks: Long, delay: Long = 0, id: String = "", stopAllWithId: Boolean, val condition: () -> Boolean, val function: () -> Unit)
+    : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {
     override fun run() {
-        function.invoke()
-        destroySelf()
+        if (condition.invoke()) {
+            function.invoke()
+            destroySelf()
+        }
     }
 
     override fun destroySelf() {
@@ -20,22 +20,21 @@ class FunctionTimer(plugin: JavaPlugin, delay: Long, id: String, stopAllWithId: 
         list.add(this)
     }
 
-
     companion object {
-        val list : MutableList<FunctionTimer> = ArrayList()
+        val list : MutableList<FunctionConditional> = ArrayList()
 
-        fun create(plugin: JavaPlugin, delay: Long, id: String = "", stopAllWithId: Boolean = false, function: () -> Unit): FunctionTimer {
+        fun create(plugin: JavaPlugin, ticks: Long, delay: Long = 0, id: String = "", stopAllWithId: Boolean = false, condition: () -> Boolean, function: () -> Unit): FunctionConditional {
             if (stopAllWithId) {
                 destroyAll(plugin, id)
             }
 
-            val functionTimer = FunctionTimer(plugin, delay, id, stopAllWithId, function)
-            functionTimer.initFunction()
-            return functionTimer
+            val functionConditional = FunctionConditional(plugin, ticks, delay, id, stopAllWithId, condition, function)
+            functionConditional.initFunction()
+            return functionConditional
         }
 
-        fun destroy(timer: FunctionTimer) {
-            FunctionTimer.destroy(timer)
+        fun destroy(conditional: FunctionConditional) {
+            FunctionAbstract.destroy(conditional)
         }
 
         @NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")

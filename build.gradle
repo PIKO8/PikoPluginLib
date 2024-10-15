@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 group = 'ru.piko'
@@ -48,13 +49,12 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.13.2")
     implementation("org.jetbrains:annotations:23.0.0")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 def targetJavaVersion = 17
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     }
@@ -81,4 +81,7 @@ task printVersion {
     doLast {
         println project.version
     }
+}
+kotlin {
+    jvmToolchain(17)
 }

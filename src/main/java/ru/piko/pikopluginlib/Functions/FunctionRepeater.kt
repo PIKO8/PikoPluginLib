@@ -2,13 +2,16 @@ package ru.piko.pikopluginlib.Functions
 
 import org.bukkit.plugin.java.JavaPlugin
 
-/**
- * Сработает один раз через delay
- */
-class FunctionTimer(plugin: JavaPlugin, delay: Long, id: String, stopAllWithId: Boolean, val function: () -> Unit) : FunctionAbstract(plugin, 1, delay, id, stopAllWithId) {
+class FunctionRepeater private constructor(plugin: JavaPlugin, ticks: Long, val maxRepeats: Int, delay: Long = 0, id: String = "", stopAllWithId: Boolean, val function: () -> Unit)
+    : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {
+    private var repeatCount = 0
+
     override fun run() {
         function.invoke()
-        destroySelf()
+        repeatCount++
+        if (repeatCount >= maxRepeats) {
+            destroySelf()
+        }
     }
 
     override fun destroySelf() {
@@ -20,22 +23,21 @@ class FunctionTimer(plugin: JavaPlugin, delay: Long, id: String, stopAllWithId: 
         list.add(this)
     }
 
-
     companion object {
-        val list : MutableList<FunctionTimer> = ArrayList()
+        val list : MutableList<FunctionRepeater> = ArrayList()
 
-        fun create(plugin: JavaPlugin, delay: Long, id: String = "", stopAllWithId: Boolean = false, function: () -> Unit): FunctionTimer {
+        fun create(plugin: JavaPlugin, ticks: Long, maxRepeats: Int, delay: Long = 0, id: String = "", stopAllWithId: Boolean = false, function: () -> Unit): FunctionRepeater {
             if (stopAllWithId) {
                 destroyAll(plugin, id)
             }
 
-            val functionTimer = FunctionTimer(plugin, delay, id, stopAllWithId, function)
-            functionTimer.initFunction()
-            return functionTimer
+            val functionRepeater = FunctionRepeater(plugin, ticks, maxRepeats, delay, id, stopAllWithId, function)
+            functionRepeater.initFunction()
+            return functionRepeater
         }
 
-        fun destroy(timer: FunctionTimer) {
-            FunctionTimer.destroy(timer)
+        fun destroy(repeater: FunctionRepeater) {
+            FunctionAbstract.destroy(repeater)
         }
 
         @NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")

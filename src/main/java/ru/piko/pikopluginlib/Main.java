@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import ru.piko.pikopluginlib.Commands.SubCommands.ReloadSubCommand;
+import ru.piko.pikopluginlib.Functions.TestFunctions;
 import ru.piko.pikopluginlib.Listeners.MenuEvent;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
 
@@ -25,7 +26,9 @@ public final class Main extends PikoPlugin {
     }
 
     @Override
-    public void onStart() {}
+    public void onStart() {
+        //TestFunctions.Static.test(this);
+    }
     @Override
     public void onStop() {}
     @Override
@@ -40,6 +43,7 @@ public final class Main extends PikoPlugin {
         getServer().getPluginManager().registerEvents(new MenuEvent(), this);
 
         getOrCreateCommandManager("piko").addSubCommand(new ReloadSubCommand());
+        onStart();
     }
 
     public static Main getPlugin() {

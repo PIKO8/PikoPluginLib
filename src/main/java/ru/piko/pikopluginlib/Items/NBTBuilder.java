@@ -38,11 +38,10 @@ public class NBTBuilder {
      * Creates a nested NBTBuilder for a sub-compound.
      *
      * @param compound The parent NBT compound.
-     * @param key      The key of the new NBT sub-compound.
      * @param parentBuilder The parent NBTBuilder.
      */
-    public NBTBuilder(NBTCompound compound, String key, NBTBuilder parentBuilder) {
-        this.compound = compound.addCompound(key);
+    public NBTBuilder(NBTCompound compound, NBTBuilder parentBuilder) {
+        this.compound = compound;
         this.parentBuilder = parentBuilder;
     }
 
@@ -104,7 +103,7 @@ public class NBTBuilder {
     // Methods for nested objects
     public NBTBuilder getObject(String key) {
         NBTCompound subCompound = compound.getCompound(key);
-        return subCompound != null ? new NBTBuilder(subCompound, key, this) : null;
+        return subCompound != null ? new NBTBuilder(subCompound, this) : null;
     }
 
     public NBTBuilder getOrCreateObject(String key) {
@@ -112,11 +111,12 @@ public class NBTBuilder {
         if (subCompound == null) {
             return createObject(key);
         }
-        return new NBTBuilder(subCompound, key, this);
+        return new NBTBuilder(subCompound, this);
     }
 
     public NBTBuilder createObject(String key) {
-        return new NBTBuilder(compound, key, this);
+        NBTCompound subCompound = compound.addCompound(key);
+        return new NBTBuilder(subCompound, this);
     }
 
     /**
