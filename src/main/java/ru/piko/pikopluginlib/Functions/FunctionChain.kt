@@ -2,19 +2,47 @@ package ru.piko.pikopluginlib.Functions
 
 import org.bukkit.plugin.java.JavaPlugin
 
+enum class ChainResult {
+    None, // Ничего
+    Continue, // сразу же исполняет следующий элемент
+    Break, // Полностью заканчивает цепочку
+    Again // Запускает с первого элемента
+}
+
 /**
  * Выполняет цепочку функций. Прекращает работу когда заканчивается список
  * FunctionChain - TODO Возвращать не Unit а enum: None, Continue, Break, Again(Ещё раз перебирать список)
  */
-class FunctionChain private constructor(plugin: JavaPlugin, ticks: Long, delay: Long = 0, id: String = "", stopAllWithId: Boolean, val functions: List<() -> Unit>)
+class FunctionChain private constructor(plugin: JavaPlugin, ticks: Long, delay: Long = 0, id: String = "", stopAllWithId: Boolean, val functions: List<() -> ChainResult>)
     : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {
     private var functionIndex = 0
 
     override fun run() {
-        functions[functionIndex].invoke()
-        functionIndex++
-        if (functionIndex >= functions.size) {
-            destroySelf()
+        // Запускаем текущую функцию и получаем результат
+        val result = functions[functionIndex].invoke()
+
+        when (result) {
+            ChainResult.None -> {
+                functionIndex++
+                if (functionIndex >= functions.size) {
+                    destroySelf() // Если это последний элемент, уничтожаем цепочку
+                }
+            }
+            ChainResult.Continue -> {
+                functionIndex++
+                if (functionIndex < functions.size) {
+                    run() // Запускаем следующую функцию
+                } else {
+                    destroySelf() // Если это последний элемент, уничтожаем цепочку
+                }
+            }
+            ChainResult.Break -> {
+                destroySelf() // Уничтожаем цепочку
+            }
+            ChainResult.Again -> {
+                functionIndex = 0 // Сбрасываем индекс
+                run() // Запускаем с первого элемента
+            }
         }
     }
 
@@ -30,7 +58,7 @@ class FunctionChain private constructor(plugin: JavaPlugin, ticks: Long, delay: 
     companion object {
         val list : MutableList<FunctionChain> = ArrayList()
 
-        fun create(plugin: JavaPlugin, ticks: Long, delay: Long = 0, id: String = "", stopAllWithId: Boolean = false, functions: List<() -> Unit>): FunctionChain {
+        fun create(plugin: JavaPlugin, ticks: Long, delay: Long = 0, id: String = "", stopAllWithId: Boolean = false, functions: List<() -> ChainResult>): FunctionChain {
             if (stopAllWithId) {
                 destroyAll(plugin, id)
             }
