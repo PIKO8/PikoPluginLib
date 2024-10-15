@@ -57,15 +57,15 @@ class TestFunctions {
 
             // Тестирование FunctionChain
             val functionChain = FunctionChain.create(plugin, 10, 0, "testId", functions = listOf(
-                { println("Функция 1 выполнена!") },
-                { println("Функция 2 выполнена!") },
-                { println("Функция 3 выполнена!") }
+                { println("Функция 1 выполнена!"); return@listOf ChainResult.None },
+                { println("Функция 2 выполнена!"); return@listOf ChainResult.None },
+                { println("Функция 3 выполнена!"); return@listOf ChainResult.None }
             ))
 
             val anotherFunctionChain = FunctionChain.create(plugin, 20, 0, "testId", functions = listOf(
-                { println("Другая функция 1 выполнена!") },
-                { println("Другая функция 2 выполнена!") },
-                { println("Другая функция 3 выполнена!") }
+                { println("Другая функция 1 выполнена!"); return@listOf ChainResult.None },
+                { println("Другая функция 2 выполнена!"); return@listOf ChainResult.None },
+                { println("Другая функция 3 выполнена!"); return@listOf ChainResult.None }
             ))
 
             FunctionChain.destroyAll(plugin, "testId")
