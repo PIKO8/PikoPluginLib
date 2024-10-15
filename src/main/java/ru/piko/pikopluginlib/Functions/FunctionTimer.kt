@@ -5,7 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin
 /**
  * Сработает один раз через delay
  */
-class FunctionTimer(plugin: JavaPlugin, delay: Long, id: String, stopAllWithId: Boolean, val function: () -> Unit) : FunctionAbstract(plugin, 1, delay, id, stopAllWithId) {
+class FunctionTimer private constructor(plugin: JavaPlugin, delay: Long, id: String, stopAllWithId: Boolean, val function: () -> Unit) : FunctionAbstract(plugin, 1, delay, id, stopAllWithId) {
     override fun run() {
         function.invoke()
         destroySelf()

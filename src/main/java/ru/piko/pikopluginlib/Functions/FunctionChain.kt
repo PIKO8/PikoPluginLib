@@ -3,8 +3,8 @@ package ru.piko.pikopluginlib.Functions
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
- * Выполняет цепочку функций
- * TODO Возвращать не Unit а enum: None, Continue, Break
+ * Выполняет цепочку функций. Прекращает работу когда заканчивается список
+ * FunctionChain - TODO Возвращать не Unit а enum: None, Continue, Break, Again(Ещё раз перебирать список)
  */
 class FunctionChain private constructor(plugin: JavaPlugin, ticks: Long, delay: Long = 0, id: String = "", stopAllWithId: Boolean, val functions: List<() -> Unit>)
     : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {

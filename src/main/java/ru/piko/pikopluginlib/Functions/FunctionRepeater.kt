@@ -2,6 +2,9 @@ package ru.piko.pikopluginlib.Functions
 
 import org.bukkit.plugin.java.JavaPlugin
 
+/**
+ * Работает раз в ticks, но ограниченное количество раз(maxRepeats)
+ */
 class FunctionRepeater private constructor(plugin: JavaPlugin, ticks: Long, val maxRepeats: Int, delay: Long = 0, id: String = "", stopAllWithId: Boolean, val function: () -> Unit)
     : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {
     private var repeatCount = 0
