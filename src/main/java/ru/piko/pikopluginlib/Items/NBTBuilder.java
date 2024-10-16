@@ -114,9 +114,28 @@ public class NBTBuilder {
         return new NBTBuilder(subCompound, this);
     }
 
+    /**
+     * @param key Ключ для объекта
+     * @return Ново-созданый объект
+     */
     public NBTBuilder createObject(String key) {
         NBTCompound subCompound = compound.addCompound(key);
         return new NBTBuilder(subCompound, this);
+    }
+
+    /**
+     * @param key Ключ объекта
+     * @param nbtBuilder Новый объект
+     * @return NBTBuilder установленного объекта
+     */
+    public NBTBuilder setObject(String key, NBTBuilder nbtBuilder) {
+        if (hasObject(key)) compound.removeKey(key);
+        return createObject(key).mergeObject(nbtBuilder);
+    }
+
+    public NBTBuilder mergeObject(NBTBuilder nbtBuilder) {
+        compound.mergeCompound(nbtBuilder.compound);
+        return this;
     }
 
     /**
@@ -153,6 +172,11 @@ public class NBTBuilder {
         return parentBuilder;
     }
 
+    public NBTBuilder removeKey(String key) {
+        compound.removeKey(key);
+        return this;
+    }
+
     // Glow effect methods
 
     /**
@@ -174,6 +198,7 @@ public class NBTBuilder {
      *
      * @return The current NBTBuilder instance for further modifications.
      */
+    @Deprecated
     public NBTBuilder removeGlow() {
         if (hasRealEnchantments()) {
             return this; // Can't remove glow if there are real enchantments
@@ -199,6 +224,7 @@ public class NBTBuilder {
      *
      * @return true if the item has the "glow" effect, false otherwise.
      */
+    @Deprecated
     public boolean isGlow() {
         if (hasRealEnchantments()) {
             return true; // If there are real enchantments, the item is glowing
@@ -221,6 +247,7 @@ public class NBTBuilder {
      *
      * @return The current NBTBuilder instance for further modifications.
      */
+    @Deprecated
     public NBTBuilder toggleGlow() {
         if (hasRealEnchantments()) {
             return this; // Can't toggle glow if there are real enchantments
@@ -239,6 +266,7 @@ public class NBTBuilder {
      *
      * @return true if the item has real enchantments, false otherwise.
      */
+    @Deprecated
     public boolean hasRealEnchantments() {
         NBTCompoundList enchantments = compound.getCompoundList("Enchantments");
         for (ReadWriteNBT enchantment : enchantments) {
