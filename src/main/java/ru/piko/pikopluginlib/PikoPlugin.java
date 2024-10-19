@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import ru.piko.pikopluginlib.Commands.CommandManager;
 import ru.piko.pikopluginlib.Commands.Gamerules.GameRuleStandardSave;
+import ru.piko.pikopluginlib.Functions.FunctionAbstract;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
 
 import java.io.File;
@@ -85,6 +86,7 @@ public abstract class PikoPlugin extends JavaPlugin {
             System.out.println("Plugin - " + getPluginId() + " in onStop error message: " + e.getMessage() + " stack track:");
             e.printStackTrace();
         }
+        FunctionAbstract.Static.destroyAll(this);
         Main.getPlugin().disablePikoPlugin(pluginId);
     }
     // </editor-fold>

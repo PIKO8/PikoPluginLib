@@ -19,12 +19,22 @@ abstract class FunctionAbstract(
 	
 	public fun initFunction() {
 		task = Bukkit.getScheduler().runTaskTimer(plugin, this::run, delay, ticks)
+		list.add(this)
 		init()
 	}
 	
 	companion object Static {
+		val list: MutableList<FunctionAbstract> = mutableListOf()
+		
 		fun destroy(functionAbstract: FunctionAbstract) {
 			functionAbstract.destroySelf()
 		}
+		
+		fun destroyAll(plugin: JavaPlugin) {
+			list.forEach {
+				if (it.plugin == plugin) { it.destroySelf() }
+			}
+		}
+		
 	}
 }
