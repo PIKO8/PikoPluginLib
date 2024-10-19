@@ -1,12 +1,15 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package ru.piko.pikopluginlib.Functions
 
 import org.bukkit.plugin.java.JavaPlugin
+import ru.piko.pikopluginlib.Functions.Builder.*
 import ru.piko.pikopluginlib.Utils.Edit
 import ru.piko.pikopluginlib.Utils.MadeAI
 
 class TestFunctions {
 	companion object Static {
-    @MadeAI(ai = Edit.Many, human = Edit.Minimum)
+		@MadeAI(ai = Edit.Many, human = Edit.Minimum)
 		fun test(plugin: JavaPlugin) {
 			// Тестирование FunctionTimer
 			val functionTimer = FunctionTimer.create(plugin, 1000, "testId") {
@@ -60,15 +63,15 @@ class TestFunctions {
 			
 			// Тестирование FunctionChain
 			val functionChain = FunctionChain.create(plugin, 10, 0, "testId", functions = listOf(
-				{ println("Функция 1 выполнена!"); return@listOf ChainResult.Next },
-				{ println("Функция 2 выполнена!"); return@listOf ChainResult.Next },
-				{ println("Функция 3 выполнена!"); return@listOf ChainResult.Next }
+				{ println("Функция 1 выполнена!"); ChainResult.Next },
+				{ println("Функция 2 выполнена!"); ChainResult.Next },
+				{ println("Функция 3 выполнена!"); ChainResult.Next }
 			))
 			
 			val anotherFunctionChain = FunctionChain.create(plugin, 20, 0, "testId", functions = listOf(
-				{ println("Другая функция 1 выполнена!"); return@listOf ChainResult.Next },
-				{ println("Другая функция 2 выполнена!"); return@listOf ChainResult.Next },
-				{ println("Другая функция 3 выполнена!"); return@listOf ChainResult.Next }
+				{ println("Другая функция 1 выполнена!"); ChainResult.Next },
+				{ println("Другая функция 2 выполнена!"); ChainResult.Next },
+				{ println("Другая функция 3 выполнена!"); ChainResult.Next }
 			))
 			
 			FunctionChain.destroyAll(plugin, "testId")
@@ -84,37 +87,45 @@ class TestFunctions {
 			}
 		}
 		
-		@MadeAI(ai = Edit.Many, human = Edit.False)
+		@MadeAI(ai = Edit.False, human = Edit.Many)
 		fun complexFunctionBuilderExample(plugin: JavaPlugin) {
 			FunctionBuilder.create(plugin, ticks = 20L, delay = 40L, id = "Example")
 				.functionUnit { // Пустая функция
 					it["my_var"] = 0 // Новая переменная
 				}
 				.functionUnit {
-					val my = it["my_var"] as? Int ?: 0
-					println("my_var = $my")
-					it["my_var"] = my + 1
+					var my = it["my_var"] as? Int ?: 0
+					my += 1 // Прибавляем 1
+					println("my_var = $my") // Выводим
+					it["my_var"] = my // Записываем
 				}
 				.conditionSkip(stepFalse = 1, stepTrue = 2) { // при False
-					val my = it["my_var"] as? Int ?: 0
-					my >= 10
+					val my = it.getAs<Int>("my_var") ?: 0 // Можно вот так получить значение
+					my >= 4 // Проверка на то что my больше или равно 4
 				}
 				.function { // False функция
-					println("false - my_far < 10") // Это false my_var < 10
+					println("false - my_var < 4") // Это false my_var < 4
 					BuilderResult.Next2 // Скачок через функцию
 				}
 				.functionUnit { // True функция
-					println("true - my_far >= 10") // Это false my_var >= 10
+					println("true - my_var >= 4") // Это false my_var >= 4
 					BuilderResult.Next // Следующая функция
 				}
 				.functionUnit { // Общая функция
-					val i = it[FunctionBuilder.INDEX] as Int
-					print("deleted 0 and $i functions")// Удаляем 0 и эту функцию
-					it[FunctionBuilder.REMOVE_FUNCTION] = listOf(0, i) // Удаление 0 функции не будет всегда вызывать
+					val i = it.index // Получаем индекс текущей функции
+					val functions = it.functions // Получаем список функций
+					println("deleted 0 and $i functions") // Удаляем 0 и эту функцию
+					functions.removeAt(i) // Удаляем эту функцию
+					functions.removeFirst() // Удаляем 0 функцию из списка
 				}
-				.function {
-					val my = it["my_var"] as? Int ?: 0
-					if (my >= 20 ) BuilderResult.Break else BuilderResult.Again // если = 20 удаляем иначе начинаем с начала
+				.function { data: BuilderData -> // Можно так data получать
+					val my = data.getAs<Int>("my_var") ?: 0 // Можно вот так получить значение
+					if (my >= 8) { // если = 8
+						println("break")
+						BuilderResult.Break // Полностью останавливаем цепочку
+					} else {
+						BuilderResult.Again //  начинаем с начала
+					}
 				}
 				.invoke()
 		}

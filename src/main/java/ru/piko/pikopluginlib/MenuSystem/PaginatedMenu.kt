@@ -1,33 +1,28 @@
-package ru.piko.pikopluginlib.MenuSystem;
+package ru.piko.pikopluginlib.MenuSystem
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import ru.piko.pikopluginlib.Items.ItemBuilder;
-import ru.piko.pikopluginlib.PlayersData.PlayerData;
+import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
+import ru.piko.pikopluginlib.Items.ItemBuilder
+import ru.piko.pikopluginlib.PlayersData.PlayerData
 
-public abstract class PaginatedMenu extends Menu {
+abstract class PaginatedMenu(playerData: PlayerData) : Menu(playerData) {
 
-    protected int page = 0;
-    protected int maxItemsPerPage;
-    protected int index = 0;
+    protected var page = 0
+    protected var maxItemsPerPage: Int = 0
+    protected var index = 0
 
     // New parameters for configuring the menu layout
-    protected boolean hasVerticalColumns = true;
-    protected boolean hasTopRow = true;
-
-    public PaginatedMenu(@NotNull PlayerData playerData) {
-        super(playerData);
-    }
+    protected var hasVerticalColumns = true
+    protected var hasTopRow = true
 
     /**
      * Configures whether the menu should display vertical columns.
      *
      * @param hasVerticalColumns true to display vertical columns, false otherwise.
      */
-    public void setVerticalColumns(boolean hasVerticalColumns) {
-        this.hasVerticalColumns = hasVerticalColumns;
+    fun setVerticalColumns(hasVerticalColumns: Boolean) {
+        this.hasVerticalColumns = hasVerticalColumns
     }
 
     /**
@@ -35,18 +30,8 @@ public abstract class PaginatedMenu extends Menu {
      *
      * @param hasTopRow true to display the top row, false otherwise.
      */
-    public void setTopRow(boolean hasTopRow) {
-        this.hasTopRow = hasTopRow;
-    }
-
-    @Override
-    public void open() {
-        inventory = Bukkit.createInventory(this, getSlots(), getMenuName());
-
-        this.setMenuItems();
-        //this.playerData.getOwner().sendMessage(String.valueOf(maxItemsPerPage));
-
-        playerData.getOwner().openInventory(inventory);
+    fun setTopRow(hasTopRow: Boolean) {
+        this.hasTopRow = hasTopRow
     }
 
     /**
@@ -54,78 +39,69 @@ public abstract class PaginatedMenu extends Menu {
      *
      * @param fillerItem The item to be used as filler, or null to use the default glass pane.
      */
-    public void addMenuBorder(ItemStack fillerItem) {
-        int slots = getSlots();
-        ItemStack filler = fillerItem != null ? fillerItem : super.FILLER_GLASS;
+    fun addMenuBorder(fillerItem: ItemStack?) {
+        val slots = getSlots()
+        val filler = fillerItem ?: super.FILLER_GLASS
 
         // Navigation buttons
-        inventory.setItem(slots - 6, new ItemBuilder(Material.DARK_OAK_BUTTON).setDisplayName("&2<--").setCustomModelData(198).build());
-        inventory.setItem(slots - 1, BARRIER_CLOSE);
-        inventory.setItem(slots - 4, new ItemBuilder(Material.DARK_OAK_BUTTON).setDisplayName("&2-->").setCustomModelData(199).build());
+        inventory.setItem(slots - 6, ItemBuilder(Material.DARK_OAK_BUTTON).setDisplayName("&2<--").setCustomModelData(198).build())
+        inventory.setItem(slots - 1, BARRIER_CLOSE)
+        inventory.setItem(slots - 4, ItemBuilder(Material.DARK_OAK_BUTTON).setDisplayName("&2-->").setCustomModelData(199).build())
 
         // Top row filler
         if (hasTopRow) {
-            for (int i = 0; i < 9 && i < slots; i++) {
+            for (i in 0 until 9.coerceAtMost(slots)) {
                 if (inventory.getItem(i) == null) {
-                    inventory.setItem(i, filler);
+                    inventory.setItem(i, filler)
                 }
             }
         }
 
         // Vertical columns filler
         if (hasVerticalColumns) {
-            for (int i = 9; i < slots; i += 9) {
+            for (i in 9 until slots step 9) {
                 if (inventory.getItem(i) == null) {
-                    inventory.setItem(i, filler);
+                    inventory.setItem(i, filler)
                 }
                 if (i + 8 < slots && inventory.getItem(i + 8) == null) {
-                    inventory.setItem(i + 8, filler);
+                    inventory.setItem(i + 8, filler)
                 }
             }
         }
 
         // Bottom row filler
-        for (int i = slots - 9; i < slots; i++) {
+        for (i in slots - 9 until slots) {
             if (inventory.getItem(i) == null) {
-                inventory.setItem(i, filler);
+                inventory.setItem(i, filler)
             }
         }
-        this.calculateMaxItemsPerPage();
+        this.calculateMaxItemsPerPage()
     }
 
     /**
      * Calculates the maximum number of items that can be displayed per page based on
      * the current inventory size and layout configuration.
      */
-    private void calculateMaxItemsPerPage() {
-        if (inventory == null) {
-            maxItemsPerPage = getSlots()-9;
-            return;
+    private fun calculateMaxItemsPerPage() {
+        if (!isInventoryInitialized()) {
+            maxItemsPerPage = getSlots() - 9
+            return
         }
-        int slots = getSlots();
-        int emptySlots = 0;
-
+        val slots = getSlots()
+        var emptySlots = 0
+        
         // Iterate through each slot
-        for (int i = 0; i < slots; i++) {
+        for (i in 0 until slots) {
             // Check if the slot is empty
-            if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR) {
-                emptySlots++;
+            if (inventory.getItem(i) == null || inventory.getItem(i)?.type == Material.AIR) {
+                emptySlots++
             }
         }
-
+        
         // Set the maximum items per page to the number of empty slots
-        maxItemsPerPage = emptySlots;
+        maxItemsPerPage = emptySlots
     }
-
-    /**
-     * Gets the maximum number of items that can be displayed per page.
-     *
-     * @return The maximum number of items per page.
-     */
-    public int getMaxItemsPerPage() {
-        return maxItemsPerPage;
-    }
-
+	
     /**
      * Gets the number of slots in the menu. This method must return one of the following
      * values: 27, 36, 45, or 54. The implementation must ensure that the menu is configured
@@ -133,6 +109,5 @@ public abstract class PaginatedMenu extends Menu {
      *
      * @return The number of slots in the menu.
      */
-    @Override
-    public abstract int getSlots();
+    abstract override fun getSlots(): Int
 }

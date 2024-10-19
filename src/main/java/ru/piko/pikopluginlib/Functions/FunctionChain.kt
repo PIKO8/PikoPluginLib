@@ -1,6 +1,7 @@
 package ru.piko.pikopluginlib.Functions
 
 import org.bukkit.plugin.java.JavaPlugin
+import ru.piko.pikopluginlib.Functions.Builder.BuilderResult
 import ru.piko.pikopluginlib.Utils.NotRecommended
 
 enum class ChainResult {

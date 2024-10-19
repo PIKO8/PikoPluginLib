@@ -1,11 +1,6 @@
-package ru.piko.pikopluginlib.Functions
+package ru.piko.pikopluginlib.Functions.Builder
 
-enum class ActionType {
-	None,     // Пустышка
-	Step,     // Шаг куда-нибудь
-	Position, // Перемещение на позицию в списке
-	Error,    // Ошибка!
-}
+import ru.piko.pikopluginlib.Functions.ChainResult
 
 /**
  * @param action - Тип действия
@@ -16,12 +11,12 @@ enum class ActionType {
  * @param breek Это break. Полностью завершает цепочку
  */
 data class BuilderResult(
-    val action: ActionType,
-    val valueInt: Int = 0,
-    val valueString: String = "",
-    val valueAny: Any? = null,
-    val force: Boolean = false,
-    val breek: Boolean = false,
+	val action: ActionType,
+	val valueInt: Int = 0,
+	val valueString: String = "",
+	val valueAny: Any? = null,
+	val force: Boolean = false,
+	val breek: Boolean = false,
 ) {
 	companion object Static {
 		val None = BuilderResult(ActionType.None, 0)                          // Ничего, следующая итерация на этот же элемент
