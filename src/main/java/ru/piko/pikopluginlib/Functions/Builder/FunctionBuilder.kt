@@ -447,7 +447,7 @@ class FunctionBuilder private constructor(
 	 * @param index куда добавлять функцию, по умолчанию `-1` - в конец
 	 */
 	fun addFunction(index: Int = -1, function: BuilderFunction) {
-		val functions = getFunctions() ?: mutableListOf()
+		val functions = getFunctions()
 		if (index == -1) {
 			functions.add(function)
 		} else if (index in 0..functions.size) {
@@ -457,7 +457,7 @@ class FunctionBuilder private constructor(
 	}
 	
 	fun setFunction(index: Int = -1, function: BuilderFunction) {
-		val functions = getFunctions() ?: mutableListOf()
+		val functions = getFunctions()
 		
 		// Определяем индекс для замены
 		val i = if (index == -1) {
@@ -475,7 +475,7 @@ class FunctionBuilder private constructor(
 	}
 	
 	fun getFunction(index: Int = -1): (BuilderFunction)? {
-		val functions = getFunctions() ?: return null
+		val functions = getFunctions()
 		
 		// Определяем индекс для получения
 		val i = if (index == -1) {
@@ -494,7 +494,7 @@ class FunctionBuilder private constructor(
 	}
 	
 	fun removeFunction(index: Int = -1) {
-		val functions = getFunctions() ?: return
+		val functions = getFunctions()
 		// Определяем индекс для удаления
 		val i = if (index == -1) {
 			data.index

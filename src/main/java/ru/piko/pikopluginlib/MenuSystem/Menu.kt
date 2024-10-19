@@ -61,7 +61,7 @@ abstract class Menu(protected val playerData: PlayerData) : InventoryHolder {
 	fun open() {
 		if (!isOpening) return
 		
-		inventory = Bukkit.createInventory(this, getSlots(), getMenuName())
+		inventory = Bukkit.createInventory(this, getSlots(), getMenuNameComponent())
 		
 		setMenuItems()
 		
