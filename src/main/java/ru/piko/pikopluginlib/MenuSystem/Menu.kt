@@ -27,6 +27,11 @@ abstract class Menu(protected val playerData: PlayerData) : InventoryHolder {
 			_inventory = value
 		}
 	
+	// Добавьте это свойство
+	@get:JvmName("getSlotsProperty")
+	val slots: Int
+		get() = getSlots()
+	
 	protected val FILLER_GLASS: ItemStack =
 		ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setDisplayName(" ").setCustomModelData(190).build()
 	protected val FILLER_LIGHT_GLASS: ItemStack =
