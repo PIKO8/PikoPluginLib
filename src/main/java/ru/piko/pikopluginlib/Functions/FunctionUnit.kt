@@ -38,7 +38,6 @@ class FunctionUnit private constructor(
 			delay: Long = 0,
 			id: String = "",
 			stopAllWithId: Boolean = false,
-			condition: () -> Boolean,
 			function: () -> Unit,
 		): FunctionUnit {
 			if (stopAllWithId) {
