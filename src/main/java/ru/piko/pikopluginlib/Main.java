@@ -28,7 +28,7 @@ public final class Main extends PikoPlugin {
     @Override
     public void onStart() {
         //TestFunctions.Static.test(this);
-        //TestFunctions.Static.complexFunctionBuilderExample(this);
+        TestFunctions.Static.complexFunctionBuilderExample(this);
     }
     @Override
     public void onStop() {}

@@ -1,9 +1,8 @@
 package ru.piko.pikopluginlib.Functions.Builder
 
-data class RepeatData(
-	var count: Int = 0,
-	val maxRepeats: Int,
+data class CounterData(
+	var current: Int = 0,
+	val every: Int,
 	val resultTrue: BuilderResult,
 	val resultFalse: BuilderResult
 )
-

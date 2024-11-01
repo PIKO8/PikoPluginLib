@@ -2,6 +2,7 @@ package ru.piko.pikopluginlib.Functions
 
 import org.bukkit.plugin.java.JavaPlugin
 import ru.piko.pikopluginlib.Utils.NotRecommended
+import java.util.*
 
 /**
  * Сработает один раз когда выполнено condition и выполнит function
@@ -32,7 +33,7 @@ class FunctionConditional private constructor(
 	}
 	
 	companion object {
-		val list: MutableList<FunctionConditional> = ArrayList()
+		val list: MutableList<FunctionConditional> = Collections.synchronizedList(mutableListOf())
 		
 		fun create(
         plugin: JavaPlugin,
@@ -59,19 +60,11 @@ class FunctionConditional private constructor(
 		@NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")
 		@Deprecated("Не рекомендованный")
 		fun destroyAll(id: String) {
-			list.forEach {
-				if (it.id == id) {
-					it.destroySelf()
-				}
-			}
+			FunctionAbstract.destroyAll(list, id)
 		}
 		
 		fun destroyAll(plugin: JavaPlugin, id: String) {
-			list.forEach {
-				if (it.plugin == plugin && it.id == id) {
-					it.destroySelf()
-				}
-			}
+			FunctionAbstract.destroyAll(list, plugin, id)
 		}
 	}
 }

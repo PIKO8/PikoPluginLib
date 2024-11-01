@@ -2,6 +2,7 @@ package ru.piko.pikopluginlib.Functions
 
 import org.bukkit.plugin.java.JavaPlugin
 import ru.piko.pikopluginlib.Utils.NotRecommended
+import java.util.*
 
 /**
  * Пока передаётся true будет работать раз в ticks
@@ -35,7 +36,7 @@ class FunctionPeriodic private constructor(
 	
 	
 	companion object {
-		val list: MutableList<FunctionPeriodic> = ArrayList()
+		val list: MutableList<FunctionPeriodic> = Collections.synchronizedList(mutableListOf())
 		
 		fun create(
         plugin: JavaPlugin,
@@ -61,19 +62,11 @@ class FunctionPeriodic private constructor(
 		@NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")
 		@Deprecated("Не рекомендованный")
 		fun destroyAll(id: String) {
-			list.forEach {
-				if (it.id == id) {
-					it.destroySelf()
-				}
-			}
+			FunctionAbstract.destroyAll(list, id)
 		}
 		
 		fun destroyAll(plugin: JavaPlugin, id: String) {
-			list.forEach {
-				if (it.plugin == plugin && it.id == id) {
-					it.destroySelf()
-				}
-			}
+			FunctionAbstract.destroyAll(list, plugin, id)
 		}
 	}
 }

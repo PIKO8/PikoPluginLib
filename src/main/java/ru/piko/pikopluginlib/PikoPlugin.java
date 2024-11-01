@@ -57,7 +57,12 @@ public abstract class PikoPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         registerPikoLib();
-        onStart();
+        try {
+            onStart();
+        } catch (Exception e) {
+            Main.getPlugin().getLogger().warning("[ERROR] Plugin - " + getPluginId() + " in onRegister error message: " + e.getMessage() + " stack track:");
+            e.printStackTrace();
+        }
     }
 
     public void registerPikoLib() {
@@ -66,12 +71,12 @@ public abstract class PikoPlugin extends JavaPlugin {
         if (plugin != null) {
             plugin.addPikoPlugin(pluginId, this);
         } else {
-            System.out.println("I couldn 't add it " + getPluginId() + " to the PikoPlugins system");
+            Main.getPlugin().getLogger().info("I couldn 't add it " + getPluginId() + " to the PikoPlugins system");
         }
         try {
             onRegister();
         } catch (Exception e) {
-            System.out.println("Plugin - " + getPluginId() + " in onRegister error message: " + e.getMessage() + " stack track:");
+            Main.getPlugin().getLogger().warning("[ERROR] Plugin - " + getPluginId() + " in onRegister error message: " + e.getMessage() + " stack track:");
             e.printStackTrace();
         }
     }
@@ -83,7 +88,7 @@ public abstract class PikoPlugin extends JavaPlugin {
         try {
             onStop();
         } catch (Exception e) {
-            System.out.println("Plugin - " + getPluginId() + " in onStop error message: " + e.getMessage() + " stack track:");
+            Main.getPlugin().getLogger().warning("[ERROR] Plugin - " + getPluginId() + " in onStop error message: " + e.getMessage() + " stack track:");
             e.printStackTrace();
         }
         FunctionAbstract.Static.destroyAll(this);

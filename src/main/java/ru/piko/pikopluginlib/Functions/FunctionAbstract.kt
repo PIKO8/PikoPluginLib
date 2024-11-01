@@ -3,6 +3,8 @@ package ru.piko.pikopluginlib.Functions
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitTask
+import ru.piko.pikopluginlib.Functions.FunctionPeriodic.Companion
+import java.util.*
 
 abstract class FunctionAbstract(
 	val plugin: JavaPlugin,
@@ -24,17 +26,54 @@ abstract class FunctionAbstract(
 	}
 	
 	companion object Static {
-		val list: MutableList<FunctionAbstract> = mutableListOf()
+		val list: MutableList<FunctionAbstract> = Collections.synchronizedList(mutableListOf())
 		
 		fun destroy(functionAbstract: FunctionAbstract) {
 			functionAbstract.destroySelf()
+			list.remove(functionAbstract)
 		}
 		
 		fun destroyAll(plugin: JavaPlugin) {
-			list.forEach {
-				if (it.plugin == plugin) { it.destroySelf() }
+			val itemsToRemove = mutableListOf<FunctionAbstract>()
+			val iterator = list.iterator()
+			while (iterator.hasNext()) {
+				val item = iterator.next()
+				if (item.plugin == plugin) {
+					itemsToRemove.add(item)
+				}
+			}
+			for (item in itemsToRemove) {
+				item.destroySelf()
+				list.remove(item)
 			}
 		}
 		
+		fun <T: FunctionAbstract> destroyAll(list: MutableList<T>, id: String) {
+			val itemsToRemove = mutableListOf<T>()
+			val iterator = list.iterator()
+			while (iterator.hasNext()) {
+				val item = iterator.next()
+				if (item.id == id) itemsToRemove.add(item)
+			}
+			for (item in itemsToRemove) {
+				item.destroySelf()
+				list.remove(item)
+			}
+		}
+		
+		fun <T: FunctionAbstract> destroyAll(list: MutableList<T>, plugin: JavaPlugin, id: String) {
+			val itemsToRemove = mutableListOf<T>()
+			val iterator = list.iterator()
+			while (iterator.hasNext()) {
+				val item = iterator.next()
+				if (item.plugin == plugin && item.id == id) {
+					itemsToRemove.add(item)
+				}
+			}
+			for (item in itemsToRemove) {
+				item.destroySelf()
+				list.remove(item)
+			}
+		}
 	}
 }

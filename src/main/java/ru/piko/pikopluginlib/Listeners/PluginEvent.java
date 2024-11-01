@@ -29,11 +29,15 @@ public class PluginEvent implements Listener {
         if (e.getPlugin() instanceof JavaPlugin javaPlugin && javaPlugin instanceof PikoPlugin plugin) {
             PikoPluginData data = Main.getPlugin().getPikoPluginData(plugin.getPluginId());
             if (data == null) {
-                System.out.println("How did this even happen?????!!!");
+                Main.getPlugin().getLogger().warning("How did this even happen???!!!");
                 Main.getPlugin().addDisablePikoPlugin(plugin.getPluginId());
+                data = Main.getPlugin().getPikoPluginData(plugin.getPluginId());
             } else {
                 data.disable();
             }
+            String name = data.getNamePlugin();
+            if (name == null) name = "???";
+            Main.getPlugin().getLogger().info("The " + name + "plugin is disabled. The status in the PikoPlugins system is set to disable.");
         }
     }
 

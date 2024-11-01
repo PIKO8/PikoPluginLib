@@ -23,6 +23,7 @@ class BuilderData : MutableMap<String, Any> {
 	private val internalMap: MutableMap<String, Any> = mutableMapOf(
 		Pair(ITERATION, 0),
 		Pair(REPEATS, mutableListOf<RepeatData>()),
+		Pair(COUNTERS, mutableListOf<CounterData>()),
 		Pair(PREVIOUS_RESULT, BuilderResult.None),
 		Pair(INDEX, 0),
 		Pair(FUNCTIONS, mutableListOf<BuilderFunction>())
@@ -57,42 +58,63 @@ class BuilderData : MutableMap<String, Any> {
 	}
 	
 	// <editor-fold defaultstate="collapsed" desc="data const">
+	  // <editor-fold-sub defaultstate="collapsed" desc="iteration">
 	// Методы для доступа через точечную нотацию с проверками типов
 	var iteration: Int
 		get() = this[ITERATION] as Int
 		set(value) {
 			this[ITERATION] = value // Прямое изменение значения
 		}
+	  // </editor-fold-sub>
 	
+		// <editor-fold-sub defaultstate="collapsed" desc="counters">
+	var counters: MutableList<CounterData>
+		get() = this[COUNTERS] as MutableList<CounterData>
+		set(value) {
+			this[COUNTERS] = value
+		}
+		// </editor-fold-sub>
+	
+	  // <editor-fold-sub defaultstate="collapsed" desc="repeats">
 	var repeats: MutableList<RepeatData>
 		get() = this[REPEATS] as MutableList<RepeatData>
 		set(value) {
 			this[REPEATS] = value // Прямое изменение значения
 		}
+	  // </editor-fold-sub>
 	
+	  // <editor-fold-sub defaultstate="collapsed" desc="previousResult">
 	var previousResult: BuilderResult
 		get() = this[PREVIOUS_RESULT] as BuilderResult
 		set(value) {
 			this[PREVIOUS_RESULT] = value // Прямое изменение значения
 		}
+	  // </editor-fold-sub>
 	
+	  // <editor-fold-sub defaultstate="collapsed" desc="index">
 	var index: Int
 		get() = this[INDEX] as Int
 		set(value) {
 			this[INDEX] = value // Прямое изменение значения
 		}
+	  // </editor-fold-sub>
 	
+	  // <editor-fold-sub defaultstate="collapsed" desc="sizeFunctions">
 	var sizeFunctions: Int
 		get() = this[SIZE] as Int
 		set(value) {
 			this[SIZE] = value // Прямое изменение значения
 		}
+	  // </editor-fold-sub>
 	
+	  // <editor-fold-sub defaultstate="collapsed" desc="functions">
 	var functions: MutableList<BuilderFunction>
 		get() = this[FUNCTIONS] as MutableList<BuilderFunction>
 		set(value) {
 			this[FUNCTIONS] = value // Прямое изменение значения
 		}
+	  // </editor-fold-sub>
+	
 	// </editor-fold>
 	
 	
@@ -132,6 +154,8 @@ class BuilderData : MutableMap<String, Any> {
 		// <editor-fold defaultstate="collapsed" desc="Константы / Const">
 		/** is `List<RepeatData>` */
 		const val REPEATS = "repeats"
+		/** is `List<CounterData>` */
+		const val COUNTERS = "counters"
 		/** is `Int` */
 		const val ITERATION = "iteration"
 		/** is `BuilderResult` */

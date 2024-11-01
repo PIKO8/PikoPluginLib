@@ -99,6 +99,10 @@ class TestFunctions {
 					println("my_var = $my") // Выводим
 					it["my_var"] = my // Записываем
 				}
+				.counter(2) // Следующая функция срабатывает каждую 2 итерацию
+				.functionUnit {
+					println("triggered every 2 iterations") // срабатывает каждую 2 итерацию
+				}
 				.conditionSkip(stepFalse = 1, stepTrue = 2) { // при False
 					val my = it.getAs<Int>("my_var") ?: 0 // Можно вот так получить значение
 					my >= 4 // Проверка на то что my больше или равно 4
@@ -118,7 +122,7 @@ class TestFunctions {
 					functions.removeAt(i) // Удаляем эту функцию
 					functions.removeFirst() // Удаляем 0 функцию из списка
 				}
-				.function { data: BuilderData -> // Можно так data получать
+				.function { data: BuilderData -> // Можно так назвать data вместо it
 					val my = data.getAs<Int>("my_var") ?: 0 // Можно вот так получить значение
 					if (my >= 8) { // если = 8
 						println("break")

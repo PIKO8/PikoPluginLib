@@ -2,6 +2,7 @@ package ru.piko.pikopluginlib.Functions
 
 import org.bukkit.plugin.java.JavaPlugin
 import ru.piko.pikopluginlib.Utils.NotRecommended
+import java.util.*
 
 /**
  * Работает раз в ticks, но ограниченное количество раз(maxRepeats)
@@ -35,7 +36,7 @@ class FunctionRepeater private constructor(
 	}
 	
 	companion object {
-		val list: MutableList<FunctionRepeater> = ArrayList()
+		val list: MutableList<FunctionRepeater> = Collections.synchronizedList(mutableListOf())
 		
 		fun create(
         plugin: JavaPlugin,
@@ -62,19 +63,11 @@ class FunctionRepeater private constructor(
 		@NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")
 		@Deprecated("Не рекомендованный")
 		fun destroyAll(id: String) {
-			list.forEach {
-				if (it.id == id) {
-					it.destroySelf()
-				}
-			}
+			FunctionAbstract.destroyAll(list, id)
 		}
 		
 		fun destroyAll(plugin: JavaPlugin, id: String) {
-			list.forEach {
-				if (it.plugin == plugin && it.id == id) {
-					it.destroySelf()
-				}
-			}
+			FunctionAbstract.destroyAll(list, plugin, id)
 		}
 	}
 }

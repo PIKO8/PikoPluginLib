@@ -7,6 +7,7 @@ import ru.piko.pikopluginlib.Functions.FunctionAbstract
 import ru.piko.pikopluginlib.Utils.Edit
 import ru.piko.pikopluginlib.Utils.MadeAI
 import ru.piko.pikopluginlib.Utils.NotRecommended
+import java.util.*
 
 typealias BuilderFunction = (BuilderData) -> BuilderResult
 /**
@@ -107,7 +108,7 @@ class FunctionBuilder private constructor(
 	}
 	companion object {
 		// <editor-fold defaultstate="collapsed" desc="List & create">
-		val list: MutableList<FunctionBuilder> = ArrayList()
+		val list: MutableList<FunctionBuilder> = Collections.synchronizedList(mutableListOf())
 		
 		/**
 		 * Создает новый экземпляр FunctionBuilder.
@@ -129,21 +130,26 @@ class FunctionBuilder private constructor(
 			builder.destroySelf()
 		}
 		
-		@Suppress("DeprecatedCallableAddReplaceWith")
 		@NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")
 		@Deprecated("Не рекомендованный")
 		fun destroyAll(id: String) {
-			list.forEach {
-				if (it.id == id) {
-					it.destroySelf()
+			val iterator = list.iterator()
+			while (iterator.hasNext()) {
+				val item = iterator.next()
+				if (item.id == id) {
+					item.destroySelf()
+					iterator.remove()
 				}
 			}
 		}
 		
 		fun destroyAll(plugin: JavaPlugin, id: String) {
-			list.forEach {
-				if (it.plugin == plugin && it.id == id) {
-					it.destroySelf()
+			val iterator = list.iterator()
+			while (iterator.hasNext()) {
+				val item = iterator.next()
+				if (item.plugin == plugin && item.id == id) {
+					item.destroySelf()
+					iterator.remove()
 				}
 			}
 		}
@@ -299,25 +305,11 @@ class FunctionBuilder private constructor(
 	 * @return Текущий экземпляр FunctionBuilder для дальнейшего построения.
 	 */
 	fun repeats(repeats: Int, stepFalse: Int = 2, stepTrue: Int = 1): FunctionBuilder {
-		val repeatsListInData = data.repeats
-		
-		val currentIndex = repeatsListInData.size
-		repeatsListInData.add(RepeatData(maxRepeats = repeats, resultTrue = BuilderResult(ActionType.Step, stepTrue), resultFalse = BuilderResult(ActionType.Step, stepFalse)))
-		
-		addFunction { map ->
-			val repeatsListInner = map.repeats
-			
-			val repeatData = repeatsListInner.getOrNull(currentIndex)
-				?: return@addFunction BuilderResult(ActionType.Error, valueString = "Repeat data is missing for current index")
-			
-			if (repeatData.count < repeatData.maxRepeats) {
-				repeatData.count++
-				return@addFunction repeatData.resultTrue
-			} else {
-				return@addFunction repeatData.resultFalse
-			}
-		}
-		return this
+		return repeats(
+			repeats = repeats,
+			resultTrue = BuilderResult(ActionType.Step, stepTrue),
+			resultFalse = BuilderResult(ActionType.Step, stepFalse)
+		)
 	}
 	
 	/**
@@ -329,7 +321,7 @@ class FunctionBuilder private constructor(
 	 * @param resultTrue Результат выполнения при каждом повторении в пределах лимита.
 	 * @return Текущий экземпляр FunctionBuilder для дальнейшего построения.
 	 */
-	fun repeats(repeats: Int, resultFalse: BuilderResult = BuilderResult.Next2, resultTrue: BuilderResult = BuilderResult.Next): FunctionBuilder {
+	fun repeats(repeats: Int, resultFalse: BuilderResult, resultTrue: BuilderResult = BuilderResult.Next): FunctionBuilder {
 		val repeatsListInData = data.repeats
 		
 		val currentIndex = repeatsListInData.size
@@ -349,6 +341,53 @@ class FunctionBuilder private constructor(
 			}
 		}
 		return this
+	}
+	
+	
+	/**
+	 * Добавляет счетчик, который будет возвращать true каждые n значений
+	 *
+	 * @param every Через сколько значений возвращать true
+	 * @param resultTrue Результат при достижении every
+	 * @param resultFalse Результат при недостижении every
+	 */
+	fun counter(every: Int, resultTrue: BuilderResult, resultFalse: BuilderResult = BuilderResult.Next2): FunctionBuilder {
+		val countersListInData = data.counters
+		
+		val currentIndex = countersListInData.size
+		countersListInData.add(CounterData(every = every, resultTrue = resultTrue, resultFalse = resultFalse))
+		
+		addFunction { map ->
+			val countersListInner = map.counters
+			
+			val counterData = countersListInner.getOrNull(currentIndex)
+				?: return@addFunction BuilderResult(ActionType.Error, valueString = "Counter data is missing for current index")
+			
+			counterData.current++
+			
+			if (counterData.current >= counterData.every) {
+				counterData.current = 0
+				return@addFunction counterData.resultTrue
+			} else {
+				return@addFunction counterData.resultFalse
+			}
+		}
+		return this
+	}
+	
+	/**
+	 * Добавляет счетчик, который будет возвращать true каждые n значений
+	 *
+	 * @param every Через сколько значений возвращать true
+	 * @param stepTrue Количество шагов при достижении every
+	 * @param stepFalse Количество шагов при недостижении every
+	 */
+	fun counter(every: Int, stepTrue: Int = 1, stepFalse: Int = 2): FunctionBuilder {
+		return counter(
+			every = every,
+			resultTrue = BuilderResult(ActionType.Step, stepTrue),
+			resultFalse = BuilderResult(ActionType.Step, stepFalse)
+		)
 	}
 	// </editor-fold>
 	

@@ -39,3 +39,16 @@ fun Any.toComponent(): Component {
 fun Any.toComponent(color: TextColor): Component {
     return this.toComponent().colorIfAbsent(color)
 }
+
+/** Например, до и после:
+ * (entity is Player && entity.gameMode in listOf(GameMode.SURVIVAL, GameMode.ADVENTURE)) || entity !is Player
+ * entity.checkCondition<Player> { it.gameMode in listOf(GameMode.SURVIVAL, GameMode.ADVENTURE) }
+ * Если это такой тип то проверить условие иначе пропустить(true)
+ */
+inline fun <reified T : Any> Any?.checkCondition(condition: (T) -> Boolean): Boolean {
+    return (this is T && condition(this)) || this !is T
+}
+
+infix fun <One : Any, Two : Any> One.equals(value: Two): Boolean {
+    return this.equals(value)
+}

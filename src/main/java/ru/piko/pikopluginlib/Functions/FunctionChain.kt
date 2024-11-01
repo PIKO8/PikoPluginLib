@@ -3,6 +3,7 @@ package ru.piko.pikopluginlib.Functions
 import org.bukkit.plugin.java.JavaPlugin
 import ru.piko.pikopluginlib.Functions.Builder.BuilderResult
 import ru.piko.pikopluginlib.Utils.NotRecommended
+import java.util.*
 
 enum class ChainResult {
 	None,       // Ничего, следующая итерация на этот же элемент
@@ -106,7 +107,7 @@ class FunctionChain private constructor(
 	}
 	
 	companion object {
-		val list: MutableList<FunctionChain> = ArrayList()
+		val list: MutableList<FunctionChain> = Collections.synchronizedList(mutableListOf())
 		
 		fun create(
 			plugin: JavaPlugin,
@@ -132,19 +133,11 @@ class FunctionChain private constructor(
 		@NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")
 		@Deprecated("Не рекомендованный")
 		fun destroyAll(id: String) {
-			list.forEach {
-				if (it.id == id) {
-					it.destroySelf()
-				}
-			}
+			FunctionAbstract.destroyAll(list, id)
 		}
 		
 		fun destroyAll(plugin: JavaPlugin, id: String) {
-			list.forEach {
-				if (it.plugin == plugin && it.id == id) {
-					it.destroySelf()
-				}
-			}
+			FunctionAbstract.destroyAll(list, plugin, id)
 		}
 	}
 }

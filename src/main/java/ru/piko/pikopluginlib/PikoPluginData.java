@@ -6,13 +6,13 @@ import java.io.File;
 
 public class PikoPluginData {
 
-    private final String id;
+    private final @NotNull String id;
     private final String name_plugin;
     private PikoPlugin plugin = null; // Сам плагин может быть null
-    private @NotNull EStatusPlugin status = EStatusPlugin.BLOCKED; // Статус плагина
+    private @NotNull EStatusPlugin status; // Статус плагина
     private File file; // Нужен, что бы можно было включить плагин
 
-    public PikoPluginData(String id, PikoPlugin plugin, boolean blocked) {
+    public PikoPluginData(@NotNull String id, PikoPlugin plugin, boolean blocked) {
         this.id = id;
         this.plugin = plugin;
         this.status = blocked ? EStatusPlugin.BLOCKED : EStatusPlugin.ENABLE;
@@ -20,7 +20,7 @@ public class PikoPluginData {
         this.name_plugin = plugin.getName();
     }
 
-    public PikoPluginData(String id) {
+    public PikoPluginData(@NotNull String id) {
         this.id = id;
         this.plugin = null;
         this.status = EStatusPlugin.DISABLE;
@@ -42,7 +42,7 @@ public class PikoPluginData {
         return name_plugin;
     }
 
-    public String getId() {
+    public @NotNull String getId() {
         return id;
     }
 

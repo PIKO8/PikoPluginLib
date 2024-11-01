@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 public class GameRule {
 
     private final String name;
-    private String helpMessage = "Сообщение для этого правила не устоновлено";
+    private String helpMessage = "Сообщение для этого правила не установлено";
     private Supplier<String> getValue = null;
     private Consumer<String> setValue = null;
     private List<String> possibleValues = null;
