@@ -7,7 +7,7 @@ plugins {
 
 group = 'ru.piko'
 version = '0.1.12'
-
+def kotlinVersion = '2.0.21'
 
 repositories {
     mavenCentral()
@@ -43,10 +43,6 @@ publishing {
             }
         }
     }
-}
-
-jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 dependencies {
@@ -90,16 +86,23 @@ processResources {
 
 // Список библиотек для включения в JAR
 def includedLibraries = [
-    'kotlin-stdlib'
+        'kotlin-stdlib'
 ]
 
+// JAR без Kotlin
 jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// JAR с Kotlin
+task jarWithKotlin(type: Jar) {
     from sourceSets.main.output
     from {
         configurations.runtimeClasspath
                 .findAll { jar -> includedLibraries.any { jar.name.startsWith(it) } }
                 .collect { it.isDirectory() ? it : zipTree(it) }
     }
+    archiveClassifier = "kotlin-${kotlinVersion}"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
@@ -111,4 +114,8 @@ task printVersion {
 
 kotlin {
     jvmToolchain(targetJavaVersion)
+}
+
+artifacts {
+    archives jarWithKotlin
 }
