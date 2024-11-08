@@ -89,14 +89,24 @@ jobs:
         prerelease: false
       id: create_release
       
-    - name: Upload jar file to release
+    - name: Upload default jar file to release
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/PikoPluginLib-${{ env.VERSION }}.jar
-        asset_name: PikoPluginLib-${{ env.VERSION }}.jar
+        asset_path: build/libs/pikopluginlib-${{ env.VERSION }}.jar
+        asset_name: pikopluginlib-${{ env.VERSION }}.jar
+        asset_content_type: application/java-archive
+
+    - name: Upload kotlin jar file to release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/libs/pikopluginlib-${{ env.VERSION }}-kotlin-*.jar
+        asset_name: pikopluginlib-${{ env.VERSION }}-kotlin.jar
         asset_content_type: application/java-archive
         
     - name: Publish to Maven Local
