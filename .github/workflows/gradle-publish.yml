@@ -82,13 +82,34 @@ jobs:
       id: create_release
       
     - name: Upload all jar files to release
-      run: |
-        for file in build/libs/*.jar; do
-          echo "Uploading $file"
-          gh release upload "${{ steps.create_release.outputs.upload_url }}" "$file" --clobber
-        done
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        tag_name="v${{ env.VERSION }}"
+        echo "Attempting to upload files for tag: $tag_name"
+        
+        # List available jar files
+        ls build/libs/*.jar
+        
+        # Upload each jar file
+        for file in build/libs/*.jar; do
+          if [ -f "$file" ]; then
+            echo "Uploading $file"
+            gh release upload "$tag_name" "$file" --clobber
+          else
+            echo "No jar files found"
+          fi
+        done
+      continue-on-error: true
+
+    - name: Debug Information
+      run: |
+        echo "Current directory contents:"
+        pwd
+        ls -la
+        echo "Build libs directory:"
+        ls -la build/libs/
+        echo "Version: ${{ env.VERSION }}"
         
     - name: Publish to Maven Local
       run: ./gradlew publishToMavenLocal
