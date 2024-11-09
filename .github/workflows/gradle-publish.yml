@@ -89,25 +89,14 @@ jobs:
         prerelease: false
       id: create_release
       
-    - name: Upload default jar file to release
-      uses: actions/upload-release-asset@v1
+    - name: Upload all jar files to release
+      run: |
+        for file in build/libs/*.jar; do
+          echo "Uploading $file"
+          gh release upload "${{ steps.create_release.outputs.upload_url }}" "$file" --clobber
+        done
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/pikopluginlib-${{ env.VERSION }}.jar
-        asset_name: pikopluginlib-${{ env.VERSION }}.jar
-        asset_content_type: application/java-archive
-
-    - name: Upload kotlin jar file to release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/pikopluginlib-${{ env.VERSION }}-kotlin-*.jar
-        asset_name: pikopluginlib-${{ env.VERSION }}-kotlin.jar
-        asset_content_type: application/java-archive
         
     - name: Publish to Maven Local
       run: ./gradlew publishToMavenLocal
