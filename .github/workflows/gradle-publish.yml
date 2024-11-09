@@ -25,11 +25,9 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        server-id: github
-        settings-path: ${{ github.workspace }}
         
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+      uses: gradle/actions/setup-gradle@v4.0.0
       
     - name: Set execute permissions on gradlew
       run: chmod +x ./gradlew
@@ -51,13 +49,7 @@ jobs:
       env:
         USERNAME: ${{ secrets.USERNAME }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GIT_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
         
-    - name: Set VERSION variable
-      run: |
-        VERSION=$(git describe --tags --abbrev=0 | sed 's/^v//')
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-
     - name: Delete existing release
       id: delete_release
       env:
@@ -88,7 +80,7 @@ jobs:
         draft: false
         prerelease: false
       id: create_release
-    
+      
     - name: Upload all jar files to release
       run: |
         for file in build/libs/*.jar; do
@@ -100,9 +92,3 @@ jobs:
         
     - name: Publish to Maven Local
       run: ./gradlew publishToMavenLocal
-    
-    # - name: Publish to GitHub Packages
-    #  run: ./gradlew publish
-    #  env:
-    #    USERNAME: ${{ secrets.USERNAME }}
-    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
