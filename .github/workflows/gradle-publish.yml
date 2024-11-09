@@ -88,7 +88,7 @@ jobs:
         draft: false
         prerelease: false
       id: create_release
-      
+    
     - name: Upload all jar files to release
       run: |
         for file in build/libs/*.jar; do
