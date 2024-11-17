@@ -1,9 +1,10 @@
-package ru.piko.pikopluginlib.MenuSystem
+package ru.piko.pikopluginlib.MenuSystem.Events
 
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent
+import ru.piko.pikopluginlib.MenuSystem.Menu
 
 class PlayerOpenMenuEvent(player: Player, val menu: Menu) : PlayerEvent(player), Cancellable {
 	private var isCancelled = false

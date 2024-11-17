@@ -15,18 +15,18 @@ public class PlayerData {
     /**
      * A map that stores player-specific data for various plugins and subsystems.
      *
-     * <p>The key is a string formatted as "<code>plugin_id.subsystem_id.name</code>", where:</p>
+     * <p>The key is a string formatted as "<code>author.plugin.name</code>", where:</p>
      * <ul>
-     *   <li><strong>plugin_id</strong>: The unique identifier for the plugin (e.g., "magic_piko").</li>
-     *   <li><strong>subsystem_id</strong>: The identifier for a specific subsystem within the plugin, such as "menu" or "command".</li>
+     *   <li><strong>author</strong>: The nickname of the plugin author or the name of the team (e.g., "piko")</li>
+     *   <li><strong>plugin</strong>: The unique identifier for the plugin (e.g., "magic").</li>
      *   <li><strong>name</strong>: The name or further identifier of the data (e.g., "staff").</li>
      * </ul>
      *
-     * <p>Example key: "magic_piko.menu.staff"</p>
+     * <p>Example key: "piko.magic.staff"</p>
      *
      * <p>The value is an instance of {@link APlayerData}, which represents the data associated with that specific plugin and subsystem for the player.</p>
      */
-    private final Map<String, APlayerData> playerDataMap;
+    public final Map<String, APlayerData> playerDataMap;
 
     public PlayerData(UUID owner) {
         this.uuid = owner;

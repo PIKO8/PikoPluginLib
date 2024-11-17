@@ -10,7 +10,7 @@ import ru.piko.pikopluginlib.Main;
 import ru.piko.pikopluginlib.MenuSystem.Menu;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
 
-public class MenuEvent implements Listener {
+public class MenuListener implements Listener {
 
     @EventHandler
     public void onClickMenu(InventoryClickEvent e) {

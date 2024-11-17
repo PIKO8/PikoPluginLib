@@ -8,6 +8,7 @@ import ru.piko.pikopluginlib.Commands.CommandManager;
 import ru.piko.pikopluginlib.Commands.Gamerules.GameRuleStandardSave;
 import ru.piko.pikopluginlib.Functions.FunctionAbstract;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
+import ru.piko.pikopluginlib.PlayersData.PlayerDataRegistry;
 
 import java.io.File;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ public abstract class PikoPlugin extends JavaPlugin {
 
     /**
      * Unique identifier for the plugin.
+     * Format - "namespace.author.plugin_name"; Example "ru.piko.lib"
      */
     protected String pluginId;
     // </editor-fold>
@@ -255,5 +257,20 @@ public abstract class PikoPlugin extends JavaPlugin {
     public void removePlayerData(UUID owner) {
         Main.getPlugin().removePlayerData(owner);
     }
+
+      // <editor-fold-sub defaultstate="collapsed" desc="">
+    public void registerPlayerData(String id, PlayerDataRegistry registry) {
+        Main.getPlugin().registerPlayerData(id, registry);
+    }
+
+    public void unregisterPlayerData(String id) {
+        Main.getPlugin().unregisterPlayerData(id);
+    }
+
+    public HashMap<String, PlayerDataRegistry> getPlayerDataRegistry() {
+        return Main.getPlugin().getPlayerDataRegistry();
+    }
+      // </editor-fold-sub>
+
     // </editor-fold>
 }

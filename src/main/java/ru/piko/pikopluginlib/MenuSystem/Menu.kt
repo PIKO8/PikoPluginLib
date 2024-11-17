@@ -2,13 +2,13 @@ package ru.piko.pikopluginlib.MenuSystem
 
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
-import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
-import ru.piko.pikopluginlib.Items.ItemBuilder
+import ru.piko.pikopluginlib.MenuSystem.Events.PlayerOpenMenuEvent
 import ru.piko.pikopluginlib.PlayersData.PlayerData
 import ru.piko.pikopluginlib.Utils.toComponent
 
@@ -27,19 +27,14 @@ abstract class Menu(protected val playerData: PlayerData) : InventoryHolder {
 			_inventory = value
 		}
 	
-	// Добавьте это свойство
 	@get:JvmName("getSlotsProperty")
 	val slots: Int
 		get() = getSlots()
 	
-	protected val FILLER_GLASS: ItemStack =
-		ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setDisplayName(" ").setCustomModelData(190).build()
-	protected val FILLER_LIGHT_GLASS: ItemStack =
-		ItemBuilder(Material.LIGHT_GRAY_STAINED_GLASS_PANE).setDisplayName(" ").setCustomModelData(190).build()
-	protected val ARROW_BACK: ItemStack =
-		ItemBuilder(Material.ARROW).setDisplayName("&cНазад").setCustomModelData(98).build()
-	protected val BARRIER_CLOSE: ItemStack =
-		ItemBuilder(Material.BARRIER).setDisplayName("&cЗакрыть").setCustomModelData(99).build()
+	val player: Player
+		get() = playerData.owner
+	
+	abstract var filter: ItemStack
 	
 	@Deprecated("use getMenuNameComponent")
 	abstract fun getMenuName(): String
@@ -59,32 +54,33 @@ abstract class Menu(protected val playerData: PlayerData) : InventoryHolder {
 	protected open var isOpening = true
 	
 	fun open() {
-		if (!isOpening) return
-		
+		// Create the inventory
 		inventory = Bukkit.createInventory(this, getSlots(), getMenuNameComponent())
 		
+		// Set the menu items
 		setMenuItems()
 		
-		// Создаем и вызываем событие PlayerOpenMenuEvent
+		// Create the PlayerOpenMenuEvent
 		val event = PlayerOpenMenuEvent(playerData.owner, this)
+		
+		// Set the event's cancellation state based on isOpening
+		event.isCancelled = !isOpening
+		
+		// Call the event
 		Bukkit.getPluginManager().callEvent(event)
 		
-		// Проверяем, не было ли событие отменено
+		// Check if the event was canceled
 		if (!event.isCancelled) {
+			// If the event is not canceled, open the inventory for the player
 			playerData.owner.openInventory(inventory)
-		}
+		}/* else {
+			// Optionally handle the case where the event is canceled
+			playerData.owner.sendMessage("You cannot open this menu.")
+		}*/
 	}
 	
 	protected fun isInventoryInitialized(): Boolean {
 		return _inventory != null
-	}
-	
-	fun setFillerGlass() {
-		setFillerItem(FILLER_GLASS)
-	}
-	
-	fun setFillerLightGlass() {
-		setFillerItem(FILLER_LIGHT_GLASS)
 	}
 	
 	fun setFillerItem(item: ItemStack) {
@@ -95,7 +91,7 @@ abstract class Menu(protected val playerData: PlayerData) : InventoryHolder {
 		}
 	}
 	
-	fun setItem(slot: Int, item: ItemStack) {
+	fun setItem(slot: Int, item: ItemStack?) {
 		inventory.setItem(slot, item)
 	}
 }

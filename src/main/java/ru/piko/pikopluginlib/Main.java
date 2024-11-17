@@ -1,13 +1,12 @@
 package ru.piko.pikopluginlib;
 
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import ru.piko.pikopluginlib.Commands.SubCommands.ReloadSubCommand;
-import ru.piko.pikopluginlib.Functions.TestFunctions;
-import ru.piko.pikopluginlib.Listeners.MenuEvent;
+import ru.piko.pikopluginlib.Listeners.MenuListener;
+import ru.piko.pikopluginlib.Listeners.PluginListener;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
+import ru.piko.pikopluginlib.PlayersData.PlayerDataRegistry;
+import ru.piko.pikopluginlib.listeners.PlayerListener;
 
 import java.util.*;
 
@@ -20,9 +19,11 @@ public final class Main extends PikoPlugin {
      */
     private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
 
+    private final HashMap<String, PlayerDataRegistry> playerDataRegistry = new HashMap<>();
+
     @Override
     public String getPluginId() {
-        return "lib";
+        return "ru.piko.lib";
     }
 
     @Override
@@ -41,7 +42,9 @@ public final class Main extends PikoPlugin {
         this.pluginId = getPluginId();
         addPikoPlugin(this.pluginId, this, true);
         System.out.println("PikoPluginLib load!");
-        getServer().getPluginManager().registerEvents(new MenuEvent(), this);
+        getServer().getPluginManager().registerEvents(new MenuListener(), this);
+        getServer().getPluginManager().registerEvents(new PluginListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 
         getOrCreateCommandManager("piko").addSubCommand(new ReloadSubCommand());
         onStart();
@@ -132,6 +135,22 @@ public final class Main extends PikoPlugin {
     public void removePlayerData(@NotNull UUID owner) {
         playerDataMap.remove(owner);
     }
+
+      // <editor-fold-sub defaultstate="collapsed" desc="Registry">
+    public void registerPlayerData(String id, PlayerDataRegistry registry) {
+        playerDataRegistry.put(id, registry);
+    }
+
+    public void unregisterPlayerData(String id) {
+        playerDataRegistry.remove(id);
+    }
+
+    public HashMap<String, PlayerDataRegistry> getPlayerDataRegistry() {
+        return new HashMap<>(playerDataRegistry);
+    }
+
+    // </editor-fold-sub>
+
     // </editor-fold>
 
     public Map<String, PikoPluginData> getPikoPlugins() {
