@@ -25,11 +25,9 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        server-id: github
-        settings-path: ${{ github.workspace }}
         
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+      uses: gradle/actions/setup-gradle@v4.0.0
       
     - name: Set execute permissions on gradlew
       run: chmod +x ./gradlew
@@ -51,13 +49,7 @@ jobs:
       env:
         USERNAME: ${{ secrets.USERNAME }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GIT_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
         
-    - name: Set VERSION variable
-      run: |
-        VERSION=$(git describe --tags --abbrev=0 | sed 's/^v//')
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-
     - name: Delete existing release
       id: delete_release
       env:
@@ -86,34 +78,38 @@ jobs:
         tag_name: "v${{ env.VERSION }}"
         release_name: "Release v${{ env.VERSION }}"
         draft: false
-        prerelease: false
+        prerelease: ${{ contains(env.VERSION, 'beta') }}
       id: create_release
       
-    - name: Upload default jar file to release
-      uses: actions/upload-release-asset@v1
+    - name: Upload all jar files to release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/pikopluginlib-${{ env.VERSION }}.jar
-        asset_name: pikopluginlib-${{ env.VERSION }}.jar
-        asset_content_type: application/java-archive
+      run: |
+        tag_name="v${{ env.VERSION }}"
+        echo "Attempting to upload files for tag: $tag_name"
+        
+        # List available jar files
+        ls build/libs/*.jar
+        
+        # Upload each jar file
+        for file in build/libs/*.jar; do
+          if [ -f "$file" ]; then
+            echo "Uploading $file"
+            gh release upload "$tag_name" "$file" --clobber
+          else
+            echo "No jar files found"
+          fi
+        done
+      continue-on-error: true
 
-    - name: Upload kotlin jar file to release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/pikopluginlib-${{ env.VERSION }}-kotlin-*.jar
-        asset_name: pikopluginlib-${{ env.VERSION }}-kotlin.jar
-        asset_content_type: application/java-archive
+    - name: Debug Information
+      run: |
+        echo "Current directory contents:"
+        pwd
+        ls -la
+        echo "Build libs directory:"
+        ls -la build/libs/
+        echo "Version: ${{ env.VERSION }}"
         
     - name: Publish to Maven Local
       run: ./gradlew publishToMavenLocal
-    
-    # - name: Publish to GitHub Packages
-    #  run: ./gradlew publish
-    #  env:
-    #    USERNAME: ${{ secrets.USERNAME }}
-    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
