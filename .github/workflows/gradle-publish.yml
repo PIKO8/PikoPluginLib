@@ -78,7 +78,7 @@ jobs:
         tag_name: "v${{ env.VERSION }}"
         release_name: "Release v${{ env.VERSION }}"
         draft: false
-        prerelease: false
+        prerelease: ${{ contains(env.VERSION, 'beta') }}
       id: create_release
       
     - name: Upload all jar files to release
