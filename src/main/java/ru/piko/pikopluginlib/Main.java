@@ -6,6 +6,7 @@ import ru.piko.pikopluginlib.Listeners.MenuListener;
 import ru.piko.pikopluginlib.Listeners.PluginListener;
 import ru.piko.pikopluginlib.PlayersData.PlayerData;
 import ru.piko.pikopluginlib.PlayersData.PlayerDataRegistry;
+import ru.piko.pikopluginlib.Utils.Test;
 import ru.piko.pikopluginlib.listeners.PlayerListener;
 
 import java.util.*;
@@ -30,6 +31,7 @@ public final class Main extends PikoPlugin {
     public void onStart() {
         //TestFunctions.Static.test(this);
         //TestFunctions.Static.complexFunctionBuilderExample(this);
+        //Test.INSTANCE.test();
     }
     @Override
     public void onStop() {}

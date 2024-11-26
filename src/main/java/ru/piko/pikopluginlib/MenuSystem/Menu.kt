@@ -34,7 +34,11 @@ abstract class Menu(protected val playerData: PlayerData) : InventoryHolder {
 	val player: Player
 		get() = playerData.owner
 	
-	abstract var filter: ItemStack
+	open var filter: ItemStack = MenuItems.FILLER_LIGHT_GLASS
+		get() = field
+		set(value) {
+			field = value
+		}
 	
 	@Deprecated("use getMenuNameComponent")
 	abstract fun getMenuName(): String
