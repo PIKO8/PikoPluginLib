@@ -73,7 +73,7 @@ public abstract class PikoPlugin extends JavaPlugin {
         if (plugin != null) {
             plugin.addPikoPlugin(pluginId, this);
         } else {
-            Main.getPlugin().getLogger().info("I couldn 't add it " + getPluginId() + " to the PikoPlugins system");
+            this.getLogger().warning("[PluginPikoLib] Main class not found!");
         }
         try {
             onRegister();

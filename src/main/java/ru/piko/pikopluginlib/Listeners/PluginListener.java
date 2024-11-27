@@ -11,17 +11,17 @@ import ru.piko.pikopluginlib.PikoPluginData;
 
 public class PluginListener implements Listener {
 
-    @EventHandler
-    public void onEnablePlugin(PluginEnableEvent e) {
-        if (e.getPlugin() instanceof JavaPlugin javaPlugin && javaPlugin instanceof PikoPlugin plugin) {
-            if (!Main.getPlugin().hasPikoPlugin(plugin.getPluginId())) {
-                PikoPluginData data = Main.getPlugin().getPikoPluginData(plugin.getPluginId());
-                if (data != null) { data.activate(plugin, false); }
-            } else {
-                Main.getPlugin().addPikoPlugin(plugin.getPluginId(), plugin);
-            }
-        }
-    }
+//    @EventHandler
+//    public void onEnablePlugin(PluginEnableEvent e) {
+//        if (e.getPlugin() instanceof JavaPlugin javaPlugin && javaPlugin instanceof PikoPlugin plugin) {
+//            if (!Main.getPlugin().hasPikoPlugin(plugin.getPluginId())) {
+//                PikoPluginData data = Main.getPlugin().getPikoPluginData(plugin.getPluginId());
+//                if (data != null) { data.activate(plugin, false); }
+//            } else {
+//                Main.getPlugin().addPikoPlugin(plugin.getPluginId(), plugin);
+//            }
+//        }
+//    }
 
     @EventHandler
     public void onDisablePlugin(PluginDisableEvent e) {
