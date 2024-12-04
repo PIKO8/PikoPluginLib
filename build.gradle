@@ -1,19 +1,22 @@
+// Плагины для сборки проекта
 plugins {
-    id 'java'
-    id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'org.jetbrains.kotlin.jvm' version '2.0.21'
+    id 'java'                                           // Базовая поддержка Java
+    id 'maven-publish'                                  // Публикация в Maven репозиторий
+    id 'com.github.johnrengelman.shadow' version '7.1.2'// Сборка JAR с зависимостями
+    id 'org.jetbrains.kotlin.jvm' version '2.0.21'      // Поддержка Kotlin
 }
 
+// Основные параметры проекта
 group = 'ru.piko'
 version = '0.1.13'
+def minecraftVersion = '1.20.1'
 def kotlinVersion = '2.0.21'
+def targetJavaVersion = 17
 
+// Репозитории для загрузки зависимостей
 repositories {
-    mavenCentral()
-    maven {
-        url = uri("https://repo.papermc.io/repository/maven-public/")
-    }
+    mavenCentral()                                      // Центральный Maven репозиторий
+    maven { url = uri("https://repo.papermc.io/repository/maven-public/") }   // PaperMC
     maven {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
@@ -24,6 +27,7 @@ repositories {
     }
 }
 
+// Конфигурация публикации артефактов
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -33,6 +37,7 @@ publishing {
         }
     }
 
+    // Репозиторий для загрузки пакетов на GitHub
     repositories {
         maven {
             name = "GitHubPackages"
@@ -45,37 +50,90 @@ publishing {
     }
 }
 
+// Зависимости проекта
 dependencies {
     implementation("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
-    implementation("de.tr7zw:item-nbt-api-plugin:2.13.2")
+    implementation("de.tr7zw:item-nbt-api-plugin:2.14.0")
     implementation("org.jetbrains:annotations:24.0.1")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 }
 
-def targetJavaVersion = 17
+// Конфигурация Java
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
 }
 
-tasks.withType(Jar) {
-    manifest {
-        attributes 'Implementation-Title': project.name
-        attributes 'Implementation-Version': project.version
+// Группы библиотек для разных сборок
+def libraryGroups = [
+        Main: [],                                           // Основной JAR без доп. библиотек
+        KotlinMin: ['kotlin-stdlib'],                       // Минимальная версия с Kotlin
+        KotlinMax: ['kotlin-stdlib', 'kotlin-reflect']      // Максимальная версия с Kotlin и рефлексией
+]
+
+// Динамическая генерация JAR для каждой группы библиотек
+libraryGroups.each { groupName, libraries ->
+    tasks.create("jarWith${groupName}Group", Jar) {
+        from sourceSets.main.output
+
+        // Для Main группы не добавляем никаких дополнительных библиотек
+        if (!libraries.isEmpty()) {
+            from {
+                configurations.runtimeClasspath
+                        .findAll { jar ->
+                            libraries.any { lib -> jar.name.contains(lib) }
+                        }
+                        .collect { it.isDirectory() ? it : zipTree(it) }
+            }
+        }
+
+        archiveFileName = "PikoPluginLib-${groupName}-${minecraftVersion}-${project.version}.jar"
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        // Явно исключаем дублирующиеся файлы
+        exclude 'META-INF/*.SF'
+        exclude 'META-INF/*.DSA'
+        exclude 'META-INF/*.RSA'
+        exclude 'META-INF/PikoPluginLib.kotlin_module'
+
+        doFirst {
+            // Дополнительная фильтрация дубликатов
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        }
     }
 }
 
+// Создаем таск для сборки всех групп JAR
+task buildAllGroups {
+    dependsOn tasks.findAll { task ->
+        task.name.startsWith('jarWith') && task.name.endsWith('Group')
+    }
+}
+
+// Таск для сборки конкретной группы библиотек (для тестирования)
+task buildSpecificGroup {
+    doLast {
+        def selectedGroup = project.findProperty('libraryGroup') ?: 'Main'
+        tasks.getByName("jarWith${selectedGroup}Group").actions.each {
+            it.execute(tasks.getByName("jarWith${selectedGroup}Group"))
+        }
+    }
+}
+
+// Настройки компиляции Java
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release = targetJavaVersion
 }
 
+// Настройки компиляции Kotlin
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
         jvmTarget = "$targetJavaVersion"
     }
 }
 
+// Обработка ресурсов с заменой переменных
 processResources {
     def props = [version: version]
     inputs.properties props
@@ -85,39 +143,31 @@ processResources {
     }
 }
 
-// Список библиотек для включения в JAR
-def includedLibraries = [
-        'kotlin-stdlib',
-        'kotlin-reflect'
-]
-
-// JAR без Kotlin
-jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+// Настройка Kotlin toolchain
+kotlin {
+    jvmToolchain(targetJavaVersion)
 }
 
-// JAR с Kotlin
-task jarWithKotlin(type: Jar) {
-    from sourceSets.main.output
-    from {
-        configurations.runtimeClasspath
-                .findAll { jar -> includedLibraries.any { jar.name.startsWith(it) } }
-                .collect { it.isDirectory() ? it : zipTree(it) }
+// Добавление артефактов в сборку
+artifacts {
+    archives tasks.findAll { task ->
+        task.name.startsWith('jarWith') && task.name.endsWith('Group')
     }
-    archiveClassifier = "kotlin-${kotlinVersion}"
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+// Утилитный таск для вывода версии
 task printVersion {
     doLast {
         println project.version
     }
 }
 
-kotlin {
-    jvmToolchain(targetJavaVersion)
+// При сборке проекта будут создаваться все группы
+build {
+    dependsOn buildAllGroups
 }
 
-artifacts {
-    archives jarWithKotlin
+// Отключаем стандартный JAR
+jar {
+    enabled = false
 }
