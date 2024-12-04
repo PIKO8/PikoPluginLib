@@ -7,7 +7,30 @@ RU: <br>
 My library for minecraft plugins for ease of programming.<br>
 The part was taken from the YouTube channel [Kodi Simpson](https://www.youtube.com/@KodySimpson) ([playlist about spigot](https://www.youtube.com/playlist?list=PLfu_Bpi_zcDNEKmR82hnbv9UxQ16nUBF7)) and remade for yourself.<br>
 
+# Релизы | Release
+RU:
+Формат файла: <br>
+`PikoPluginLib-Группа-ВерсияМайнкрафта-ВерсияПлагина.jar`<br>
+## Группы
+Группы сделанны для того что бы сделать разнообразие варинтов jar что бы исключить ошибки о одинаковых библиотеках в разных плагинах например 2 разных jar с котлином и без
+### Main
+Ни каких библиотек в jar
+### KotlinMin
+Только `kotlin-stdlib`. Версия котлин: 2.0.21
+### KotlinMax 
+`kotlin-stdlib` и `kotlin-reflect`. Версия котлин: 2.0.21
+EN:
+File format: <br>
+`PikoPluginLib-Group-MinecraftVersion-PluginVersion.jar`<br>
+## Groups
+Groups are created to provide variety of jar options and prevent errors related to identical libraries in different plugins, for example, two different jars with Kotlin and without
 
+### Main
+No libraries in jar
+### KotlinMin
+Only `kotlin-stdlib`. Kotlin version: 2.0.21
+### KotlinMax 
+`kotlin-stdlib` and `kotlin-reflect`. Kotlin version: 2.0.21
 # Установка | Install
 ```groovy
 repositories {
