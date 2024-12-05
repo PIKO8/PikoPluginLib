@@ -8,7 +8,7 @@ plugins {
 
 // Основные параметры проекта
 group = 'ru.piko'
-version = '0.1.13'
+version = '0.1.14-beta'
 def minecraftVersion = '1.21.1'
 def kotlinVersion = '2.0.21'
 def targetJavaVersion = 21
@@ -158,7 +158,7 @@ artifacts {
 // Утилитный таск для вывода версии
 task printVersion {
     doLast {
-        println project.version
+        println(minecraftVersion + "-" + project.version)
     }
 }
 
