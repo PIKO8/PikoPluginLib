@@ -39,7 +39,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.PIKO8:PikoPluginLib:v0.1.4c'
+    compileOnly 'com.github.PIKO8:PikoPluginLib:v0.1.13'
 }
 ```
 или | or
