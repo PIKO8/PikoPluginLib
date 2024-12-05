@@ -31,7 +31,7 @@ repositories {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            from components.java
+            artifact("build/libs/PikoPluginLib-Main-${minecraftVersion}-${project.version}.jar")
             groupId = 'ru.piko'
             artifactId = 'pikopluginlib'
         }
