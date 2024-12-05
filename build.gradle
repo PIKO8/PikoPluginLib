@@ -74,6 +74,7 @@ afterEvaluate {
                 duplicatesStrategy = DuplicatesStrategy.EXCLUDE
             }
         }
+        tasks.build.dependsOn "jarWith${groupName}Group"
     }
 
     // Конфигурация публикации артефактов
