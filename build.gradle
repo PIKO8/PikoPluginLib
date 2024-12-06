@@ -13,6 +13,14 @@ def minecraftVersion = '1.20.1'
 def kotlinVersion = '2.0.21'
 def targetJavaVersion = 17
 
+
+// Группы библиотек для разных сборок
+def libraryGroups = [
+        Main: [],                                           // Основной JAR без доп. библиотек
+        KotlinMin: ['kotlin-stdlib'],                       // Минимальная версия с Kotlin
+        KotlinMax: ['kotlin-stdlib', 'kotlin-reflect']      // Максимальная версия с Kotlin и рефлексией
+]
+
 // Репозитории для загрузки зависимостей
 repositories {
     mavenCentral()                                      // Центральный Maven репозиторий
@@ -27,29 +35,6 @@ repositories {
     }
 }
 
-// Конфигурация публикации артефактов
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            groupId = 'ru.piko'
-            artifactId = 'pikopluginlib'
-        }
-    }
-
-    // Репозиторий для загрузки пакетов на GitHub
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/PIKO8/PikoPluginLib")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
-}
-
 // Зависимости проекта
 dependencies {
     implementation("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
@@ -59,48 +44,67 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 }
 
-// Конфигурация Java
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-}
+afterEvaluate {
+    // Динамическая генерация JAR для каждой группы библиотек
+    libraryGroups.each { groupName, libraries ->
+        tasks.create("jarWith${groupName}Group", Jar) {
+            from sourceSets.main.output
 
-// Группы библиотек для разных сборок
-def libraryGroups = [
-        Main: [],                                           // Основной JAR без доп. библиотек
-        KotlinMin: ['kotlin-stdlib'],                       // Минимальная версия с Kotlin
-        KotlinMax: ['kotlin-stdlib', 'kotlin-reflect']      // Максимальная версия с Kotlin и рефлексией
-]
+            // Для Main группы не добавляем никаких дополнительных библиотек
+            if (!libraries.isEmpty()) {
+                from {
+                    configurations.runtimeClasspath
+                            .findAll { jar ->
+                                libraries.any { lib -> jar.name.contains(lib) }
+                            }
+                            .collect { it.isDirectory() ? it : zipTree(it) }
+                }
+            }
 
-// Динамическая генерация JAR для каждой группы библиотек
-libraryGroups.each { groupName, libraries ->
-    tasks.create("jarWith${groupName}Group", Jar) {
-        from sourceSets.main.output
+            archiveFileName = "PikoPluginLib-${groupName}-${minecraftVersion}-${project.version}.jar"
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-        // Для Main группы не добавляем никаких дополнительных библиотек
-        if (!libraries.isEmpty()) {
-            from {
-                configurations.runtimeClasspath
-                        .findAll { jar ->
-                            libraries.any { lib -> jar.name.contains(lib) }
-                        }
-                        .collect { it.isDirectory() ? it : zipTree(it) }
+            // Явно исключаем дублирующиеся файлы
+            exclude 'META-INF/*.SF'
+            exclude 'META-INF/*.DSA'
+            exclude 'META-INF/*.RSA'
+            exclude 'META-INF/PikoPluginLib.kotlin_module'
+
+            doFirst {
+                // Дополнительная фильтрация дубликатов
+                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+            }
+        }
+        tasks.build.dependsOn "jarWith${groupName}Group"
+    }
+
+    // Конфигурация публикации артефактов
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifact(tasks.getByName("jarWithMainGroup").archiveFile)
+                groupId = 'ru.piko'
+                artifactId = 'pikopluginlib'
             }
         }
 
-        archiveFileName = "PikoPluginLib-${groupName}-${minecraftVersion}-${project.version}.jar"
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-        // Явно исключаем дублирующиеся файлы
-        exclude 'META-INF/*.SF'
-        exclude 'META-INF/*.DSA'
-        exclude 'META-INF/*.RSA'
-        exclude 'META-INF/PikoPluginLib.kotlin_module'
-
-        doFirst {
-            // Дополнительная фильтрация дубликатов
-            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        // Репозиторий для загрузки пакетов на GitHub
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/PIKO8/PikoPluginLib")
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                    password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
+                }
+            }
         }
     }
+}
+
+// Конфигурация Java
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
 }
 
 // Создаем таск для сборки всех групп JAR
