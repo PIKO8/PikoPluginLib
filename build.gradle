@@ -8,7 +8,7 @@ plugins {
 
 // Основные параметры проекта
 group = 'ru.piko'
-version = '0.1.14-beta.3'
+version = '0.1.14-beta.4'
 def minecraftVersion = '1.20.1'
 def kotlinVersion = '2.0.21'
 def targetJavaVersion = 17
@@ -82,7 +82,7 @@ afterEvaluate {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                artifact(tasks.getByName("jarWithMainGroup").archiveFile)
+                artifact(tasks.getByName("jarWithKotlinMaxGroup").archiveFile)
                 groupId = 'ru.piko'
                 artifactId = 'pikopluginlib'
             }
