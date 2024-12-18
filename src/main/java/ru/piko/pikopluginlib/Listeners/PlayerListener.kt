@@ -8,7 +8,7 @@ import ru.piko.pikopluginlib.Main
 import ru.piko.pikopluginlib.PlayersData.APersistentPlayerData
 import ru.piko.pikopluginlib.PlayersData.APlayerData
 import ru.piko.pikopluginlib.PlayersData.PlayerDataRegistry
-import ru.piko.pikopluginlib.Utils.main
+import ru.piko.pikopluginlib.Utils.PikoVariables.main
 
 class PlayerListener : Listener {
     

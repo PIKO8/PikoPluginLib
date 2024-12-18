@@ -3,7 +3,7 @@ package ru.piko.pikopluginlib.Commands
 import org.bukkit.command.TabExecutor
 import ru.piko.pikopluginlib.PikoPlugin
 import ru.piko.pikopluginlib.PikoPluginData
-import ru.piko.pikopluginlib.Utils.main
+import ru.piko.pikopluginlib.Utils.PikoVariables.main
 
 abstract class AbstractCommandManager(
 	val namePikoPlugin: String,

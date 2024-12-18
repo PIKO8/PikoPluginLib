@@ -9,7 +9,7 @@ import ru.piko.pikopluginlib.Commands.Gamerules.GameRuleStandardSave
 import ru.piko.pikopluginlib.Functions.FunctionAbstract.Static.destroyAll
 import ru.piko.pikopluginlib.PlayersData.PlayerData
 import ru.piko.pikopluginlib.PlayersData.PlayerDataRegistry
-import ru.piko.pikopluginlib.Utils.main
+import ru.piko.pikopluginlib.Utils.PikoVariables.main
 import java.io.File
 import java.util.*
 

@@ -5,7 +5,7 @@ import ru.piko.pikopluginlib.Listeners.MenuListener
 import ru.piko.pikopluginlib.Listeners.PluginListener
 import ru.piko.pikopluginlib.PlayersData.PlayerData
 import ru.piko.pikopluginlib.PlayersData.PlayerDataRegistry
-import ru.piko.pikopluginlib.Utils.main
+import ru.piko.pikopluginlib.Utils.PikoVariables.main
 import ru.piko.pikopluginlib.listeners.PlayerListener
 import java.util.*
 
