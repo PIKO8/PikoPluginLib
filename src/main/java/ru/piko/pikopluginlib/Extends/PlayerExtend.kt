@@ -1,4 +1,4 @@
-package ru.piko.pikopluginlib.Utils.Extends
+package ru.piko.pikopluginlib.Extends
 
 import org.bukkit.Material
 import org.bukkit.entity.Player

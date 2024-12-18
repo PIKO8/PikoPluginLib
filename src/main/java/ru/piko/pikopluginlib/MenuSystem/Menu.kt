@@ -10,7 +10,7 @@ import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
 import ru.piko.pikopluginlib.MenuSystem.Events.PlayerOpenMenuEvent
 import ru.piko.pikopluginlib.PlayersData.PlayerData
-import ru.piko.pikopluginlib.Utils.Extends.toComponent
+import ru.piko.pikopluginlib.Extends.toComponent
 
 abstract class Menu(protected val playerData: PlayerData) : InventoryHolder {
 	

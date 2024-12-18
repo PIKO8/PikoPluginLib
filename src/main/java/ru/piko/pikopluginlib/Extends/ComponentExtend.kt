@@ -1,4 +1,4 @@
-package ru.piko.pikopluginlib.Utils.Extends
+package ru.piko.pikopluginlib.Extends
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
