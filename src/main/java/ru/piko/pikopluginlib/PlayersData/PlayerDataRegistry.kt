@@ -2,7 +2,7 @@ package ru.piko.pikopluginlib.PlayersData
 
 class PlayerDataRegistry {
 	val function: (PlayerData) -> APlayerData
-	val data: Map<String, Any>
+	val data: Map<String, Any> // TODO? А в функцию почему не передаётся?
 	val load: Boolean
 	val unload: Boolean
 	
@@ -19,6 +19,5 @@ class PlayerDataRegistry {
 		this.unload = data["unload"] as? Boolean ?: false
 		this.function = function
 	}
-	
 	
 }

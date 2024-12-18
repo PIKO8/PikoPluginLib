@@ -9,6 +9,8 @@ import ru.piko.pikopluginlib.Main
 import ru.piko.pikopluginlib.MenuSystem.Menu
 import ru.piko.pikopluginlib.PlayersData.PlayerData
 
+val main: Main = Main.getPlugin() ?: throw IllegalStateException("PikoPluginLib Not uploaded yet!!!")
+
 fun ItemStack.update(newItemStack: ItemStack) {
     this.itemMeta = newItemStack.itemMeta?.clone() // Клонируем метаданные
     this.amount = newItemStack.amount
@@ -16,7 +18,7 @@ fun ItemStack.update(newItemStack: ItemStack) {
 }
 
 fun Player.getData(): PlayerData {
-    return Main.getPlugin().getPlayerData(this.uniqueId)
+    return main.getPlayerData(this.uniqueId)
 }
 
 fun Player.openMenu(function: (Player) -> Menu) {

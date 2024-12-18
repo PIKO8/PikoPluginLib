@@ -52,7 +52,13 @@ class FunctionChain private constructor(
 	
 	override fun run() {
 		// Запускаем текущую функцию и получаем результат
-		val result = functions[functionIndex].invoke()
+		val result = try {
+			functions[functionIndex].invoke()
+		} catch (e: Exception) {
+			plugin.logger.warning("[PikoPluginLib] (${this::class.java}) Перехвачена ошибка в функции с id='$id'. Функция остановлена. Ошибка:")
+			e.printStackTrace()
+			ChainResult.Break
+		}
 		
 		when (result) {
 			ChainResult.None -> {}
@@ -98,8 +104,8 @@ class FunctionChain private constructor(
 	}
 	
 	override fun destroySelf() {
-		task?.cancel()
-		list.remove(this)
+		task?.let { if (!it.isCancelled) it.cancel() }
+		FunctionAbstract.removeObjectInList(list, this)
 	}
 	
 	override fun init() {

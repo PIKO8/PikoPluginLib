@@ -3,7 +3,6 @@ package ru.piko.pikopluginlib.Functions
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitTask
-import ru.piko.pikopluginlib.Functions.FunctionPeriodic.Companion
 import java.util.*
 
 abstract class FunctionAbstract(
@@ -30,7 +29,6 @@ abstract class FunctionAbstract(
 		
 		fun destroy(functionAbstract: FunctionAbstract) {
 			functionAbstract.destroySelf()
-			list.remove(functionAbstract)
 		}
 		
 		fun destroyAll(plugin: JavaPlugin) {
@@ -44,7 +42,13 @@ abstract class FunctionAbstract(
 			}
 			for (item in itemsToRemove) {
 				item.destroySelf()
-				list.remove(item)
+			}
+		}
+		
+		fun <T: FunctionAbstract> removeObjectInList(list: MutableList<T>, obj: FunctionAbstract) {
+			synchronized(list) {
+				list.remove(obj)
+				this.list.remove(obj)
 			}
 		}
 		
@@ -57,7 +61,6 @@ abstract class FunctionAbstract(
 			}
 			for (item in itemsToRemove) {
 				item.destroySelf()
-				list.remove(item)
 			}
 		}
 		
@@ -72,7 +75,6 @@ abstract class FunctionAbstract(
 			}
 			for (item in itemsToRemove) {
 				item.destroySelf()
-				list.remove(item)
 			}
 		}
 	}

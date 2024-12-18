@@ -1,87 +1,55 @@
-package ru.piko.pikopluginlib.Commands;
+package ru.piko.pikopluginlib.Commands
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.command.Command
+import org.bukkit.command.CommandSender
+import org.bukkit.command.TabExecutor
+import ru.piko.pikopluginlib.Utils.UText.color
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static ru.piko.pikopluginlib.Utils.UText.color;
-
-public class CommandManager implements TabExecutor {
-
-    private final String namePikoPlugin;
-    private final String commandName;
-    private final ArrayList<SubCommand> subCommands = new ArrayList<>();
-    public ArrayList<SubCommand> getSubCommands(){
-        return subCommands;
-    }
-    public void addSubCommand(SubCommand command) {
-        if (!subCommands.contains(command))
-        {
-            command.setCommandManager(this);
-            subCommands.add(command);
-        }
-    }
-    public void clearSubCommands() {
-        subCommands.clear();
-    }
-
-    public CommandManager(String namePikoPlugin, String commandName) {
-        this.namePikoPlugin = namePikoPlugin;
-        this.commandName = commandName;
-    }
-
-    public String getNamePikoPlugin() {
-        return namePikoPlugin;
-    }
-
-    public String getCommandName() {
-        return commandName;
-    }
-
-    @Override
-    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if (strings == null) return true;
-        if (strings.length > 0){
-            for (int i = 0; i < getSubCommands().size(); i++){
-                if (strings[0].equalsIgnoreCase(getSubCommands().get(i).getName())){
-                    if (!getSubCommands().get(i).hasPermission(commandSender, strings)) {
-                        commandSender.sendMessage(color("Недостаточно прав!"));
-                        return true;
-                    }
-                    getSubCommands().get(i).perform(commandSender, strings);
-                }
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if (strings.length == 1){
-            ArrayList<String> subcommandsArguments = new ArrayList<>();
-
-            for (int i = 0; i < getSubCommands().size(); i++){
-                if (getSubCommands().get(i).hasPermission(commandSender, strings)) {
-                    String subcommandName = getSubCommands().get(i).getName();
-                    if (subcommandName.toLowerCase().contains(strings[0].toLowerCase())) {
-                        subcommandsArguments.add(subcommandName);
-                    }
-                }
-            }
-            return subcommandsArguments;
-        }else if(strings.length >= 2){
-            for (int i = 0; i < getSubCommands().size(); i++){
-                if (strings[0].equalsIgnoreCase(getSubCommands().get(i).getName())){
-                    return getSubCommands().get(i).getSubCommandArguments(commandSender, strings);
-                }
-            }
-        }
-
-        return List.of("Неверные_предыдущие_значения!");
-    }
+class CommandManager(
+	namePikoPlugin: String,
+	commandName: String,
+	helper: AbstractHelper? = null,
+) : AbstractCommandManager(namePikoPlugin, commandName, helper), TabExecutor {
+	
+	override fun onCommand(
+		commandSender: CommandSender,
+		command: Command,
+		s: String,
+		strings: Array<String>
+	): Boolean {
+		if (strings.isEmpty()) return true
+		
+		commands.find { it.name.equals(strings[0], ignoreCase = true) }?.let { subCommand ->
+			if (!subCommand.hasPermission(commandSender, strings)) {
+				commandSender.sendMessage(color("Недостаточно прав!"))
+				return true
+			}
+			subCommand.perform(commandSender, strings)
+		}
+		
+		return true
+	}
+	
+	override fun onTabComplete(
+		commandSender: CommandSender,
+		command: Command,
+		s: String,
+		strings: Array<String>
+	): List<String> {
+		return when {
+			strings.size == 1 -> {
+				commands
+					.filter { it.hasPermission(commandSender, strings) }
+					.map { it.name }
+					.filter { it.lowercase().contains(strings[0].lowercase()) }
+			}
+			strings.size >= 2 -> {
+				commands
+					.find { it.name.equals(strings[0], ignoreCase = true) }
+					?.arguments(commandSender, strings)
+					?: listOf("Неверные_предыдущие_значения!")
+			}
+			else -> listOf("Неверные_предыдущие_значения!")
+		}
+	}
 }

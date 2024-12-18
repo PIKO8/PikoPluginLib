@@ -15,13 +15,19 @@ class FunctionTimer private constructor(
     val function: () -> Unit,
 ) : FunctionAbstract(plugin, 1, delay, id, stopAllWithId) {
 	override fun run() {
-		function.invoke()
-		destroySelf()
+		try {
+			function.invoke()
+		} catch (e: Exception) {
+			plugin.logger.warning("[PikoPluginLib] (${this::class.java}) Перехвачена ошибка в функции с id='$id'. Ошибка:")
+			e.printStackTrace()
+		} finally {
+			destroySelf()
+		}
 	}
 	
 	override fun destroySelf() {
-		task?.cancel()
-		list.remove(this)
+		task?.let { if (!it.isCancelled) it.cancel() }
+		FunctionAbstract.removeObjectInList(list, this)
 	}
 	
 	override fun init() {

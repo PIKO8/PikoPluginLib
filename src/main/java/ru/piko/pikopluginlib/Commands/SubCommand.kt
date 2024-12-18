@@ -1,45 +1,25 @@
-package ru.piko.pikopluginlib.Commands;
+package ru.piko.pikopluginlib.Commands
 
-import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.command.CommandSender
 
-import java.util.List;
-import java.util.Objects;
+abstract class SubCommand : AbstractCommand()
 
-public abstract class SubCommand {
-
-    private CommandManager commandManager = null;
-
-    public void setCommandManager(CommandManager commandManager) {
-        this.commandManager = commandManager;
-    }
-
-    protected CommandManager getCommandManager() {
-        return commandManager;
-    }
-
-    public abstract String getName();
-    public abstract String getDescription();
-    public abstract String getSyntax();
-    public abstract String getPermission(@NotNull CommandSender sender, @NotNull String[] args);
-    public abstract void perform(@NotNull CommandSender sender, @NotNull String[] args);
-    public abstract List<String> getSubCommandArguments(@NotNull CommandSender sender, @NotNull String[] args);
-    public boolean hasPermission(@NotNull CommandSender sender, @NotNull String[] args) {
-        String permission = getPermission(sender, args);
-        return permission == null || sender.hasPermission(permission);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SubCommand that = (SubCommand) o;
-        return Objects.equals(getName(), that.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName());
-    }
+class SimpleSubCommand(
+	override val name: String,
+	private val action: (SubCommand, CommandSender, Array<String>) -> Unit,
+	private val tabs: (SubCommand, CommandSender, Array<String>) -> List<String>? = { _, _, _ -> listOf("") },
+	private val permissions: ((SubCommand, CommandSender, Array<String>) -> List<String>?)? = null,
+) : SubCommand() {
+	
+	override fun perform(sender: CommandSender, args: Array<String>) {
+		action(this, sender, args)
+	}
+	
+	override fun arguments(sender: CommandSender, args: Array<String>): List<String> {
+		return tabs(this, sender, args) ?: listOf("")
+	}
+	
+	override fun getPermissions(sender: CommandSender, args: Array<String>): List<String>? {
+		return permissions?.invoke(this, sender, args)
+	}
 }
-

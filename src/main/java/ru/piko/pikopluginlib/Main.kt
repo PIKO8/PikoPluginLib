@@ -1,162 +1,117 @@
-package ru.piko.pikopluginlib;
+package ru.piko.pikopluginlib
 
-import org.jetbrains.annotations.NotNull;
-import ru.piko.pikopluginlib.Commands.SubCommands.ReloadSubCommand;
-import ru.piko.pikopluginlib.Listeners.MenuListener;
-import ru.piko.pikopluginlib.Listeners.PluginListener;
-import ru.piko.pikopluginlib.PlayersData.PlayerData;
-import ru.piko.pikopluginlib.PlayersData.PlayerDataRegistry;
-import ru.piko.pikopluginlib.Utils.Test;
-import ru.piko.pikopluginlib.listeners.PlayerListener;
+import ru.piko.pikopluginlib.Commands.SubCommands.ReloadSubCommand
+import ru.piko.pikopluginlib.Listeners.MenuListener
+import ru.piko.pikopluginlib.Listeners.PluginListener
+import ru.piko.pikopluginlib.PlayersData.PlayerData
+import ru.piko.pikopluginlib.PlayersData.PlayerDataRegistry
+import ru.piko.pikopluginlib.Utils.main
+import ru.piko.pikopluginlib.listeners.PlayerListener
+import java.util.*
 
-import java.util.*;
-
-public final class Main extends PikoPlugin {
-
-    private static Main plugin;
-    private final Map<String, PikoPluginData> pikoPluginDataMap = new HashMap<>();
-    /**
-     * A map that stores player data for each player by their UUID.
-     */
-    private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
-
-    private final HashMap<String, PlayerDataRegistry> playerDataRegistry = new HashMap<>();
-
-    @Override
-    public String getPluginId() {
-        return "ru.piko.lib";
-    }
-
-    @Override
-    public void onStart() {
-        //TestFunctions.Static.test(this);
-        //TestFunctions.Static.complexFunctionBuilderExample(this);
-        //Test.INSTANCE.test();
-    }
-    @Override
-    public void onStop() {}
-    @Override
-    public void onRegister() {}
-
-    @Override
-    public void onEnable() {
-        plugin = this;
-        this.pluginId = getPluginId();
-        addPikoPlugin(this.pluginId, this, true);
-        System.out.println("PikoPluginLib load!");
-        getServer().getPluginManager().registerEvents(new MenuListener(), this);
-        getServer().getPluginManager().registerEvents(new PluginListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-
-        getOrCreateCommandManager("piko").addSubCommand(new ReloadSubCommand());
-        onStart();
-    }
-
-    public static Main getPlugin() {
-        return plugin;
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="Piko Plugin Data">
-
-    public PikoPluginData getPikoPluginData(@NotNull String id) {
-        return pikoPluginDataMap.get(id);
-    }
-
-    public void disablePikoPlugin(@NotNull String id) {
-        if (pikoPluginDataMap.containsKey(id)) {
-            PikoPluginData data = pikoPluginDataMap.get(id);
-            if (data.getStatus().isBlocked() || data.getStatus().isDisable()) return;
-            data.setPlugin(null);
-            data.setStatus(EStatusPlugin.DISABLE);
-        }
-    }
-
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Piko Plugin">
-
-    public void addDisablePikoPlugin(@NotNull String id) {
-        if (!pikoPluginDataMap.containsKey(id)) {
-            pikoPluginDataMap.put(id, new PikoPluginData(id));
-        }
-    }
-
-    public void addPikoPlugin(@NotNull String id, @NotNull PikoPlugin pikoPlugin) {
-        addPikoPlugin(id, pikoPlugin, false);
-    }
-
-    public void addPikoPlugin(@NotNull String id, @NotNull PikoPlugin pikoPlugin, boolean blocked) {
-        if (pikoPluginDataMap.containsKey(id)) {
-            PikoPluginData data = pikoPluginDataMap.get(id);
-            if (data.getStatus().isEnable()) {
-                System.out.println("PikoPlugin with id: " + id + " already registered.");
-            } else {
-                data.activate(pikoPlugin, blocked);
-            }
-        } else {
-            pikoPluginDataMap.put(id, new PikoPluginData(id, pikoPlugin, blocked));
-        }
-    }
-    /**
-     * @deprecated see {@link #getPikoPluginData(String)}
-     */
-    @Deprecated
-    public PikoPlugin getPikoPlugin(@NotNull String id) {
-        return pikoPluginDataMap.get(id).getPlugin();
-    }
-    public boolean hasPikoPlugin(@NotNull String id) {
-        return pikoPluginDataMap.containsKey(id) && pikoPluginDataMap.get(id).getStatus().isEnable();
-    }
-
-    /**
-     * @deprecated see {@link #disablePikoPlugin(String)}
-     */
-    @Deprecated
-    public void removePikoPlugin(@NotNull String id) {
-        disablePikoPlugin(id);
-    }
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Player Data">
-    public @NotNull PlayerData getPlayerData(@NotNull UUID owner) {
-        if (playerDataMap.containsKey(owner)) {
-            return playerDataMap.get(owner);
-        }
-        PlayerData data = new PlayerData(owner);
-        playerDataMap.put(owner, data);
-        return data;
-    }
-
-    public boolean hasOnlinePlayerData(@NotNull UUID owner) {
-        if (playerDataMap.containsKey(owner)) {
-            return playerDataMap.get(owner).getOwner() != null;
-        }
-        return getServer().getPlayer(owner) != null;
-    }
-
-    public void removePlayerData(@NotNull UUID owner) {
-        playerDataMap.remove(owner);
-    }
-
-      // <editor-fold-sub defaultstate="collapsed" desc="Registry">
-    public void registerPlayerData(String id, PlayerDataRegistry registry) {
-        playerDataRegistry.put(id, registry);
-    }
-
-    public void unregisterPlayerData(String id) {
-        playerDataRegistry.remove(id);
-    }
-
-    public HashMap<String, PlayerDataRegistry> getPlayerDataRegistry() {
-        return new HashMap<>(playerDataRegistry);
-    }
-
-    // </editor-fold-sub>
-
-    // </editor-fold>
-
-    public Map<String, PikoPluginData> getPikoPlugins() {
-        return pikoPluginDataMap;
-    }
-
+class Main : PikoPlugin() {
+	
+	companion object {
+		private var plugin: Main? = null
+		
+		fun getPlugin(): Main? = plugin
+	}
+	
+	private val pikoPluginDataMap = mutableMapOf<String, PikoPluginData>()
+	private val playerDataMap = mutableMapOf<UUID, PlayerData>()
+	override val playerDataRegistry = mutableMapOf<String, PlayerDataRegistry>()
+	
+	override fun getId(): String = "ru.piko.lib"
+	
+	override fun onStart() {
+		// TestFunctions.Static.test(this)
+		// TestFunctions.Static.complexFunctionBuilderExample(this)
+		// Test.INSTANCE.test()
+	}
+	
+	override fun onStop() {}
+	override fun onRegister() {}
+	
+	override fun onEnable() {
+		plugin = this
+		this.pluginId = getId()
+		addPikoPlugin(this.pluginId, this, true)
+		println("PikoPluginLib load!")
+		server.pluginManager.registerEvents(MenuListener(), this)
+		server.pluginManager.registerEvents(PluginListener(), this)
+		server.pluginManager.registerEvents(PlayerListener(), this)
+		
+		getOrCreateCommandManager("piko").addCommand(ReloadSubCommand())
+		onStart()
+	}
+	
+	override fun getPikoPluginData(id: String): PikoPluginData? = pikoPluginDataMap[id]
+	
+	fun disablePikoPlugin(id: String) {
+		pikoPluginDataMap[id]?.let { data ->
+			if (!data.status.isDisable) {
+				data.disable()
+			}
+		}
+	}
+	
+	fun addDisablePikoPlugin(id: String) {
+		if (id !in pikoPluginDataMap) {
+			pikoPluginDataMap[id] = PikoPluginData(id)
+		}
+	}
+	
+	fun addPikoPlugin(id: String, pikoPlugin: PikoPlugin, blocked: Boolean = false) {
+		(pikoPluginDataMap[id]).let { data ->
+			val status = data?.status ?: EStatusPlugin.UNREGISTERED
+			when {
+				data == null || status.isUnregistered -> {
+					pikoPluginDataMap[id] = PikoPluginData(id, pikoPlugin, blocked)
+				}
+				status.isEnable -> {
+					println("PikoPlugin with ID: $id already registered.")
+				}
+				status.isBlocked -> {
+					main.logger.warning("The plugin with ID: $id, which has a lock state, has probably been reloaded. This means that it is NOT RECOMMENDED to restart this plugin. Tip: restart the server completely.")
+					data.activate(pikoPlugin, true)
+				}
+				status.isDisable -> {
+					println("PikoPlugin with ID: $id is enabled")
+					data.activate(pikoPlugin, blocked)
+				}
+			}
+		}
+	}
+	
+	@Deprecated("see {@link #getPikoPluginData(String)}")
+	override fun getPikoPlugin(id: String): PikoPlugin? = pikoPluginDataMap[id]?.plugin
+	
+	override fun hasPikoPlugin(id: String): Boolean = pikoPluginDataMap[id]?.status?.isEnable == true
+	
+	@Deprecated("see {@link #disablePikoPlugin(String)}")
+	fun removePikoPlugin(id: String) {
+		disablePikoPlugin(id)
+	}
+	
+	override fun getPlayerData(owner: UUID): PlayerData {
+		return playerDataMap.getOrPut(owner) { PlayerData(owner) }
+	}
+	
+	override fun hasOnlinePlayerData(owner: UUID): Boolean {
+		return playerDataMap[owner]?.owner != null || server.getPlayer(owner) != null
+	}
+	
+	override fun removePlayerData(owner: UUID) {
+		playerDataMap.remove(owner)
+	}
+	
+	override fun registerPlayerData(id: String, registry: PlayerDataRegistry) {
+		playerDataRegistry[id] = registry
+	}
+	
+	override fun unregisterPlayerData(id: String) {
+		playerDataRegistry.remove(id)
+	}
+	
+	fun getPikoPlugins(): Map<String, PikoPluginData> = pikoPluginDataMap
 }

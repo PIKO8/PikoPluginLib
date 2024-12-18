@@ -10,7 +10,7 @@ public class GameRuleStandardSave extends AGameRuleModification {
 
     public GameRuleStandardSave(String pluginId) {
         this.pluginId = pluginId;
-        this.gameRuleFile = new GameRuleFile(Main.getPlugin().getPikoPlugin(pluginId).getDataFolder());
+        this.gameRuleFile = new GameRuleFile(Main.Companion.getPlugin().getPikoPlugin(pluginId).getDataFolder());
     }
 
     public GameRuleStandardSave setStandardSetValue() {

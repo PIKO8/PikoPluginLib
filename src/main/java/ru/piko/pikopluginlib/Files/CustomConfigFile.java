@@ -12,7 +12,7 @@ public abstract class CustomConfigFile {
     protected FileConfiguration fileConfiguration;
 
     public CustomConfigFile(String relativePath) {
-        this(Main.getPlugin().getDataFolder(), relativePath);
+        this(Main.Companion.getPlugin().getDataFolder(), relativePath);
     }
     public CustomConfigFile(File dataFolder, String relativePath) {
         file = new File(dataFolder, relativePath + ".yml");

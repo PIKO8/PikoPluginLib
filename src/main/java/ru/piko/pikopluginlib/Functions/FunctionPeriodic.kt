@@ -20,14 +20,21 @@ class FunctionPeriodic private constructor(
 	 * RU: Если функция вернёт false то завершаем
 	 */
 	override fun run() {
-		if (!function.invoke()) {
+		val result: Boolean = try {
+			function.invoke()
+		} catch (e: Exception) {
+			plugin.logger.warning("[PikoPluginLib] (${this::class.java}) Перехвачена ошибка в функции с id='$id'. Ошибка:")
+			e.printStackTrace()
+			false
+		}
+		if (!result) {
 			destroySelf()
 		}
 	}
 	
 	override fun destroySelf() {
-		task?.cancel()
-		list.remove(this)
+		task?.let { if (!it.isCancelled) it.cancel() }
+		FunctionAbstract.removeObjectInList(list, this)
 	}
 	
 	override fun init() {

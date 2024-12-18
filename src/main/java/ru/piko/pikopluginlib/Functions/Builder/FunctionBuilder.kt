@@ -43,7 +43,14 @@ class FunctionBuilder private constructor(
 				return
 			}
 			// Вызываем функцию и получаем результат
-			val result = currentFunction(data)
+			val result = try {
+				currentFunction(data)
+			} catch (e: Exception) {
+				plugin.logger.warning("[PikoPluginLib] (${this::class.java}) Перехвачена ошибка в функции с id='$id'. Функция остановлена. Ошибка:")
+				e.printStackTrace()
+				BuilderResult.Break
+			}
+			
 			// Обновляем предыдущий результат
 			data.previousResult = result
 			
@@ -100,8 +107,8 @@ class FunctionBuilder private constructor(
 	}
 	
 	override fun destroySelf() {
-		task?.cancel()
-		list.remove(this)
+		task?.let { if (!it.isCancelled) it.cancel() }
+		FunctionAbstract.removeObjectInList(list, this)
 	}
 	override fun init() {
 		list.add(this)

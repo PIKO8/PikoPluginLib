@@ -1,0 +1,38 @@
+package ru.piko.pikopluginlib.Commands
+
+import org.bukkit.command.CommandSender
+import ru.piko.pikopluginlib.Utils.UText.color
+
+class DefaultHelper : AbstractHelper() {
+	override val name: String = "help"
+	
+	override fun perform(sender: CommandSender, args: Array<String>) {
+		val commands = commandManager.commands
+		
+		for (com in commands) {
+			sender.sendMessage(color("&7========================================"))
+			if (com is HelperSubCommand) {
+				sender.sendMessage(color("&6${com.name} &f- &a${com.description}"))
+				sender.sendMessage(color("&6Синтаксис: &a${com.syntax}"))
+				sender.sendMessage(color("&7----------------------------------------"))
+			}
+			sender.sendMessage(color("&7========================================"))
+		}
+		
+	}
+	
+	override fun arguments(sender: CommandSender, args: Array<String>): List<String> {
+		return when (args.size) {
+			2 -> listOf("command", "page")
+			3 -> when (args.getOrNull(1)) {
+				null -> listOf("")
+				"command" -> listOf("<name>")
+				"page" -> listOf("<value>")
+				else -> listOf("")
+			}
+			else -> listOf("")
+		}
+	}
+	
+	
+}

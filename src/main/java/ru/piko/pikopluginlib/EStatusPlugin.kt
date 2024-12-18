@@ -1,13 +1,20 @@
-package ru.piko.pikopluginlib;
+package ru.piko.pikopluginlib
 
-public enum EStatusPlugin {
-    BLOCKED,
+enum class EStatusPlugin {
+    BLOCKED_ENABLE,
+    BLOCKED_DISABLE,
     ENABLE,
-    DISABLE;
-
-    public boolean isEnable() { return this == BLOCKED || this == ENABLE; }
-    public boolean isDisable() { return this == DISABLE; }
-    public boolean isBlocked() { return this == BLOCKED; }
-    public boolean isUnavailable() { return this == DISABLE || this == BLOCKED; }
-
+    DISABLE,
+    UNREGISTERED;
+    
+    val isEnable: Boolean
+        get() = this == ENABLE || this == BLOCKED_ENABLE
+    val isDisable: Boolean
+        get() = this == DISABLE || this == BLOCKED_DISABLE
+    val isBlocked: Boolean
+        get() = this == BLOCKED_ENABLE || this == BLOCKED_DISABLE
+    val isUnavailable: Boolean
+        get() = this == DISABLE || this == BLOCKED_ENABLE || this == BLOCKED_DISABLE || this == UNREGISTERED
+    val isUnregistered: Boolean
+        get() = this == UNREGISTERED
 }

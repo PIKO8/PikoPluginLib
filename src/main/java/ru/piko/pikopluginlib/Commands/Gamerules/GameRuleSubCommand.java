@@ -2,6 +2,7 @@ package ru.piko.pikopluginlib.Commands.Gamerules;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import ru.piko.pikopluginlib.Commands.HelperSubCommand;
 import ru.piko.pikopluginlib.Commands.SubCommand;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 
 import static ru.piko.pikopluginlib.Utils.UText.color;
 
-public class GameRuleSubCommand extends SubCommand {
+public class GameRuleSubCommand extends HelperSubCommand {
 
     private final List<GameRule> gameRules = new ArrayList<>();
 
@@ -19,16 +20,19 @@ public class GameRuleSubCommand extends SubCommand {
         }
     }
 
+    @NotNull
     @Override
     public String getName() {
         return "gamerule";
     }
 
+    @NotNull
     @Override
     public String getDescription() {
         return "Позволяет менять правила плагина";
     }
 
+    @NotNull
     @Override
     public String getSyntax() {
         return "/" + getCommandManager().getCommandName() + "gamerule <gamerule name> (set, get, help) [value]";
@@ -39,7 +43,7 @@ public class GameRuleSubCommand extends SubCommand {
     }
 
     @Override
-    public String getPermission(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+    public List<String> getPermissions(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
 
         return null;
     }
@@ -81,8 +85,9 @@ public class GameRuleSubCommand extends SubCommand {
         }
     }
 
+    @NotNull
     @Override
-    public List<String> getSubCommandArguments(@NotNull CommandSender sender, String @NotNull [] args) {
+    public List<String> arguments(@NotNull CommandSender sender, String @NotNull [] args) {
         List<String> arguments = new ArrayList<>();
 
         if (args.length == 2) {

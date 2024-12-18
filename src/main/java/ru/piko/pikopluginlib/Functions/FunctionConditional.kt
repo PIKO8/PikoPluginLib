@@ -17,15 +17,27 @@ class FunctionConditional private constructor(
     val function: () -> Unit,
 ) : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {
 	override fun run() {
-		if (condition.invoke()) {
-			function.invoke()
+		val result: Boolean = try {
+			condition.invoke()
+		} catch (e: Exception) {
+			plugin.logger.warning("[PikoPluginLib] (${this::class.java}) Перехвачена ошибка в функции(условие) с id='$id'. Ошибка:")
+			e.printStackTrace()
+			false
+		}
+		if (result) {
+			try {
+				function.invoke()
+			} catch (e: Exception) {
+				plugin.logger.warning("[PikoPluginLib] (${this::class.java}) Перехвачена ошибка в функции(основной) с id='$id'. Ошибка:")
+				e.printStackTrace()
+			}
 			destroySelf()
 		}
 	}
 	
 	override fun destroySelf() {
-		task?.cancel()
-		list.remove(this)
+		task?.let { if (!it.isCancelled) it.cancel() }
+		FunctionAbstract.removeObjectInList(list, this)
 	}
 	
 	override fun init() {

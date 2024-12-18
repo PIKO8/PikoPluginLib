@@ -1,6 +1,7 @@
 package ru.piko.pikopluginlib.Functions
 
 import org.bukkit.plugin.java.JavaPlugin
+import ru.piko.pikopluginlib.Functions.FunctionTimer.Companion
 import ru.piko.pikopluginlib.Utils.NotRecommended
 import java.util.*
 
@@ -18,12 +19,17 @@ class FunctionUnit private constructor(
 	
 	
 	override fun run() {
-		function.invoke()
+		try {
+			function.invoke()
+		} catch (e: Exception) {
+			plugin.logger.warning("[PikoPluginLib] (${this::class.java}) Перехвачена ошибка в функции с id='$id'. Ошибка:")
+			e.printStackTrace()
+		}
 	}
 	
 	override fun destroySelf() {
-		task?.cancel()
-		list.remove(this)
+		task?.let { if (!it.isCancelled) it.cancel() }
+		FunctionAbstract.removeObjectInList(list, this)
 	}
 	
 	override fun init() {

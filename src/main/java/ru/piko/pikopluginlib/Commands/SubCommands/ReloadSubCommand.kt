@@ -1,51 +1,32 @@
-package ru.piko.pikopluginlib.Commands.SubCommands;
+package ru.piko.pikopluginlib.Commands.SubCommands
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-import ru.piko.pikopluginlib.Commands.SubCommand;
-import ru.piko.pikopluginlib.Main;
-import ru.piko.pikopluginlib.PikoPlugin;
+import org.bukkit.Bukkit
+import org.bukkit.command.CommandSender
+import org.bukkit.plugin.java.JavaPlugin
+import ru.piko.pikopluginlib.Commands.SubCommand
+import ru.piko.pikopluginlib.Main
+import ru.piko.pikopluginlib.PikoPlugin
 
-import java.util.List;
-
-import static org.bukkit.Bukkit.getServer;
-
-public class ReloadSubCommand extends SubCommand {
-    @Override
-    public String getName() {
-        return "reload";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Восстанавливает ссылки плагинов";
-    }
-
-    @Override
-    public String getSyntax() {
-        return "/piko reload";
-    }
-
-    @Override
-    public String getPermission(@NotNull CommandSender sender, @NotNull String[] args) {
-        return "piko.admin.reload";
-    }
-
-    @Override
-    public void perform(@NotNull CommandSender sender, @NotNull String[] args) {
-        Main main = Main.getPlugin();
-        for (Plugin plugin : getServer().getPluginManager().getPlugins()) {
-            if (plugin != main && plugin instanceof JavaPlugin javaPlugin && javaPlugin instanceof PikoPlugin pikoPlugin) {
-                // found a PikoPlugin instance, do something with it
-                pikoPlugin.registerPikoLib();
-            }
-        }
-    }
-
-    @Override
-    public List<String> getSubCommandArguments(@NotNull CommandSender sender, @NotNull String[] args) {
-        return List.of("");
-    }
+class ReloadSubCommand : SubCommand() {
+	override val name: String = "reload"
+	
+	val description: String = "Восстанавливает ссылки плагинов"
+	
+	val syntax: String = "/piko reload"
+	
+	override fun getPermissions(sender: CommandSender, args: Array<String>): List<String> {
+		return listOf("piko.commands.admin.reload")
+	}
+	
+	override fun perform(sender: CommandSender, args: Array<String>) {
+		val main = Main.getPlugin()
+		for (plugin in Bukkit.getServer().pluginManager.plugins) {
+			if (plugin != main && plugin is JavaPlugin && plugin is PikoPlugin) {
+				// found a PikoPlugin instance, do something with it
+				plugin.registerPikoLib()
+			}
+		}
+	}
+	
+	override fun arguments(sender: CommandSender, args: Array<String>): List<String> = listOf("")
 }

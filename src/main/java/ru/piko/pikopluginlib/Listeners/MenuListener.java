@@ -21,7 +21,7 @@ public class MenuListener implements Listener {
             Player p = (Player) e.getWhoClicked();
             e.setCancelled(true);
             if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().getItemMeta().hasCustomModelData()) {
-                PlayerData playerData = Main.getPlugin().getPlayerData(p.getUniqueId());
+                PlayerData playerData = Main.Companion.getPlugin().getPlayerData(p.getUniqueId());
                 switch (e.getCurrentItem().getItemMeta().getCustomModelData()) {
                     //case 98 -> ;
                     case 99 -> p.closeInventory();

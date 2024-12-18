@@ -6,3 +6,9 @@ depend: [NBTAPI]
 commands:
   piko:
     usage: /piko ...
+permissions :
+  piko.commands.admin:
+    description: "admin commands"
+    default: op
+    children:
+      piko.commands.admin.reload: true
