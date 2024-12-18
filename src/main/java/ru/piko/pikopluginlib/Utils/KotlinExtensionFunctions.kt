@@ -1,15 +1,6 @@
 package ru.piko.pikopluginlib.Utils
 
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextColor
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import ru.piko.pikopluginlib.Main
-import ru.piko.pikopluginlib.MenuSystem.Menu
-import ru.piko.pikopluginlib.PlayersData.PlayerData
-
-val main: Main = Main.getPlugin() ?: throw IllegalStateException("PikoPluginLib Not uploaded yet!!!")
 
 fun ItemStack.update(newItemStack: ItemStack) {
     this.itemMeta = newItemStack.itemMeta?.clone() // Клонируем метаданные
@@ -17,35 +8,18 @@ fun ItemStack.update(newItemStack: ItemStack) {
     this.type = newItemStack.type
 }
 
-fun Player.getData(): PlayerData {
-    return main.getPlayerData(this.uniqueId)
-}
-
-fun Player.openMenu(function: (Player) -> Menu) {
-    function.invoke(this).open()
-}
-
-// Вспомогательная функция для преобразования строк с &-форматированием в Component
-fun String.toComponent(): Component {
-    return LegacyComponentSerializer.legacyAmpersand().deserialize(this)
-}
-
-fun Any.toComponent(): Component {
-    return when (this) {
-        is Component -> this
-        is String -> this.toComponent()
-        else -> LegacyComponentSerializer.legacyAmpersand().deserialize(this.toString())
-    }
-}
-
-fun Any.toComponent(color: TextColor): Component {
-    return this.toComponent().colorIfAbsent(color)
-}
-
-/** Например, до и после:
- * (entity is Player && entity.gameMode in listOf(GameMode.SURVIVAL, GameMode.ADVENTURE)) || entity !is Player
- * entity.checkCondition<Player> { it.gameMode in listOf(GameMode.SURVIVAL, GameMode.ADVENTURE) }
- * Если это такой тип то проверить условие иначе пропустить(true)
+/**
+ * Удобная функция.
+ *
+ * Если это такой тип, то проверить условие иначе пропустить(true) *
+ *
+ * До:
+ *
+ * `(entity is Player && entity.gameMode in listOf(GameMode.SURVIVAL, GameMode.ADVENTURE)) || entity !is Player`
+ *
+ * После:
+ *
+ * `entity.checkCondition<Player> { it.gameMode in listOf(GameMode.SURVIVAL, GameMode.ADVENTURE) }`
  */
 inline fun <reified T : Any> Any?.checkCondition(condition: (T) -> Boolean): Boolean {
     return (this is T && condition(this)) || this !is T

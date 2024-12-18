@@ -4,6 +4,9 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
+import ru.piko.pikopluginlib.MenuSystem.Menu
+import ru.piko.pikopluginlib.PlayersData.PlayerData
+import ru.piko.pikopluginlib.Utils.main
 
 fun Player.addItemSafe(item: ItemStack) {
 	// Проверяем, что предмет не пустой
@@ -32,4 +35,12 @@ fun Player.addItemsSafe(items: Collection<ItemStack>) {
 
 fun Player.addItemsSafe(vararg items: ItemStack) {
 	items.forEach { this.addItemSafe(it) }
+}
+
+fun Player.getData(): PlayerData {
+	return main.getPlayerData(this.uniqueId)
+}
+
+fun Player.openMenu(function: (Player) -> Menu) {
+	function.invoke(this).open()
 }
