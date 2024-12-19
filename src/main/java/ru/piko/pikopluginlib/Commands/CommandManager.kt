@@ -17,7 +17,10 @@ class CommandManager(
 		s: String,
 		strings: Array<String>
 	): Boolean {
-		if (strings.isEmpty()) return true
+		if (strings.isEmpty()) {
+			helper?.page(commandSender,1)
+			return true
+		}
 		
 		commands.find { it.name.equals(strings[0], ignoreCase = true) }?.let { subCommand ->
 			if (!subCommand.hasPermission(commandSender, strings)) {

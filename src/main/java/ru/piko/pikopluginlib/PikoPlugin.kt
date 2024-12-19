@@ -27,6 +27,9 @@ abstract class PikoPlugin : JavaPlugin() {
 	open val playerDataRegistry: Map<String, PlayerDataRegistry>
 		get() = main.playerDataRegistry
 	
+	
+	var pluginLoadingInProgress = true
+	
 	/**
 	 * Unique identifier for the plugin.
 	 * Format - "namespace.author.plugin_name"; Example "ru.piko.lib"
@@ -59,6 +62,7 @@ abstract class PikoPlugin : JavaPlugin() {
 	 * Called by Bukkit when the plugin is enabled. Initializes the plugin ID and calls [.onStart].
 	 */
 	override fun onEnable() {
+		pluginLoadingInProgress = true
 		registerPikoLib()
 		try {
 			onStart()
@@ -66,6 +70,7 @@ abstract class PikoPlugin : JavaPlugin() {
 			main.logger.warning("[ERROR] Plugin - " + getId() + " in onRegister error message: " + e.message + " stack track:")
 			e.printStackTrace()
 		}
+		pluginLoadingInProgress = false
 	}
 	
 	fun registerPikoLib() {
@@ -107,7 +112,7 @@ abstract class PikoPlugin : JavaPlugin() {
 	 * @return A new instance of CommandManager.
 	 * @throws IllegalArgumentException if the command is not registered.
 	 */
-	fun createCommandManager(mainCommand: String, helper: AbstractHelper = DefaultHelper()): CommandManager {
+	fun createCommandManager(mainCommand: String, helper: AbstractHelper? = DefaultHelper()): CommandManager {
 		val commandManager = CommandManager(pluginId, mainCommand, helper)
 		val command = this.getCommand(mainCommand)
 		if (command != null) {
@@ -119,11 +124,11 @@ abstract class PikoPlugin : JavaPlugin() {
 		return commandManager
 	}
 	
-	fun getOrCreateCommandManager(mainCommand: String): CommandManager {
+	fun getOrCreateCommandManager(mainCommand: String, helper: AbstractHelper? = DefaultHelper()): CommandManager {
 		if (hasCommandManager(mainCommand)) {
 			return getCommandManager(mainCommand)!!
 		}
-		return createCommandManager(mainCommand)
+		return createCommandManager(mainCommand, helper)
 	}
 	
 	fun getCommandManager(mainCommand: String): CommandManager? {

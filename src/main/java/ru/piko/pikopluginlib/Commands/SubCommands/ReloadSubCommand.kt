@@ -10,7 +10,7 @@ import ru.piko.pikopluginlib.PikoPlugin
 class ReloadSubCommand : SubCommand() {
 	override val name: String = "reload"
 	
-	val description: String = "Восстанавливает ссылки плагинов"
+	val description: String = "Восстанавливает ссылки плагинов (выполняет onRegister())"
 	
 	val syntax: String = "/piko reload"
 	

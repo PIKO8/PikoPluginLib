@@ -11,16 +11,23 @@ abstract class AbstractCommandManager(
 	_helper: AbstractHelper? = null
 ) {
 	
+	val commands: MutableList<AbstractCommand>
+	
+	init {
+		commands = mutableListOf()
+		
+		_helper?.let { addCommand(it) }
+	}
+	
+	@Suppress("unused")
 	var helper: AbstractHelper? = _helper
 		set(value) {
 			commands.remove(field as? AbstractCommand)
 			field = value
 			if (value != null) {
-				commands.add(value as AbstractCommand)
+				addCommand(value)
 			}
 		}
-	
-	val commands = mutableListOf<AbstractCommand>()
 	
 	val pluginData: PikoPluginData?
 		get() = main.getPikoPluginData(namePikoPlugin)

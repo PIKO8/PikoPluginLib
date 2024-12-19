@@ -1,4 +1,4 @@
-package ru.piko.pikopluginlib.listeners
+package ru.piko.pikopluginlib.Listeners
 
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

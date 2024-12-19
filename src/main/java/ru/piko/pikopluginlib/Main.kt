@@ -2,11 +2,11 @@ package ru.piko.pikopluginlib
 
 import ru.piko.pikopluginlib.Commands.SubCommands.ReloadSubCommand
 import ru.piko.pikopluginlib.Listeners.MenuListener
-import ru.piko.pikopluginlib.Listeners.PluginListener
 import ru.piko.pikopluginlib.PlayersData.PlayerData
 import ru.piko.pikopluginlib.PlayersData.PlayerDataRegistry
 import ru.piko.pikopluginlib.Utils.PikoVariables.main
-import ru.piko.pikopluginlib.listeners.PlayerListener
+import ru.piko.pikopluginlib.Listeners.PluginListener
+import ru.piko.pikopluginlib.Listeners.PlayerListener
 import java.util.*
 
 class Main : PikoPlugin() {
@@ -16,6 +16,7 @@ class Main : PikoPlugin() {
 		
 		fun getPlugin(): Main? = plugin
 	}
+	
 	
 	private val pikoPluginDataMap = mutableMapOf<String, PikoPluginData>()
 	private val playerDataMap = mutableMapOf<UUID, PlayerData>()
@@ -33,6 +34,7 @@ class Main : PikoPlugin() {
 	override fun onRegister() {}
 	
 	override fun onEnable() {
+		pluginLoadingInProgress = true
 		plugin = this
 		this.pluginId = getId()
 		addPikoPlugin(this.pluginId, this, true)
@@ -43,6 +45,7 @@ class Main : PikoPlugin() {
 		
 		getOrCreateCommandManager("piko").addCommand(ReloadSubCommand())
 		onStart()
+		pluginLoadingInProgress = false
 	}
 	
 	override fun getPikoPluginData(id: String): PikoPluginData? = pikoPluginDataMap[id]
