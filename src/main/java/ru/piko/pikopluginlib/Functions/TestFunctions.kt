@@ -4,8 +4,8 @@ package ru.piko.pikopluginlib.Functions
 
 import org.bukkit.plugin.java.JavaPlugin
 import ru.piko.pikopluginlib.Functions.Builder.*
-import ru.piko.pikopluginlib.Utils.Edit
-import ru.piko.pikopluginlib.Utils.MadeAI
+import ru.piko.pikopluginlib.Utils.PikoAnnotation.Edit
+import ru.piko.pikopluginlib.Utils.PikoAnnotation.MadeAI
 
 class TestFunctions {
 	companion object Static {

@@ -1,5 +1,8 @@
 package ru.piko.pikopluginlib.Utils
 
+import ru.piko.pikopluginlib.Utils.FormatExtend.toFormatAs
+import ru.piko.pikopluginlib.Utils.FormatExtend.toFormatSafeAs
+
 object Test {
 	
 	fun test() {

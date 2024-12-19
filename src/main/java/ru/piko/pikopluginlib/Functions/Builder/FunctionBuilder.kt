@@ -4,9 +4,10 @@ package ru.piko.pikopluginlib.Functions.Builder
 
 import org.bukkit.plugin.java.JavaPlugin
 import ru.piko.pikopluginlib.Functions.FunctionAbstract
-import ru.piko.pikopluginlib.Utils.Edit
-import ru.piko.pikopluginlib.Utils.MadeAI
-import ru.piko.pikopluginlib.Utils.NotRecommended
+import ru.piko.pikopluginlib.Utils.PikoAnnotation
+import ru.piko.pikopluginlib.Utils.PikoAnnotation.MadeAI
+import ru.piko.pikopluginlib.Utils.PikoAnnotation.Edit
+import ru.piko.pikopluginlib.Utils.PikoAnnotation.NotRecommended
 import java.util.*
 
 typealias BuilderFunction = (BuilderData) -> BuilderResult

@@ -1,4 +1,4 @@
-package ru.piko.pikopluginlib.Extends
+package ru.piko.pikopluginlib.Utils.Extends
 
 object EnumExtend {
 	/**

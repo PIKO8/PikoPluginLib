@@ -2,7 +2,7 @@ package ru.piko.pikopluginlib.Functions
 
 import org.bukkit.plugin.java.JavaPlugin
 import ru.piko.pikopluginlib.Functions.Builder.BuilderResult
-import ru.piko.pikopluginlib.Utils.NotRecommended
+import ru.piko.pikopluginlib.Utils.PikoAnnotation.NotRecommended
 import java.util.*
 
 enum class ChainResult {
