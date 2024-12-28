@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 import ru.piko.pikopluginlib.MenuSystem.Menu
 import ru.piko.pikopluginlib.PlayersData.PlayerData
-import ru.piko.pikopluginlib.Utils.PikoVariables.main
+import ru.piko.pikopluginlib.Utils.InternalObject.main
 
 object PlayerExtend {
 	fun Player.addItemSafe(item: ItemStack) {

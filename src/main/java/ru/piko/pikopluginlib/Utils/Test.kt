@@ -13,5 +13,5 @@ object Test {
 		val float = bool.toFormatSafeAs<List<Float>>()
 		println("FormatExtendTest: float = $float")
 	}
- 
+	
 }

@@ -9,11 +9,11 @@ public class GameRuleFile extends CustomConfigFile {
     }
 
     public void setGamerule(String name, String value) {
-        fileConfiguration.set(name, value);
+        conf.set(name, value);
     }
 
     public String getGamerule(String name) {
-        return fileConfiguration.getString(name, "false");
+        return conf.getString(name, "false");
     }
 
 }

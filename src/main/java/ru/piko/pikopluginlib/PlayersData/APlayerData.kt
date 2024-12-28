@@ -1,11 +1,15 @@
 package ru.piko.pikopluginlib.PlayersData
 
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import java.lang.reflect.Field
 
 abstract class APlayerData(val data: PlayerData) {
     
-    val player: Player
+    val offlinePlayer: OfflinePlayer
+        get() = data.offlineOwner
+    
+    val player: Player?
         get() = data.owner
     
     abstract fun getId(): String

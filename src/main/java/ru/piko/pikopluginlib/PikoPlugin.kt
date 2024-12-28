@@ -6,10 +6,12 @@ import ru.piko.pikopluginlib.Commands.AbstractHelper
 import ru.piko.pikopluginlib.Commands.CommandManager
 import ru.piko.pikopluginlib.Commands.DefaultHelper
 import ru.piko.pikopluginlib.Commands.Gamerules.GameRuleStandardSave
+import ru.piko.pikopluginlib.Files.Abstract.folder.AbstractPikoPluginFolder
 import ru.piko.pikopluginlib.Functions.FunctionAbstract.Static.destroyAll
+import ru.piko.pikopluginlib.PlayersData.APlayerData
 import ru.piko.pikopluginlib.PlayersData.PlayerData
 import ru.piko.pikopluginlib.PlayersData.PlayerDataRegistry
-import ru.piko.pikopluginlib.Utils.PikoVariables.main
+import ru.piko.pikopluginlib.Utils.InternalObject.main
 import java.io.File
 import java.util.*
 
@@ -29,6 +31,8 @@ abstract class PikoPlugin : JavaPlugin() {
 	
 	
 	var pluginLoadingInProgress = true
+	
+	var folder: AbstractPikoPluginFolder<*>? = null
 	
 	/**
 	 * Unique identifier for the plugin.
@@ -67,7 +71,7 @@ abstract class PikoPlugin : JavaPlugin() {
 		try {
 			onStart()
 		} catch (e: Exception) {
-			main.logger.warning("[ERROR] Plugin - " + getId() + " in onRegister error message: " + e.message + " stack track:")
+			main.logger.warning("[ERROR] Plugin - " + getId() + " in onStart error message: " + e.message + " stack track:")
 			e.printStackTrace()
 		}
 		pluginLoadingInProgress = false
@@ -241,6 +245,8 @@ abstract class PikoPlugin : JavaPlugin() {
 			return gameRuleStandardSave!! // Безопасно!!
 		}
 	
+	open fun getPikoPlugins(): Map<String, PikoPluginData> = main.getPikoPlugins()
+	
 	// </editor-fold>
 	// <editor-fold defaultstate="collapsed" desc="Player Data">
 	open fun hasOnlinePlayerData(owner: UUID): Boolean {
@@ -254,6 +260,16 @@ abstract class PikoPlugin : JavaPlugin() {
 	open fun removePlayerData(owner: UUID) {
 		main.removePlayerData(owner)
 	}
+	
+	open fun clearStartWith(str: String, ignoreCase: Boolean = false) {
+		main.clearStartWith(str, ignoreCase)
+	}
+	
+	open fun clearFunction(function: (Map.Entry<String, APlayerData>) -> Boolean) {
+		main.clearFunction(function)
+	}
+	
+	open fun getPlayerData(): Map<UUID, PlayerData> = main.getPlayerData()
 	
 	// <editor-fold-sub defaultstate="collapsed" desc="">
 	open fun registerPlayerData(id: String, registry: PlayerDataRegistry) {

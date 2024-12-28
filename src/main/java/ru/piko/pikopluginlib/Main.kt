@@ -1,12 +1,15 @@
 package ru.piko.pikopluginlib
 
 import ru.piko.pikopluginlib.Commands.SubCommands.ReloadSubCommand
+import ru.piko.pikopluginlib.Files.Release.Yaml.MyPluginFolder
 import ru.piko.pikopluginlib.Listeners.MenuListener
 import ru.piko.pikopluginlib.PlayersData.PlayerData
 import ru.piko.pikopluginlib.PlayersData.PlayerDataRegistry
-import ru.piko.pikopluginlib.Utils.PikoVariables.main
+import ru.piko.pikopluginlib.Utils.InternalObject.main
 import ru.piko.pikopluginlib.Listeners.PluginListener
 import ru.piko.pikopluginlib.Listeners.PlayerListener
+import ru.piko.pikopluginlib.PlayersData.APlayerData
+import ru.piko.pikopluginlib.Utils.Test
 import java.util.*
 
 class Main : PikoPlugin() {
@@ -28,6 +31,15 @@ class Main : PikoPlugin() {
 		// TestFunctions.Static.test(this)
 		// TestFunctions.Static.complexFunctionBuilderExample(this)
 		// Test.INSTANCE.test()
+		
+		
+		server.pluginManager.registerEvents(MenuListener(), this)
+		server.pluginManager.registerEvents(PluginListener(), this)
+		server.pluginManager.registerEvents(PlayerListener(), this)
+		
+		getOrCreateCommandManager("piko").addCommand(ReloadSubCommand())
+		
+		//MyPluginFolder()
 	}
 	
 	override fun onStop() {}
@@ -38,13 +50,16 @@ class Main : PikoPlugin() {
 		plugin = this
 		this.pluginId = getId()
 		addPikoPlugin(this.pluginId, this, true)
-		println("PikoPluginLib load!")
-		server.pluginManager.registerEvents(MenuListener(), this)
-		server.pluginManager.registerEvents(PluginListener(), this)
-		server.pluginManager.registerEvents(PlayerListener(), this)
 		
-		getOrCreateCommandManager("piko").addCommand(ReloadSubCommand())
-		onStart()
+		
+		try {
+			onStart() // остальной запуск
+			println("PikoPluginLib load!")
+		} catch (t: Throwable) {
+			t.printStackTrace()
+			println("PikoPluginLib error onStart!")
+		}
+		
 		pluginLoadingInProgress = false
 	}
 	
@@ -96,6 +111,9 @@ class Main : PikoPlugin() {
 		disablePikoPlugin(id)
 	}
 	
+	override fun getPikoPlugins(): Map<String, PikoPluginData> = pikoPluginDataMap
+	
+	// <editor-fold defaultstate="collapsed" desc="Player Data">
 	override fun getPlayerData(owner: UUID): PlayerData {
 		return playerDataMap.getOrPut(owner) { PlayerData(owner) }
 	}
@@ -116,5 +134,16 @@ class Main : PikoPlugin() {
 		playerDataRegistry.remove(id)
 	}
 	
-	fun getPikoPlugins(): Map<String, PikoPluginData> = pikoPluginDataMap
+	override fun clearStartWith(str: String, ignoreCase: Boolean) {
+		playerDataMap.forEach { (_, data) -> data.clearStartWith(str, ignoreCase) }
+	}
+	
+	override fun clearFunction(function: (Map.Entry<String, APlayerData>) -> Boolean) {
+		playerDataMap.forEach { (_, data) -> data.clearFunction(function) }
+	}
+	
+	override fun getPlayerData(): Map<UUID, PlayerData> = playerDataMap
+	
+	// </editor-fold>
+	
 }

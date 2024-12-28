@@ -4,11 +4,8 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import ru.piko.pikopluginlib.Main
 import ru.piko.pikopluginlib.PlayersData.APersistentPlayerData
-import ru.piko.pikopluginlib.PlayersData.APlayerData
-import ru.piko.pikopluginlib.PlayersData.PlayerDataRegistry
-import ru.piko.pikopluginlib.Utils.PikoVariables.main
+import ru.piko.pikopluginlib.Utils.InternalObject.main
 
 class PlayerListener : Listener {
     

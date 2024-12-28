@@ -8,7 +8,7 @@ plugins {
 
 // Основные параметры проекта
 group = 'ru.piko'
-version = '0.1.14'
+version = '0.1.15.beta1'
 def minecraftVersion = '1.20.1'
 def kotlinVersion = '2.0.21'
 def targetJavaVersion = 17
@@ -16,9 +16,9 @@ def targetJavaVersion = 17
 
 // Группы библиотек для разных сборок
 def libraryGroups = [
-        Main: [],                                           // Основной JAR без доп. библиотек
-        KotlinMin: ['kotlin-stdlib'],                       // Минимальная версия с Kotlin
-        KotlinMax: ['kotlin-stdlib', 'kotlin-reflect']      // Максимальная версия с Kotlin и рефлексией
+    Main: [],                                           // Основной JAR без доп. библиотек
+    KotlinMin: ['kotlin-stdlib'],                       // Минимальная версия с Kotlin
+    KotlinMax: ['kotlin-stdlib', 'kotlin-reflect']      // Максимальная версия с Kotlin и рефлексией
 ]
 
 // Репозитории для загрузки зависимостей
@@ -82,7 +82,7 @@ afterEvaluate {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                artifact(tasks.getByName("jarWithKotlinMaxGroup").archiveFile)
+                artifact(tasks.getByName("jarWithMainGroup").archiveFile)
                 groupId = 'ru.piko'
                 artifactId = 'pikopluginlib'
             }

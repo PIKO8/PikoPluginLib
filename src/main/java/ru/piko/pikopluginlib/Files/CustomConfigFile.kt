@@ -1,43 +1,47 @@
-package ru.piko.pikopluginlib.Files;
+package ru.piko.pikopluginlib.Files
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import ru.piko.pikopluginlib.Main;
+import org.bukkit.configuration.file.FileConfiguration
+import org.bukkit.configuration.file.YamlConfiguration
+import java.io.File
 
-import java.io.File;
-
-public abstract class CustomConfigFile {
-
-    protected File file;
-    protected FileConfiguration fileConfiguration;
-
-    public CustomConfigFile(String relativePath) {
-        this(Main.Companion.getPlugin().getDataFolder(), relativePath);
-    }
-    public CustomConfigFile(File dataFolder, String relativePath) {
-        file = new File(dataFolder, relativePath + ".yml");
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        fileConfiguration = YamlConfiguration.loadConfiguration(file);
-    }
-
-    public void save() {
-        try {
-            fileConfiguration.save(file);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void reload() {
-        fileConfiguration = YamlConfiguration.loadConfiguration(file);
-    }
+abstract class CustomConfigFile(dataFolder: File, relativePath: String) {
+	protected var file: File = File(dataFolder, "$relativePath.yml")
+	protected lateinit var conf: FileConfiguration
+	
+	fun init() {
+		if (!file.parentFile.exists()) {
+			file.parentFile.mkdirs()
+		}
+		if (!file.exists()) {
+			try {
+				file.createNewFile()
+				onCreate()
+			} catch (e: Exception) {
+				e.printStackTrace()
+			}
+		}
+		conf = YamlConfiguration.loadConfiguration(file)
+		onLoad(false)
+	}
+	
+	fun save() {
+		try {
+			conf.save(file)
+			onSave();
+		} catch (e: Exception) {
+			e.printStackTrace()
+		}
+	}
+	
+	fun reload() {
+		conf = YamlConfiguration.loadConfiguration(file)
+		onLoad(true)
+	}
+	
+	open fun onSave() {}
+	
+	open fun onCreate() {}
+	
+	open fun onLoad(reload: Boolean) {}
+	
 }

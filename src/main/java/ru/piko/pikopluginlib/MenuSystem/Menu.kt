@@ -32,7 +32,7 @@ abstract class Menu(protected val playerData: PlayerData) : InventoryHolder {
 		get() = getSlots()
 	
 	val player: Player
-		get() = playerData.owner
+		get() = playerData.owner ?: throw IllegalStateException("Player is not server. Menu not close!")
 	
 	open var filter: ItemStack = MenuItems.FILLER_LIGHT_GLASS
 		get() = field
@@ -65,7 +65,7 @@ abstract class Menu(protected val playerData: PlayerData) : InventoryHolder {
 		setMenuItems()
 		
 		// Create the PlayerOpenMenuEvent
-		val event = PlayerOpenMenuEvent(playerData.owner, this)
+		val event = PlayerOpenMenuEvent(player, this)
 		
 		// Set the event's cancellation state based on isOpening
 		event.isCancelled = !isOpening
@@ -76,7 +76,7 @@ abstract class Menu(protected val playerData: PlayerData) : InventoryHolder {
 		// Check if the event was canceled
 		if (!event.isCancelled) {
 			// If the event is not canceled, open the inventory for the player
-			playerData.owner.openInventory(inventory)
+			player.openInventory(inventory)
 		}/* else {
 			// Optionally handle the case where the event is canceled
 			playerData.owner.sendMessage("You cannot open this menu.")
