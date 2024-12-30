@@ -8,11 +8,12 @@ import ru.piko.pikopluginlib.PlayersData.APersistentPlayerData
 import ru.piko.pikopluginlib.Utils.InternalObject.main
 
 class PlayerListener : Listener {
+    private val playerData get() = main.api.playerData
     
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
-        val data = main.getPlayerData(event.player.uniqueId)
-        for (entry in main.playerDataRegistry.entries) {
+        val data = playerData.get(event.player.uniqueId)
+        for (entry in playerData.registryMap.entries) {
             try {
                 val reg = entry.value
                 if (!reg.load) return
@@ -31,8 +32,8 @@ class PlayerListener : Listener {
     @EventHandler
     fun onPlayerQuit(event: PlayerQuitEvent) {
         val uniqueId = event.player.uniqueId
-        val data = main.getPlayerData(uniqueId)
-        for (entry in main.playerDataRegistry.entries) {
+        val data = playerData.get(uniqueId)
+        for (entry in playerData.registryMap.entries) {
             try {
                 val reg = entry.value
                 if (!reg.unload) return
@@ -46,6 +47,6 @@ class PlayerListener : Listener {
                 e.printStackTrace()
             }
         }
-        main.removePlayerData(uniqueId)
+        playerData.remove(uniqueId)
     }
 }

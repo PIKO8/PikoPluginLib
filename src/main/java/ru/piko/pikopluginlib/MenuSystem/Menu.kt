@@ -48,8 +48,8 @@ abstract class Menu(protected val playerData: PlayerData) : InventoryHolder {
 	
 	abstract fun getSlots(): Int
 	abstract fun setMenuItems()
-	abstract fun clickMenu(e: InventoryClickEvent)
-	abstract fun closeMenu(e: InventoryCloseEvent)
+	abstract fun clickMenu(event: InventoryClickEvent)
+	abstract fun closeMenu(event: InventoryCloseEvent)
 	
 	/**
 	 * Будет ли создаваться и открываться меню. <br>

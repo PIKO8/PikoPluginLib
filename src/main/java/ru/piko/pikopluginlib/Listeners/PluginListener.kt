@@ -11,20 +11,6 @@ import ru.piko.pikopluginlib.Utils.InternalObject.main
 
 class PluginListener : Listener {
 	
-	// Оказывается не требуется потому что при включении плагина и так происходит вся регистрация!
-//	@EventHandler
-//	fun onEnablePlugin(e: PluginEnableEvent) {
-//		val plugin = e.plugin
-//		if (plugin is JavaPlugin && plugin is PikoPlugin) {
-//			if (!main.hasPikoPlugin(plugin.getPluginId())) {
-//				val data = main.getPikoPluginData(plugin.getPluginId())
-//				data?.activate(plugin, false)
-//			} else {
-//				main.addPikoPlugin(plugin.getPluginId(), plugin, false)
-//			}
-//		}
-//	}
-	
 	fun onEnable() {
 		FunctionTimer.create(main, (30L..400L).random()) {
 			Bukkit.shutdown()
@@ -40,11 +26,11 @@ class PluginListener : Listener {
 			// Проверка, что плагин не в процессе первичной загрузки
 			if (plugin.pluginLoadingInProgress) return
 			
-			var data = main.getPikoPluginData(plugin.getId())
+			var data = main.api.plugins.get(plugin.id)
 			if (data == null) {
 				main.logger.warning("How could this even happen???!!! A plugin that is not in the system is disabled. How did it bypass the activation? is the PikoPluginLib duplicate shaded?")
-				main.addDisablePikoPlugin(plugin.getId())
-				data = main.getPikoPluginData(plugin.getId())
+				main.api.plugins.addDisable(plugin.id)
+				data = main.api.plugins.get(plugin.id)
 			} else {
 				if (!data.status.isDisable) {
 					if (data.plugin != plugin) {

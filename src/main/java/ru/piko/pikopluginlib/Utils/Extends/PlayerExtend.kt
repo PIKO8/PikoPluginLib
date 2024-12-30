@@ -38,7 +38,7 @@ object PlayerExtend {
 		items.forEach { this.addItemSafe(it) }
 	}
 	
-	val Player.data: PlayerData get() = main.getPlayerData(this.uniqueId)
+	val Player.data: PlayerData get() = main.api.playerData.get(this.uniqueId)
 	
 	fun Player.openMenu(function: (Player) -> Menu) {
 		function.invoke(this).open()

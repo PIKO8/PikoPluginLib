@@ -29,7 +29,7 @@ abstract class AbstractCommandManager(
 		}
 	
 	val pluginData: PikoPluginData?
-		get() = main.getPikoPluginData(namePikoPlugin)
+		get() = main.api.plugins.get(namePikoPlugin)
 	
 	val plugin: PikoPlugin?
 		get() = pluginData?.plugin

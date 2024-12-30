@@ -1,42 +1,38 @@
-package ru.piko.pikopluginlib.Listeners;
+package ru.piko.pikopluginlib.Listeners
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.InventoryHolder;
-import ru.piko.pikopluginlib.Main;
-import ru.piko.pikopluginlib.MenuSystem.Menu;
-import ru.piko.pikopluginlib.PlayersData.PlayerData;
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
+import ru.piko.pikopluginlib.MenuSystem.Menu
 
-public class MenuListener implements Listener {
-
-    @EventHandler
-    public void onClickMenu(InventoryClickEvent e) {
-        if (e == null) return;
-        if (e.getClickedInventory() == null) { return; }
-        InventoryHolder holder = e.getClickedInventory().getHolder();
-        if(holder instanceof Menu menu) {
-            Player p = (Player) e.getWhoClicked();
-            e.setCancelled(true);
-            if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().getItemMeta().hasCustomModelData()) {
-                PlayerData playerData = Main.Companion.getPlugin().getPlayerData(p.getUniqueId());
-                switch (e.getCurrentItem().getItemMeta().getCustomModelData()) {
-                    //case 98 -> ;
-                    case 99 -> p.closeInventory();
-                }
-            }
-            menu.clickMenu(e);
-        }
-    }
-
-    @EventHandler
-    public void onCloseMenu(InventoryCloseEvent e) {
-        if (e == null) return;
-        if(e.getInventory().getHolder() instanceof Menu menu) {
-            menu.closeMenu(e);
-        }
-    }
-
+class MenuListener : Listener {
+	@EventHandler
+	fun onClickMenu(event: InventoryClickEvent) {
+		val holder = event.clickedInventory?.holder ?: return
+		if (holder !is Menu) return
+		
+		val player = event.whoClicked as Player
+		
+		event.isCancelled = true
+		
+		val item = event.currentItem
+		
+		if (item != null && item.itemMeta != null && item.itemMeta.hasCustomModelData()) {
+			//val playerData: PlayerData = main.api.playerData.get(player.uniqueId)
+			when (item.itemMeta.customModelData) {
+				99 -> player.closeInventory()
+			}
+		}
+		holder.clickMenu(event)
+	}
+	
+	@EventHandler
+	fun onCloseMenu(event: InventoryCloseEvent) {
+		val menu = event.inventory.holder
+		if (menu is Menu) {
+			menu.closeMenu(event)
+		}
+	}
 }
