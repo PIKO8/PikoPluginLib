@@ -30,7 +30,7 @@ class PlayerDataManagerApi internal constructor() {
 		playerDataRegistry.remove(id)
 	}
 	
-	fun clearStartWith(str: String, ignoreCase: Boolean) {
+	fun clearStartWith(str: String, ignoreCase: Boolean = false) {
 		playerDataMap.forEach { (_, data) -> data.clearStartWith(str, ignoreCase) }
 	}
 	

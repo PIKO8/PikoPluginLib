@@ -1,7 +1,7 @@
 package ru.piko.pikopluginlib.Commands
 
-import ru.piko.pikopluginlib.PikoPlugin
-import ru.piko.pikopluginlib.PikoPluginData
+import ru.piko.pikopluginlib.Api.PikoPlugin
+import ru.piko.pikopluginlib.Api.PikoPluginData
 import ru.piko.pikopluginlib.Utils.InternalObject.main
 
 abstract class AbstractCommandManager(

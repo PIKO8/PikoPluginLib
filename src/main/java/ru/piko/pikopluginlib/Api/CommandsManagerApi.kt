@@ -4,7 +4,6 @@ import org.bukkit.Bukkit
 import ru.piko.pikopluginlib.Commands.AbstractHelper
 import ru.piko.pikopluginlib.Commands.CommandManager
 import ru.piko.pikopluginlib.Commands.DefaultHelper
-import ru.piko.pikopluginlib.PikoPlugin
 
 class CommandsManagerApi {
 	
@@ -18,20 +17,20 @@ class CommandsManagerApi {
 	 * @throws IllegalArgumentException if the command is not registered.
 	 */
 	fun create(mainCommand: String, helper: AbstractHelper? = DefaultHelper()): CommandManager {
-		val command = Bukkit.getServer().getPluginCommand(mainCommand)
-		if (command != null) {
-			val plugin = command.plugin
-			
-			if (plugin !is PikoPlugin) throw IllegalArgumentException("Command '$mainCommand' is registered not in PikoPlugin")
-			
-			val commandManager = CommandManager(plugin.id, mainCommand, helper)
-			
-			command.setExecutor(commandManager)
-			commandManagerMap[mainCommand] = commandManager
-			return commandManager
-		} else {
-			throw IllegalArgumentException("Command '$mainCommand' is not registered.")
-		}
+		val command = Bukkit.getServer().getPluginCommand(mainCommand) ?: throw IllegalArgumentException(
+			"Failed to create command manager: command '$mainCommand' is not registered in server commands."
+		)
+		val plugin = command.plugin
+		
+		if (plugin !is PikoPlugin) throw IllegalArgumentException(
+			"Failed to create command manager: command '$mainCommand' is registered in a plugin that is not a PikoPlugin."
+		)
+		
+		val commandManager = CommandManager(plugin.id, mainCommand, helper)
+		
+		command.setExecutor(commandManager)
+		commandManagerMap[mainCommand] = commandManager
+		return commandManager
 	}
 	
 	fun getOrCreate(mainCommand: String, helper: AbstractHelper? = DefaultHelper()): CommandManager {
@@ -58,6 +57,24 @@ class CommandsManagerApi {
 		} else {
 			commandManagerMap.replace(mainCommand, manager)
 		}
+	}
+	
+	fun remove(mainCommand: String) {
+		val manager = commandManagerMap[mainCommand] ?: return
+		
+		val command = Bukkit.getServer().getPluginCommand(mainCommand) ?: throw IllegalArgumentException(
+			"Failed to remove command manager: command '$mainCommand' is not registered in server commands."
+		)
+		
+		val plugin = command.plugin
+		if (plugin !is PikoPlugin) throw IllegalArgumentException(
+			"Failed to remove command manager: command '$mainCommand' is registered in a plugin that is not a PikoPlugin."
+		)
+		
+		manager.clearCommands()
+		command.unregister(Bukkit.getServer().commandMap)
+		
+		commandManagerMap.remove(mainCommand)
 	}
 	
 }

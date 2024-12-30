@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import ru.piko.pikopluginlib.PikoPlugin;
+import ru.piko.pikopluginlib.Api.PikoPlugin;
 
 public class ItemDataBuilder extends AItemBuilder<ItemDataBuilder> {
 

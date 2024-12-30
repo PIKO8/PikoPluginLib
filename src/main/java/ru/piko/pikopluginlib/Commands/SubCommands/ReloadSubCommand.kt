@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import ru.piko.pikopluginlib.Commands.SubCommand
 import ru.piko.pikopluginlib.Main
-import ru.piko.pikopluginlib.PikoPlugin
+import ru.piko.pikopluginlib.Api.PikoPlugin
 
 class ReloadSubCommand : SubCommand() {
 	override val name: String = "reload"

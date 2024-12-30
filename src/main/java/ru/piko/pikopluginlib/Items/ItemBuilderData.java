@@ -3,8 +3,7 @@ package ru.piko.pikopluginlib.Items;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import ru.piko.pikopluginlib.PikoPlugin;
-import org.bukkit.inventory.ItemStack;
+import ru.piko.pikopluginlib.Api.PikoPlugin;
 
 /**
  * @deprecated Using ItemDataBuilder

@@ -1,5 +1,6 @@
 package ru.piko.pikopluginlib
 
+import ru.piko.pikopluginlib.Api.PikoPlugin
 import ru.piko.pikopluginlib.Api.PikoPluginLibApi
 import ru.piko.pikopluginlib.Commands.SubCommands.ReloadSubCommand
 import ru.piko.pikopluginlib.Listeners.MenuListener

@@ -1,4 +1,4 @@
-package ru.piko.pikopluginlib
+package ru.piko.pikopluginlib.Api
 
 import java.io.File
 
