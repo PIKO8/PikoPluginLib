@@ -176,11 +176,6 @@ public class ItemBuilder extends AItemBuilder<ItemBuilder> {
         return this;
     }
 
-    @Deprecated
-    public <T extends AItemBuilderModification> T modify(@NotNull T modification) {
-        return (T) modification.modify(this);
-    }
-
     public @NotNull ItemBuilder setDamage(int damage) {
         if (item.getType().getMaxDurability() > 0) {
             ((org.bukkit.inventory.meta.Damageable) meta).setDamage(damage);
@@ -195,10 +190,5 @@ public class ItemBuilder extends AItemBuilder<ItemBuilder> {
     public @NotNull ItemBuilder clearEnchantments() {
         meta.getEnchants().keySet().forEach(meta::removeEnchant);
         return this;
-    }
-
-    @Deprecated
-    public @NotNull ItemMeta getMeta() {
-        return meta;
     }
 }

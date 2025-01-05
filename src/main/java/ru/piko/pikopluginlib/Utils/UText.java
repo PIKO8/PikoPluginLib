@@ -41,7 +41,7 @@ public class UText {
             } else {
                 itemNameComponent = Component.text(item.getType().name().toLowerCase());
             }
-            itemNameComponent = itemNameComponent.color(item.getRarity().getColor());
+            itemNameComponent = itemNameComponent.color(item.getItemMeta().getRarity().color());
             component = itemNameComponent;
         }
         component = component.hoverEvent(item);
