@@ -14,13 +14,13 @@ class FunctionRepeater private constructor(
     delay: Long = 0,
     id: String = "",
     stopAllWithId: Boolean,
-    val function: () -> Unit,
+    val function: (Int) -> Unit,
 ) : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {
 	private var repeatCount = 0
 	
 	override fun run() {
 		try {
-			function.invoke()
+			function.invoke(repeatCount)
 		} catch (e: Exception) {
 			plugin.logger.warning("[PikoPluginLib] (${this::class.java}) Перехвачена ошибка в функции с id='$id'. Ошибка:")
 			e.printStackTrace()
@@ -50,7 +50,7 @@ class FunctionRepeater private constructor(
         delay: Long = 0,
         id: String = "",
         stopAllWithId: Boolean = false,
-        function: () -> Unit,
+        function: (Int) -> Unit,
     ): FunctionRepeater {
 			if (stopAllWithId) {
 				destroyAll(plugin, id)
