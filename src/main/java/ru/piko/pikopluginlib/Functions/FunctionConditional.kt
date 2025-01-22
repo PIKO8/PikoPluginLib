@@ -15,7 +15,7 @@ class FunctionConditional private constructor(
     stopAllWithId: Boolean,
     val condition: () -> Boolean,
     val function: () -> Unit,
-) : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {
+) : FunctionAbstractBukkitScheduler(plugin, ticks, delay, id, stopAllWithId) {
 	override fun run() {
 		val result: Boolean = try {
 			condition.invoke()
@@ -44,8 +44,8 @@ class FunctionConditional private constructor(
 		list.add(this)
 	}
 	
-	companion object {
-		val list: MutableList<FunctionConditional> = Collections.synchronizedList(mutableListOf())
+	companion object : ICompanionFunction<FunctionConditional> {
+		override val list: MutableList<FunctionConditional> = Collections.synchronizedList(mutableListOf())
 		
 		fun create(
         plugin: JavaPlugin,
@@ -63,20 +63,6 @@ class FunctionConditional private constructor(
 			val functionConditional = FunctionConditional(plugin, ticks, delay, id, stopAllWithId, condition, function)
 			functionConditional.initFunction()
 			return functionConditional
-		}
-		
-		fun destroy(conditional: FunctionConditional) {
-			conditional.destroySelf()
-		}
-		
-		@NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")
-		@Deprecated("Не рекомендованный")
-		fun destroyAll(id: String) {
-			FunctionAbstract.destroyAll(list, id)
-		}
-		
-		fun destroyAll(plugin: JavaPlugin, id: String) {
-			FunctionAbstract.destroyAll(list, plugin, id)
 		}
 	}
 }

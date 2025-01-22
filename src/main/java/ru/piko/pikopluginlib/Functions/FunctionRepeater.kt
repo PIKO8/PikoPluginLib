@@ -15,7 +15,7 @@ class FunctionRepeater private constructor(
     id: String = "",
     stopAllWithId: Boolean,
     val function: (Int) -> Unit,
-) : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {
+) : FunctionAbstractBukkitScheduler(plugin, ticks, delay, id, stopAllWithId) {
 	private var repeatCount = 0
 	
 	override fun run() {
@@ -40,8 +40,8 @@ class FunctionRepeater private constructor(
 		list.add(this)
 	}
 	
-	companion object {
-		val list: MutableList<FunctionRepeater> = Collections.synchronizedList(mutableListOf())
+	companion object : ICompanionFunction<FunctionRepeater> {
+		override val list: MutableList<FunctionRepeater> = Collections.synchronizedList(mutableListOf())
 		
 		fun create(
         plugin: JavaPlugin,
@@ -59,20 +59,6 @@ class FunctionRepeater private constructor(
 			val functionRepeater = FunctionRepeater(plugin, ticks, maxRepeats, delay, id, stopAllWithId, function)
 			functionRepeater.initFunction()
 			return functionRepeater
-		}
-		
-		fun destroy(repeater: FunctionRepeater) {
-			repeater.destroySelf()
-		}
-		
-		@NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")
-		@Deprecated("Не рекомендованный")
-		fun destroyAll(id: String) {
-			FunctionAbstract.destroyAll(list, id)
-		}
-		
-		fun destroyAll(plugin: JavaPlugin, id: String) {
-			FunctionAbstract.destroyAll(list, plugin, id)
 		}
 	}
 }

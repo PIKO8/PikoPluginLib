@@ -14,7 +14,7 @@ class FunctionPeriodic private constructor(
     id: String = "",
     stopAllWithId: Boolean,
     val function: () -> Boolean,
-) : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {
+) : FunctionAbstractBukkitScheduler(plugin, ticks, delay, id, stopAllWithId) {
 	/**
 	 * EN: If the function returns false, then end  <br>
 	 * RU: Если функция вернёт false то завершаем
@@ -42,8 +42,8 @@ class FunctionPeriodic private constructor(
 	}
 	
 	
-	companion object {
-		val list: MutableList<FunctionPeriodic> = Collections.synchronizedList(mutableListOf())
+	companion object : ICompanionFunction<FunctionPeriodic> {
+		override val list: MutableList<FunctionPeriodic> = Collections.synchronizedList(mutableListOf())
 		
 		fun create(
         plugin: JavaPlugin,
@@ -60,20 +60,6 @@ class FunctionPeriodic private constructor(
 			val functionPeriodic = FunctionPeriodic(plugin, ticks, delay, id, stopAllWithId, function)
 			functionPeriodic.initFunction()
 			return functionPeriodic
-		}
-		
-		fun destroy(periodic: FunctionPeriodic) {
-			periodic.destroySelf()
-		}
-		
-		@NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")
-		@Deprecated("Не рекомендованный")
-		fun destroyAll(id: String) {
-			FunctionAbstract.destroyAll(list, id)
-		}
-		
-		fun destroyAll(plugin: JavaPlugin, id: String) {
-			FunctionAbstract.destroyAll(list, plugin, id)
 		}
 	}
 }

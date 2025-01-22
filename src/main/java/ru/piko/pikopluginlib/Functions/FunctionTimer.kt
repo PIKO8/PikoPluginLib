@@ -13,7 +13,7 @@ class FunctionTimer private constructor(
     id: String,
     stopAllWithId: Boolean,
     val function: () -> Unit,
-) : FunctionAbstract(plugin, 1, delay, id, stopAllWithId) {
+) : FunctionAbstractBukkitScheduler(plugin, 1, delay, id, stopAllWithId) {
 	override fun run() {
 		try {
 			function.invoke()
@@ -35,8 +35,8 @@ class FunctionTimer private constructor(
 	}
 	
 	
-	companion object {
-		val list: MutableList<FunctionTimer> = Collections.synchronizedList(mutableListOf())
+	companion object : ICompanionFunction<FunctionTimer> {
+		override val list: MutableList<FunctionTimer> = Collections.synchronizedList(mutableListOf())
 		
 		fun create(
         plugin: JavaPlugin,
@@ -52,20 +52,6 @@ class FunctionTimer private constructor(
 			val functionTimer = FunctionTimer(plugin, delay, id, stopAllWithId, function)
 			functionTimer.initFunction()
 			return functionTimer
-		}
-		
-		fun destroy(timer: FunctionTimer) {
-			timer.destroySelf()
-		}
-		
-		@NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")
-		@Deprecated("Не рекомендованный")
-		fun destroyAll(id: String) {
-			FunctionAbstract.destroyAll(list, id)
-		}
-		
-		fun destroyAll(plugin: JavaPlugin, id: String) {
-			FunctionAbstract.destroyAll(list, plugin, id)
 		}
 	}
 }

@@ -1,7 +1,6 @@
 package ru.piko.pikopluginlib.Functions
 
 import org.bukkit.plugin.java.JavaPlugin
-import ru.piko.pikopluginlib.Utils.PikoAnnotation.NotRecommended
 import java.util.*
 
 /**
@@ -14,7 +13,7 @@ class FunctionUnit private constructor(
 	id: String = "",
 	stopAllWithId: Boolean,
 	val function: () -> Unit,
-) : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {
+) : FunctionAbstractBukkitScheduler(plugin, ticks, delay, id, stopAllWithId) {
 	
 	
 	override fun run() {
@@ -35,8 +34,8 @@ class FunctionUnit private constructor(
 		list.add(this)
 	}
 	
-	companion object {
-		val list: MutableList<FunctionUnit> = Collections.synchronizedList(mutableListOf())
+	companion object : ICompanionFunction<FunctionUnit> {
+		override val list: MutableList<FunctionUnit> = Collections.synchronizedList(mutableListOf())
 		
 		fun create(
 			plugin: JavaPlugin,
@@ -55,18 +54,5 @@ class FunctionUnit private constructor(
 			return functionUnit
 		}
 		
-		fun destroy(unit: FunctionUnit) {
-			unit.destroySelf()
-		}
-		
-		@NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")
-		@Deprecated("Не рекомендованный")
-		fun destroyAll(id: String) {
-			FunctionAbstract.destroyAll(list, id)
-		}
-		
-		fun destroyAll(plugin: JavaPlugin, id: String) {
-			FunctionAbstract.destroyAll(list, plugin, id)
-		}
 	}
 }

@@ -2,7 +2,7 @@ package ru.piko.pikopluginlib.Api
 
 import org.bukkit.plugin.java.JavaPlugin
 import ru.piko.pikopluginlib.Files.Abstract.folder.AbstractPikoPluginFolder
-import ru.piko.pikopluginlib.Functions.FunctionAbstract.Static.destroyAll
+import ru.piko.pikopluginlib.Functions.FunctionAbstract.Companion.destroyAll
 import ru.piko.pikopluginlib.Utils.InternalObject.main
 import java.io.File
 

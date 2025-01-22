@@ -3,6 +3,7 @@ package ru.piko.pikopluginlib
 import ru.piko.pikopluginlib.Api.PikoPlugin
 import ru.piko.pikopluginlib.Api.PikoPluginLibApi
 import ru.piko.pikopluginlib.Commands.SubCommands.ReloadSubCommand
+import ru.piko.pikopluginlib.Functions.TestFunctions
 import ru.piko.pikopluginlib.Listeners.MenuListener
 import ru.piko.pikopluginlib.Listeners.PlayerListener
 import ru.piko.pikopluginlib.Listeners.PluginListener
@@ -44,6 +45,8 @@ class Main : PikoPlugin() {
 		server.pluginManager.registerEvents(PlayerListener(), this)
 		
 		api.commands.getOrCreate("piko").addCommand(ReloadSubCommand())
+		
+		TestFunctions.eventFunctionTest(this)
 	}
 	
 	override fun onStop() {}

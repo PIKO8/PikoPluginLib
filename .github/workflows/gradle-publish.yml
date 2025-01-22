@@ -10,8 +10,8 @@ on:
     branches: [ "master" ]
     paths:
       - '**/gradle/**'
-      - '**/build.gradle'
-      - '**/settings.gradle'
+      - '../../build.gradle.kts'
+      - '../../settings.gradle.kts'
       - '**/*.java'
       - '**/*.kt'
 jobs:
@@ -35,7 +35,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
       
-    - name: Get version from build.gradle
+    - name: Get version from build.gradle.kts
       id: get_version
       run: |
         VERSION=$(./gradlew -q --console=plain printVersion)

@@ -47,7 +47,7 @@ class FunctionChain private constructor(
 	id: String = "",
 	stopAllWithId: Boolean,
 	val functions: List<() -> ChainResult>,
-) : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {
+) : FunctionAbstractBukkitScheduler(plugin, ticks, delay, id, stopAllWithId) {
 	private var functionIndex = 0
 	
 	override fun run() {
@@ -112,8 +112,8 @@ class FunctionChain private constructor(
 		list.add(this)
 	}
 	
-	companion object {
-		val list: MutableList<FunctionChain> = Collections.synchronizedList(mutableListOf())
+	companion object : ICompanionFunction<FunctionChain> {
+		override val list: MutableList<FunctionChain> = Collections.synchronizedList(mutableListOf())
 		
 		fun create(
 			plugin: JavaPlugin,
@@ -130,20 +130,6 @@ class FunctionChain private constructor(
 			val functionChain = FunctionChain(plugin, ticks, delay, id, stopAllWithId, functions)
 			functionChain.initFunction()
 			return functionChain
-		}
-		
-		fun destroy(chain: FunctionChain) {
-			chain.destroySelf()
-		}
-		
-		@NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")
-		@Deprecated("Не рекомендованный")
-		fun destroyAll(id: String) {
-			FunctionAbstract.destroyAll(list, id)
-		}
-		
-		fun destroyAll(plugin: JavaPlugin, id: String) {
-			FunctionAbstract.destroyAll(list, plugin, id)
 		}
 	}
 }

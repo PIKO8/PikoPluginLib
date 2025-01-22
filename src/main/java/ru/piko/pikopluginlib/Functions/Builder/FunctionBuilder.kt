@@ -4,6 +4,8 @@ package ru.piko.pikopluginlib.Functions.Builder
 
 import org.bukkit.plugin.java.JavaPlugin
 import ru.piko.pikopluginlib.Functions.FunctionAbstract
+import ru.piko.pikopluginlib.Functions.FunctionAbstractBukkitScheduler
+import ru.piko.pikopluginlib.Functions.ICompanionFunction
 import ru.piko.pikopluginlib.Utils.PikoAnnotation
 import ru.piko.pikopluginlib.Utils.PikoAnnotation.MadeAI
 import ru.piko.pikopluginlib.Utils.PikoAnnotation.Edit
@@ -23,7 +25,7 @@ class FunctionBuilder private constructor(
 	delay: Long = 0,
 	id: String,
 	stopAllWithId: Boolean,
-) : FunctionAbstract(plugin, ticks, delay, id, stopAllWithId) {
+) : FunctionAbstractBukkitScheduler(plugin, ticks, delay, id, stopAllWithId) {
 	private val data: BuilderData = BuilderData()
 	
 	@MadeAI(ai = Edit.Many, human = Edit.Minimum)
@@ -114,9 +116,9 @@ class FunctionBuilder private constructor(
 	override fun init() {
 		list.add(this)
 	}
-	companion object {
+	companion object : ICompanionFunction<FunctionBuilder> {
 		// <editor-fold defaultstate="collapsed" desc="List & create">
-		val list: MutableList<FunctionBuilder> = Collections.synchronizedList(mutableListOf())
+		override val list: MutableList<FunctionBuilder> = Collections.synchronizedList(mutableListOf())
 		
 		/**
 		 * Создает новый экземпляр FunctionBuilder.
@@ -130,36 +132,6 @@ class FunctionBuilder private constructor(
 		 */
 		fun create(plugin: JavaPlugin, ticks: Long, delay: Long = 0, id: String = "", stopAllWithId: Boolean = false): FunctionBuilder {
 			return FunctionBuilder(plugin, ticks, delay, id, stopAllWithId)
-		}
-		// </editor-fold>
-		
-		// <editor-fold defaultstate="collapsed" desc="Удаление / Destroys">
-		fun destroy(builder: FunctionBuilder) {
-			builder.destroySelf()
-		}
-		
-		@NotRecommended("Может сломать что-нибудь в других плагинах лучше использовать destroyAll(plugin: JavaPlugin, id: String)")
-		@Deprecated("Не рекомендованный")
-		fun destroyAll(id: String) {
-			val iterator = list.iterator()
-			while (iterator.hasNext()) {
-				val item = iterator.next()
-				if (item.id == id) {
-					item.destroySelf()
-					iterator.remove()
-				}
-			}
-		}
-		
-		fun destroyAll(plugin: JavaPlugin, id: String) {
-			val iterator = list.iterator()
-			while (iterator.hasNext()) {
-				val item = iterator.next()
-				if (item.plugin == plugin && item.id == id) {
-					item.destroySelf()
-					iterator.remove()
-				}
-			}
 		}
 		// </editor-fold>
 		

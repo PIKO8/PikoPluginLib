@@ -2,6 +2,8 @@
 
 package ru.piko.pikopluginlib.Functions
 
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.plugin.java.JavaPlugin
 import ru.piko.pikopluginlib.Functions.Builder.*
 import ru.piko.pikopluginlib.Utils.PikoAnnotation.Edit
@@ -84,6 +86,21 @@ class TestFunctions {
 				println("Количество FunctionRepeater: ${FunctionRepeater.list.size}")
 				println("Количество FunctionConditional: ${FunctionConditional.list.size}")
 				println("Количество FunctionChain: ${FunctionChain.list.size}")
+			}
+		}
+		
+		fun eventFunctionTest(plugin: JavaPlugin) {
+			val funcEvent = FunctionEvent.create<PlayerItemConsumeEvent>(plugin, PlayerItemConsumeEvent::class) { event ->
+				println("Игрок: ${event.player}")
+				println("Рука: ${event.hand}")
+				println("Предмет: ${event.item}")
+				event.isCancelled = true
+				println("Ивент отменён!")
+			}
+			
+			FunctionTimer.create(plugin, 1000) {
+				funcEvent.destroySelf()
+				println("FunctionEvent выключен")
 			}
 		}
 		
