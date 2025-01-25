@@ -1,8 +1,11 @@
 package ru.piko.pikopluginlib.Functions.Module
 
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.ItemType
 
 fun test() {
+	
+
 	
 //	functionModule {
 //		// Сюда можно писать только те модули которые могут активироваться сами например onTimer или onEvent

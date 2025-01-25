@@ -10,7 +10,7 @@ plugins {
 
 // Основные параметры проекта
 group = "ru.piko"
-version = "0.1.17-beta.1"
+version = "0.1.17-beta.2"
 val minecraftVersion = "1.21.4"
 val kotlinVersion = "2.1.0"
 val targetJavaVersion by extra(21)
