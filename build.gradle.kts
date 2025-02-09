@@ -8,6 +8,7 @@ plugins {
 	id("io.papermc.paperweight.userdev") version "2.0.0-beta.13"
 }
 
+
 // Основные параметры проекта
 group = "ru.piko"
 version = "0.1.17-beta.3"
