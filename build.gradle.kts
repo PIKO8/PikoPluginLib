@@ -104,7 +104,7 @@ afterEvaluate {
 	}
 	// Публикация только после того как соберётся jar
 	tasks.named("publishMavenJavaPublicationToMavenLocal") {
-		dependsOn(tasks.named("compileKotlin"))
+		dependsOn(tasks.named("jarWithMainGroup"))
 	}
 }
 
