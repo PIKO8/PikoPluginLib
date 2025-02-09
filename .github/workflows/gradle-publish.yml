@@ -10,8 +10,10 @@ on:
     branches: [ "master" ]
     paths:
       - '**/gradle/**'
-      - '../../build.gradle.kts'
-      - '../../settings.gradle.kts'
+      - '**/build.gradle.kts'
+      - '**/settings.gradle.kts'
+      - '**/gradle-publish.yml'
+      - '**/jitpack.yml'
       - '**/*.java'
       - '**/*.kt'
 jobs:
