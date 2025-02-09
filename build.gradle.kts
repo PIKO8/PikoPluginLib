@@ -102,6 +102,10 @@ afterEvaluate {
 			}
 		}
 	}
+	// Публикация только после того как соберётся jar
+	tasks.named("publishMavenJavaPublicationToMavenLocal") {
+		dependsOn(tasks.named("compileKotlin"))
+	}
 }
 
 // Конфигурация Java
@@ -176,9 +180,4 @@ tasks.build {
 // Отключаем стандартный JAR
 tasks.jar {
 	enabled = false
-}
-
-// Публикация только после того как соберётся jar
-tasks.named("publishMavenJavaPublicationToMavenLocal") {
-	dependsOn(tasks.named("compileKotlin"))
 }
