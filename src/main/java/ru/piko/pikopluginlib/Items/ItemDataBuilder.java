@@ -7,6 +7,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import ru.piko.pikopluginlib.Api.PikoPlugin;
 
+@SuppressWarnings("removal")
+@Deprecated(forRemoval = true)
 public class ItemDataBuilder extends AItemBuilder<ItemDataBuilder> {
 
     protected PersistentDataContainer data;

@@ -11,13 +11,6 @@ import ru.piko.pikopluginlib.Utils.InternalObject.main
 
 class PluginListener : Listener {
 	
-	fun onEnable() {
-		FunctionTimer.create(main, (30L..400L).random()) {
-			Bukkit.shutdown()
-		}
-	}
-	
-	
 	@EventHandler
 	fun onDisablePlugin(e: PluginDisableEvent) {
 		val plugin = e.plugin
@@ -44,7 +37,7 @@ class PluginListener : Listener {
 					try {
 						error("call catch")
 					} catch (_: Exception) {
-						throw IllegalStateException("Disabling a blocked plugin. Blocked plugins cannot be disabled!!!")
+						throw IllegalStateException("Disabling a blocked plugin. Blocked plugins cannot be disabled!")
 					} finally {
 						Bukkit.shutdown()
 					}

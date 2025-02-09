@@ -2,7 +2,7 @@ package ru.piko.pikopluginlib.Commands
 
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.command.CommandSender
-import ru.piko.pikopluginlib.Utils.Extends.ComponentExtend.mini
+import ru.piko.pikopluginlib.Utils.Extends.Bukkit.ComponentExtend.mini
 import ru.piko.pikopluginlib.Utils.UText.color
 
 class DefaultHelper(private val commandsPerPage: Int = 5) : AbstractHelper() {

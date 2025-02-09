@@ -9,6 +9,7 @@ import java.util.List;
 
 import static de.tr7zw.nbtapi.NBTType.NBTTagList;
 
+@Deprecated(forRemoval = true)
 public class NBTBuilder {
 
     protected final NBTCompound compound;

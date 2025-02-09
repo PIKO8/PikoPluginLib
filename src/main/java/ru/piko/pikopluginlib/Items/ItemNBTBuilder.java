@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
+@SuppressWarnings("removal")
+@Deprecated(forRemoval = true)
 public class ItemNBTBuilder extends AItemBuilder<ItemNBTBuilder> {
 
     protected NBTItem nbtItem;

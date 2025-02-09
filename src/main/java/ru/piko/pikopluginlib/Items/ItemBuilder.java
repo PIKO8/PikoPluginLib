@@ -19,6 +19,8 @@ import java.util.function.Function;
 
 import static ru.piko.pikopluginlib.Utils.UText.color;
 
+@SuppressWarnings({"removal", "DeprecatedIsStillUsed"})
+@Deprecated(forRemoval = true)
 public class ItemBuilder extends AItemBuilder<ItemBuilder> {
 
     /**

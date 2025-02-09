@@ -10,16 +10,16 @@ plugins {
 
 // Основные параметры проекта
 group = "ru.piko"
-version = "0.1.17-beta.2"
+version = "0.1.17-beta.3"
 val minecraftVersion = "1.21.4"
 val kotlinVersion = "2.1.0"
 val targetJavaVersion by extra(21)
 
 // Группы библиотек для разных сборок
-val libraryGroups = mapOf(
+val libraryGroups = mapOf<String, List<String>>(
 	"Main" to listOf(),                                // Основной JAR без доп. библиотек
-	"KotlinMin" to listOf("kotlin-stdlib"),            // Минимальная версия с Kotlin
-	"KotlinMax" to listOf("kotlin-stdlib", "kotlin-reflect") // Максимальная версия с Kotlin и рефлексией
+//	"KotlinMin" to listOf("kotlin-stdlib"),            // Минимальная версия с Kotlin
+//	"KotlinMax" to listOf("kotlin-stdlib", "kotlin-reflect") // Максимальная версия с Kotlin и рефлексией
 )
 
 // Репозитории для загрузки зависимостей

@@ -10,7 +10,7 @@ import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
 import ru.piko.pikopluginlib.MenuSystem.Events.PlayerOpenMenuEvent
 import ru.piko.pikopluginlib.PlayersData.PlayerData
-import ru.piko.pikopluginlib.Utils.Extends.ComponentExtend.toComponent
+import ru.piko.pikopluginlib.Utils.Extends.Bukkit.ComponentExtend.toComponent
 
 abstract class Menu(protected val playerData: PlayerData) : InventoryHolder {
 	
@@ -35,10 +35,6 @@ abstract class Menu(protected val playerData: PlayerData) : InventoryHolder {
 		get() = playerData.owner ?: throw IllegalStateException("Player is not server. Menu not close!")
 	
 	open var filter: ItemStack = MenuItems.FILLER_LIGHT_GLASS
-		get() = field
-		set(value) {
-			field = value
-		}
 	
 	@Deprecated("use getMenuNameComponent")
 	abstract fun getMenuName(): String

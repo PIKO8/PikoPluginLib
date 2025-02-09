@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
+@Deprecated(forRemoval = true)
 public abstract class AItemBuilder<T extends AItemBuilder<T>> {
 
     protected ItemStack item;

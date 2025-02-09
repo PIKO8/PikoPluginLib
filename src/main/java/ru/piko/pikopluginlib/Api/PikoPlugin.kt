@@ -14,7 +14,15 @@ abstract class PikoPlugin : JavaPlugin() {
 	
 	var folder: AbstractPikoPluginFolder<*>? = null
 	
+	@get:JvmName("api")
 	val api = PikoPluginLibApi
+	
+	@get:JvmName("data")
+	val data: PikoPluginData
+		get() = api.plugins.get(pluginId) ?: error("PikoPlugin#data was used when the plugin '$pluginId' was not registered")
+	
+	@get:JvmName("isFirstLoad")
+	val isFirstLoad: Boolean get() = api.plugins.get(pluginId)?.isFirstLoad() ?: true
 	
 	/**
 	 * Unique identifier for the plugin.
@@ -22,6 +30,7 @@ abstract class PikoPlugin : JavaPlugin() {
 	 */
 	protected lateinit var pluginId: String
 	
+	@get:JvmName("pluginFile")
 	val pluginFile: File get() = this.file
 	
 	// </editor-fold>
@@ -44,7 +53,7 @@ abstract class PikoPlugin : JavaPlugin() {
 	 * Called when the plugin is shutting down. Should be overridden to define shutdown behavior.
 	 */
 	abstract fun onStop()
-	abstract fun onRegister()
+	abstract fun onRegister(isFirstLoad: Boolean)
 	
 	// </editor-fold>
 	
@@ -64,6 +73,7 @@ abstract class PikoPlugin : JavaPlugin() {
 			main.logger.warning("[ERROR] Plugin - " + pluginId + " in onStart error message: " + e.message + " stack track:")
 			e.printStackTrace()
 		}
+		if (data.status.isEnable) data.addCount()
 		pluginLoadingInProgress = false
 	}
 	
@@ -75,13 +85,12 @@ abstract class PikoPlugin : JavaPlugin() {
 		}
 		api.plugins.add(pluginId, this)
 		try {
-			onRegister()
+			onRegister(isFirstLoad)
 		} catch (e: Exception) {
 			main.logger.warning("[ERROR] Plugin - " + id + " in onRegister error message: " + e.message + " stack track:")
 			e.printStackTrace()
-		} finally {
-			return false
 		}
+		return false
 	}
 	
 	/**

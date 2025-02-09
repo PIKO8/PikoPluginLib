@@ -1,4 +1,4 @@
-package ru.piko.pikopluginlib.Utils.Extends
+package ru.piko.pikopluginlib.Utils.Extends.Language
 
 object EnumExtend {
 	/**
@@ -13,4 +13,9 @@ object EnumExtend {
 			null
 		}
 	}
+	
+	inline fun <reified E : Enum<E>> getEnum(name: String): E? {
+		return enumValues<E>().find { it.name == name }
+	}
+	
 }

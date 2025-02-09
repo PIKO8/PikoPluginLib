@@ -46,10 +46,10 @@ class Main : PikoPlugin() {
 		
 		api.commands.getOrCreate("piko").addCommand(ReloadSubCommand())
 		
-		TestFunctions.eventFunctionTest(this)
+//		TestFunctions.eventFunctionTest(this)
 	}
 	
 	override fun onStop() {}
-	override fun onRegister() {}
+	override fun onRegister(isFirstLoad: Boolean) {}
 	
 }

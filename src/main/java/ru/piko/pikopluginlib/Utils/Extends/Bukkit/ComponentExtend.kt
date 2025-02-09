@@ -1,10 +1,9 @@
-package ru.piko.pikopluginlib.Utils.Extends
+package ru.piko.pikopluginlib.Utils.Extends.Bukkit
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
-import net.kyori.adventure.text.format.TextDecorationAndState
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import ru.piko.pikopluginlib.Utils.ColorBuilder
@@ -20,7 +19,7 @@ object ComponentExtend {
 		return values.map { mini(it) }
 	}
 	
-	public val String.mini: Component get() = ComponentExtend.mini(this)
+	public val String.mini: Component get() = mini(this)
 	
 	// Вспомогательная функция для преобразования строк с &-форматированием в Component
 	fun String.toComponent(): Component {

@@ -6,6 +6,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import ru.piko.pikopluginlib.MenuSystem.Menu
+import ru.piko.pikopluginlib.MenuSystem.MenuItems.getPikoMenuFlag
+import ru.piko.pikopluginlib.MenuSystem.MenuItems.isPikoMenuFlag
 
 class MenuListener : Listener {
 	@EventHandler
@@ -19,10 +21,13 @@ class MenuListener : Listener {
 		
 		val item = event.currentItem
 		
-		if (item != null && item.itemMeta != null && item.itemMeta.hasCustomModelData()) {
-			//val playerData: PlayerData = main.api.playerData.get(player.uniqueId)
-			when (item.itemMeta.customModelData) {
-				99 -> player.closeInventory()
+		
+		
+		if (item != null && isPikoMenuFlag(item)) {
+			val flag = getPikoMenuFlag(item)
+			when (flag) {
+				"close" -> { player.closeInventory(); return }
+				"filter" -> return
 			}
 		}
 		holder.clickMenu(event)
