@@ -177,3 +177,8 @@ tasks.build {
 tasks.jar {
 	enabled = false
 }
+
+// Публикация только после того как соберётся jar
+tasks.named("publishMavenJavaPublicationToMavenLocal") {
+	dependsOn(tasks.named("compileKotlin"))
+}
