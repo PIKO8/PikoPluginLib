@@ -8,6 +8,7 @@ plugins {
 	id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
 }
 
+
 // Основные параметры проекта
 group = "ru.piko"
 version = "0.1.17-beta.4"
@@ -101,6 +102,10 @@ afterEvaluate {
 				}
 			}
 		}
+	}
+	// Публикация только после того как соберётся jar
+	tasks.named("publishMavenJavaPublicationToMavenLocal") {
+		dependsOn(tasks.named("jarWithMainGroup"))
 	}
 }
 
