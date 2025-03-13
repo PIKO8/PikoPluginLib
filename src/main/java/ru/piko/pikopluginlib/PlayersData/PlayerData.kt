@@ -1,8 +1,11 @@
 package ru.piko.pikopluginlib.PlayersData
 
+import io.netty.buffer.Unpooled
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
+import ru.piko.pikopluginlib.Api.PikoPluginLibApi
+import ru.piko.pikopluginlib.Utils.ByteBufCodec
 import java.util.*
 
 class PlayerData(val uuid: UUID) {
@@ -34,7 +37,20 @@ class PlayerData(val uuid: UUID) {
 		get() = Bukkit.getPlayer(uuid)
 	
 	fun addData(id: String, data: APlayerData) {
-		playerDataMap[id] = data
+		val reg = PikoPluginLibApi.playerData.registryMap[id] ?: error("PlayerData id: '$id' is not registered")
+		playerDataMap[id] = when (reg) {
+			is CodecPlayerDataRegistry<*> -> {
+				@Suppress("UNCHECKED_CAST")
+				val codec = reg.codec as? ByteBufCodec<APlayerData> ?: error("PlayerData id: '$id'. The codec cannot be used.")
+				val buffer = Unpooled.buffer()
+				codec.encode(buffer, data)
+				ByteBufPlayerData(id, buffer)
+			}
+			is CommonPlayerDataRegistry -> {
+				data
+			}
+			else -> error("Unknown implementation of IPlayerDataRegistry: '${reg::class.java}'")
+		}
 	}
 	
 	fun <T : APlayerData?> tryGetData(id: String): Pair<Boolean, T?> {
@@ -46,7 +62,24 @@ class PlayerData(val uuid: UUID) {
 	}
 	
 	fun getData(id: String): APlayerData? {
-		return playerDataMap[id]
+		val reg = PikoPluginLibApi.playerData.registryMap[id] ?: error("PlayerData id: '$id' is not registered")
+		if (playerDataMap.containsKey(id)) {
+			val value = playerDataMap[id]
+			if (value != null) when (reg)
+			{
+				is CodecPlayerDataRegistry<*> -> {
+					if (value !is ByteBufPlayerData) return null
+					val codec = reg.codec as? ByteBufCodec<APlayerData> ?: return null
+					value.buffer.readerIndex(0)
+					return codec.decode(value.buffer)
+				}
+				is CommonPlayerDataRegistry -> {
+					return value
+				}
+				else -> error("Unknown implementation of IPlayerDataRegistry: '${reg::class.java}'")
+			}
+		}
+		return null
 	}
 	
 	fun hasData(id: String): Boolean {
@@ -58,25 +91,46 @@ class PlayerData(val uuid: UUID) {
 	}
 	
 	fun clearStartWith(str: String, ignoreCase: Boolean = false) {
-		playerDataMap.keys.filter { it.startsWith(str, ignoreCase) }.forEach { playerDataMap.remove(it) }
+		playerDataMap.keys.filter { it.startsWith(str, ignoreCase) }.forEach { playerDataMap.remove(it)?.also { also -> if (also is ByteBufPlayerData) also.buffer.release() } }
 	}
 	
 	fun clearFunction(function: (Map.Entry<String, APlayerData>) -> Boolean) {
 		playerDataMap.entries
 			.filter(function)
 			.map { it.key }
-			.forEach { playerDataMap.remove(it) }
+			.forEach { playerDataMap.remove(it)?.also { also -> if (also is ByteBufPlayerData) also.buffer.release() } }
 	}
 	
 	/**
 	 * Retrieves existing data or creates it if absent.
 	 *
 	 * @param id The identifier for the data.
-	 * @param factory The factory method to create the data if it doesn't exist.
 	 * @param <T> The type of the data.
 	 * @return The existing or newly created data.
 	</T> */
-	fun <T : APlayerData?> getOrCreateData(id: String, function: (String) -> APlayerData): T {
-		return playerDataMap.computeIfAbsent(id, function) as T
+	inline fun <reified T : APlayerData> getOrCreateData(id: String): T {
+//		return playerDataMap.computeIfAbsent(id, function) as T
+		val reg = PikoPluginLibApi.playerData.registryMap[id] ?: error("PlayerData id: '$id' is not registered")
+		if (playerDataMap.containsKey(id)) {
+			val value = playerDataMap[id]
+			if (value != null) when (reg)
+			{
+				is CodecPlayerDataRegistry<*> -> {
+					if (value !is ByteBufPlayerData) error("PlayerData id: '$id'. Registration using CodecPlayerDataRegistry involves storing ByteBufPlayerData, which is created and stored automatically, some kind of internal problem has occurred.")
+					val codec = reg.codec as? ByteBufCodec<T> ?: error("PlayerData id: '$id'. The codec cannot be used.")
+					value.buffer.readerIndex(0)
+					return codec.decode(value.buffer)
+				}
+				is CommonPlayerDataRegistry -> {
+					if (value is T) {
+						return value as T
+					}
+				}
+				else -> error("Unknown implementation of IPlayerDataRegistry: '${reg::class.java}'")
+			}
+		}
+		val value = reg.create()
+		addData(id, value)
+		return value as T
 	}
 }

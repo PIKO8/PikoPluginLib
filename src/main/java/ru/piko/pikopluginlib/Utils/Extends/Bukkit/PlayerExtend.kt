@@ -25,7 +25,7 @@ object PlayerExtend {
 		if (addedItems.isNotEmpty()) {
 			// Выбрасываем каждый предмет, который не удалось добавить
 			for (remainingItem in addedItems.values) {
-				this.world.dropItem(this.location.add(Vector(0.5, 0.5, 0.5)), remainingItem)
+				this.world.dropItem(this.location, remainingItem)
 			}
 		}
 	}

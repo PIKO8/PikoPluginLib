@@ -21,7 +21,6 @@ class TestFunctions {
 			val anotherFunctionTimer = FunctionTimer.create(plugin, 2000, "testId") {
 				println("Другая функция выполнена!")
 			}
-			FunctionTimer.destroyAll(plugin, "testId")
 			
 			println("Количество FunctionTimer: ${FunctionTimer.list.size}")
 			
@@ -35,7 +34,6 @@ class TestFunctions {
 				println("Другая функция выполнена!")
 				false // остановить выполнение
 			}
-			FunctionPeriodic.destroyAll(plugin, "testId")
 			
 			println("Количество FunctionPeriodic: ${FunctionPeriodic.list.size}")
 			
@@ -47,7 +45,6 @@ class TestFunctions {
 			val anotherFunctionRepeater = FunctionRepeater.create(plugin, 20, 2, 0, "testId") {
 				println("Другая функция выполнена!")
 			}
-			FunctionRepeater.destroyAll(plugin, "testId")
 			
 			println("Количество FunctionRepeater: ${FunctionRepeater.list.size}")
 			
@@ -59,7 +56,6 @@ class TestFunctions {
 			val anotherFunctionConditional = FunctionConditional.create(plugin, 20, 0, "testId", condition = { false }) {
 				println("Другая функция выполнена!")
 			}
-			FunctionConditional.destroyAll(plugin, "testId")
 			
 			println("Количество FunctionConditional: ${FunctionConditional.list.size}")
 			
@@ -76,9 +72,15 @@ class TestFunctions {
 				{ println("Другая функция 3 выполнена!"); ChainResult.Next }
 			))
 			
-			FunctionChain.destroyAll(plugin, "testId")
-			
 			println("Количество FunctionChain: ${FunctionChain.list.size}")
+			
+			FunctionTimer.create(plugin, 100) {
+				FunctionTimer.destroyAll(plugin, "testId")
+				FunctionPeriodic.destroyAll(plugin, "testId")
+				FunctionRepeater.destroyAll(plugin, "testId")
+				FunctionConditional.destroyAll(plugin, "testId")
+				FunctionChain.destroyAll(plugin, "testId")
+			}
 			
 			val timer = FunctionTimer.create(plugin, 500) {
 				println("Количество FunctionTimer: ${FunctionTimer.list.size}")

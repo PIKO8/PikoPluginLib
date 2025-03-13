@@ -33,10 +33,9 @@ class PluginListener : Listener {
 				if (data.status.isBlocked) {
 					data.disable()
 					main.logger.info("The ${data.namePlugin} plugin is disabled. The status in the PikoPlugins system is set to 'BLOCKED_DISABLE'.")
-					
 					try {
 						error("call catch")
-					} catch (_: Exception) {
+					} catch (_: IllegalStateException) {
 						throw IllegalStateException("Disabling a blocked plugin. Blocked plugins cannot be disabled!")
 					} finally {
 						Bukkit.shutdown()

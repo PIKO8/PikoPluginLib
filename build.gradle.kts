@@ -5,12 +5,12 @@ plugins {
 	`maven-publish`                                    // Публикация в Maven репозиторий
 	id("com.github.johnrengelman.shadow") version "7.1.2"  // Сборка JAR с зависимостями
 	kotlin("jvm") version "2.1.0"                      // Поддержка Kotlin
-	id("io.papermc.paperweight.userdev") version "2.0.0-beta.13"
+	id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
 }
 
 // Основные параметры проекта
 group = "ru.piko"
-version = "0.1.17-beta.3"
+version = "0.1.17-beta.4"
 val minecraftVersion = "1.21.4"
 val kotlinVersion = "2.1.0"
 val targetJavaVersion by extra(21)
@@ -25,7 +25,9 @@ val libraryGroups = mapOf<String, List<String>>(
 // Репозитории для загрузки зависимостей
 repositories {
 	mavenCentral()                                     // Центральный Maven репозиторий
-	maven("https://repo.papermc.io/repository/maven-public/")  // PaperMC
+	maven("https://repo.papermc.io/repository/maven-public/") {
+		name = "PaperMC"
+	}
 	maven("https://oss.sonatype.org/content/groups/public/") {
 		name = "sonatype"
 	}
@@ -36,7 +38,6 @@ repositories {
 
 // Зависимости проекта
 dependencies {
-//	implementation("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
 	paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
 	
 	implementation("de.tr7zw:item-nbt-api-plugin:2.14.1")

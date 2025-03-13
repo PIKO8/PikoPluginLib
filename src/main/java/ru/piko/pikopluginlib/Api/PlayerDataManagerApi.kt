@@ -2,13 +2,13 @@ package ru.piko.pikopluginlib.Api
 
 import org.bukkit.Bukkit
 import ru.piko.pikopluginlib.PlayersData.APlayerData
+import ru.piko.pikopluginlib.PlayersData.IPlayerDataRegistry
 import ru.piko.pikopluginlib.PlayersData.PlayerData
-import ru.piko.pikopluginlib.PlayersData.PlayerDataRegistry
 import java.util.*
 
 class PlayerDataManagerApi internal constructor() {
 	private val playerDataMap = mutableMapOf<UUID, PlayerData>()
-	private val playerDataRegistry = mutableMapOf<String, PlayerDataRegistry>()
+	private val playerDataRegistry = mutableMapOf<String, IPlayerDataRegistry>()
 	
 	fun get(owner: UUID): PlayerData {
 		return playerDataMap.getOrPut(owner) { PlayerData(owner) }
@@ -22,8 +22,8 @@ class PlayerDataManagerApi internal constructor() {
 		playerDataMap.remove(owner)
 	}
 	
-	fun register(id: String, registry: PlayerDataRegistry) {
-		playerDataRegistry[id] = registry
+	fun register(registry: IPlayerDataRegistry) {
+		playerDataRegistry[registry.id] = registry
 	}
 	
 	fun unregister(id: String) {
@@ -38,8 +38,8 @@ class PlayerDataManagerApi internal constructor() {
 		playerDataMap.forEach { (_, data) -> data.clearFunction(function) }
 	}
 	
-	val map: Map<UUID, PlayerData> = playerDataMap.toMap()
-	val registryMap: Map<String, PlayerDataRegistry> = playerDataRegistry.toMap()
+	val map: Map<UUID, PlayerData> get() = playerDataMap.toMap()
+	val registryMap: Map<String, IPlayerDataRegistry> get() = playerDataRegistry.toMap()
 	
 	
 }

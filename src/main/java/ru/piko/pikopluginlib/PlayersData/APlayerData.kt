@@ -3,16 +3,19 @@ package ru.piko.pikopluginlib.PlayersData
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import java.lang.reflect.Field
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.jvm.isAccessible
 
-abstract class APlayerData(val data: PlayerData) {
+abstract class APlayerData {
     
-    val offlinePlayer: OfflinePlayer
-        get() = data.offlineOwner
+    abstract val id: String
     
-    val player: Player?
-        get() = data.owner
-    
-    abstract fun getId(): String
+//    val offlinePlayer: OfflinePlayer
+//        get() = data.offlineOwner
+//
+//    val player: Player?
+//        get() = data.owner
     
     fun <T : APlayerData> to(dataClass: Class<T>): T {
         return if (this::class.java == dataClass) {

@@ -1,0 +1,22 @@
+name: PikoPluginLib
+version: ${version}
+main: ru.piko.pikopluginlib.Main
+bootstrapper: ru.piko.pikopluginlib.Bootstrap
+api-version: '1.21'
+dependencies:
+  server:
+    NBTAPI:
+      load: BEFORE
+      required: true
+#commands:
+#  piko:
+#    usage: /piko ...
+#libraries:
+#  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.0
+#  - org.jetbrains.kotlin:kotlin-reflect:2.1.0
+permissions:
+  piko.commands.admin:
+    description: "admin commands"
+    default: op
+    children:
+      piko.commands.admin.reload: true

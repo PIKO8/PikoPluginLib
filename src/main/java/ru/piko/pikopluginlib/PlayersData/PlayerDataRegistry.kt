@@ -1,23 +1,37 @@
 package ru.piko.pikopluginlib.PlayersData
 
-class PlayerDataRegistry {
-	val function: (PlayerData) -> APlayerData
-	val data: Map<String, Any> // TODO? А в функцию почему не передаётся?
+import ru.piko.pikopluginlib.Utils.ByteBufCodec
+
+interface IPlayerDataRegistry {
+	fun create(): APlayerData
+	
+	val id: String
 	val load: Boolean
 	val unload: Boolean
+}
+
+class CommonPlayerDataRegistry(
+	override val id: String,
+	override val load: Boolean,
+	override val unload: Boolean,
+	val function: () -> APlayerData,
+) : IPlayerDataRegistry {
 	
-	constructor(load: Boolean, unload: Boolean, function: (PlayerData) -> APlayerData) {
-		this.data = emptyMap()
-		this.load = load
-		this.unload = unload
-		this.function = function
+	override fun create(): APlayerData {
+		return function()
 	}
 	
-	constructor(data: Map<String, Any>, function: (PlayerData) -> APlayerData) {
-		this.data = data
-		this.load = data["load"] as? Boolean ?: false
-		this.unload = data["unload"] as? Boolean ?: false
-		this.function = function
-	}
+}
+
+class CodecPlayerDataRegistry<V : APlayerData>(
+	override val id: String,
+	override val load: Boolean,
+	override val unload: Boolean,
+	val codec: ByteBufCodec<V>,
+	val default: () -> V
+) : IPlayerDataRegistry {
 	
+	override fun create(): APlayerData {
+		return default()
+	}
 }
