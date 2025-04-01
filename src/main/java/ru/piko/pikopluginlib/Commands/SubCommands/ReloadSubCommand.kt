@@ -1,11 +1,7 @@
 package ru.piko.pikopluginlib.Commands.SubCommands
 
-import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
-import org.bukkit.plugin.java.JavaPlugin
 import ru.piko.pikopluginlib.Commands.SubCommand
-import ru.piko.pikopluginlib.Main
-import ru.piko.pikopluginlib.Api.PikoPlugin
 
 class ReloadSubCommand : SubCommand() {
 	override val name: String = "reload"
@@ -19,13 +15,13 @@ class ReloadSubCommand : SubCommand() {
 	}
 	
 	override fun perform(sender: CommandSender, args: Array<String>) {
-		val main = Main.getPlugin()
-		for (plugin in Bukkit.getServer().pluginManager.plugins) {
-			if (plugin != main && plugin is JavaPlugin && plugin is PikoPlugin) {
-				// found a PikoPlugin instance, do something with it
-				plugin.registerPikoLib()
-			}
-		}
+//		val main = Main.getPlugin()
+//		for (plugin in Bukkit.getServer().pluginManager.plugins) {
+//			if (plugin != main && plugin is JavaPlugin && plugin is PikoPlugin) {
+//				// found a PikoPlugin instance, do something with it
+//				plugin.registerPikoLib()
+//			}
+//		}
 	}
 	
 	override fun arguments(sender: CommandSender, args: Array<String>): List<String> = listOf("")

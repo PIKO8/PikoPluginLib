@@ -1,21 +1,25 @@
 package ru.piko.pikopluginlib.Api
 
 import org.bukkit.plugin.java.JavaPlugin
-import ru.piko.pikopluginlib.Files.Abstract.folder.AbstractPikoPluginFolder
+import org.jetbrains.annotations.ApiStatus
+import ru.piko.pikopluginlib.Api.Linked.LinkedPikoLibApi
 import ru.piko.pikopluginlib.Functions.FunctionAbstract.Companion.destroyAll
+import ru.piko.pikopluginlib.Utils.AutoRegisterObject
+import ru.piko.pikopluginlib.Utils.Extends.Language.LoggerExtend.infoInline
+import ru.piko.pikopluginlib.Utils.Extends.Language.ThrowableExtend.bukkitSevere
 import ru.piko.pikopluginlib.Utils.InternalObject.main
 import java.io.File
 
-abstract class PikoPlugin : JavaPlugin() {
+typealias PikoPluginAny = PikoPlugin<*>
+
+abstract class PikoPlugin<Impl: PikoPlugin<Impl>> : JavaPlugin() {
 	// <editor-fold defaultstate="collapsed" desc="Variables">
-	protected open val blocked: Boolean = false
+	open val blocked: Boolean = false
 	
 	var pluginLoadingInProgress = true
 	
-	var folder: AbstractPikoPluginFolder<*>? = null
-	
 	@get:JvmName("api")
-	val api = PikoPluginLibApi
+	val api get() = with(PikoPluginLibApi) { if (isInit) this else null } ?: error("PikoPluginLibApi is not registered")
 	
 	@get:JvmName("data")
 	val data: PikoPluginData
@@ -23,6 +27,14 @@ abstract class PikoPlugin : JavaPlugin() {
 	
 	@get:JvmName("isFirstLoad")
 	val isFirstLoad: Boolean get() = api.plugins.get(pluginId)?.isFirstLoad() ?: true
+//
+//	internal var internalLinkApi: LinkedPikoLibApi<Impl>? = null
+//
+//	val linkApi: LinkedPikoLibApi<Impl> get() = internalLinkApi ?: error("LinkApi not registered!")
+	
+	open val isAutoRegister: Boolean = false
+	
+	open val autoRegisterPackage: String = ""
 	
 	/**
 	 * Unique identifier for the plugin.
@@ -47,66 +59,94 @@ abstract class PikoPlugin : JavaPlugin() {
 	/**
 	 * Called when the plugin is starting up. Should be overridden to define startup behavior.
 	 */
-	abstract fun onStart()
+	open fun onStart() {
+		logger.infoInline { "Plugin Start!" }
+	}
 	
 	/**
 	 * Called when the plugin is shutting down. Should be overridden to define shutdown behavior.
 	 */
-	abstract fun onStop()
-	abstract fun onRegister(isFirstLoad: Boolean)
+	open fun onStop() {
+		logger.infoInline { "Plugin Stop!" }
+	}
 	
+	open fun onRegister(isFirstLoad: Boolean) {}
 	// </editor-fold>
 	
 	// <editor-fold defaultstate="collapsed" desc="onEnable & onDisable">
-	/**
-	 * Called by Bukkit when the plugin is enabled. Initializes the plugin ID and calls [.onStart].
-	 */
-	override fun onEnable() {
+	private fun registerPikoLib(): Boolean {
+		this.pluginId = id
+		if (!api.isInit) {
+			logger.severe("[PluginPikoLib] is not load!")
+			return true
+		}
+		api.plugins.add(pluginId, this)
+		return false
+	}
+	
+	@ApiStatus.NonExtendable
+	override fun onLoad() {
 		pluginLoadingInProgress = true
 		if (registerPikoLib()) {
 			pluginLoadingInProgress = false
 			return
 		}
-		try {
-			onStart()
-		} catch (e: Exception) {
-			main.logger.warning("[ERROR] Plugin - " + pluginId + " in onStart error message: " + e.message + " stack track:")
-			e.printStackTrace()
-		}
-		if (data.status.isEnable) data.addCount()
-		pluginLoadingInProgress = false
-	}
-	
-	internal fun registerPikoLib(): Boolean {
-		this.pluginId = id
-		if (!api.isInit) {
-			logger.warning("[PluginPikoLib] is not load!")
-			return true
-		}
-		api.plugins.add(pluginId, this)
+//		internalLinkApi = LinkedPikoLibApi(this as Impl) TODO
 		try {
 			onRegister(isFirstLoad)
 		} catch (e: Exception) {
-			main.logger.warning("[ERROR] Plugin - " + id + " in onRegister error message: " + e.message + " stack track:")
-			e.printStackTrace()
+			e.bukkitSevere(main, "Plugin - $pluginId in the 'onRegister' method caused an error.")
+//			main.logger.severe("Plugin - $pluginId in the 'onRegister' method caused an error, stack track:")
+//			e.printStackTrace()
 		}
-		return false
+		if (isAutoRegister) {
+			val trimed = autoRegisterPackage.trim()
+			if (trimed.isNotEmpty()) {
+				AutoRegisterObject.load(this, classLoader, trimed)
+			}
+		}
+		pluginLoadingInProgress = false
 	}
 	
 	/**
-	 * Called by Bukkit when the plugin is disabled. Calls [.onStop] and removes the plugin from the main registry.
+	 * Called by Bukkit when the plugin is enabled. Initializes the plugin ID and calls [onStart].
 	 */
-	override fun onDisable() {
+	@ApiStatus.NonExtendable
+	final override fun onEnable() {
+		pluginLoadingInProgress = true
+		if (!PikoPluginLibApi.isInit) {
+			logger.severe("[PikoPluginLib] calling 'OnEnable' when PikoPluginLib is not initialized")
+			return
+		} else if (api.plugins.get(pluginId) == null || !data.status.isEnable) {
+			main.logger.severe("Calling 'OnEnable' when [$name] is not enable")
+			return
+		}
+		try {
+			onStart()
+		} catch (e: Exception) {
+			e.bukkitSevere(main, "Plugin - $pluginId in the 'onStart' method caused an error.")
+//			main.logger.severe("Plugin - $pluginId in the 'onStart' method caused an error, stack track:")
+//			e.printStackTrace()
+		}
+		data.addCount()
+		pluginLoadingInProgress = false
+	}
+	
+	/**
+	 * Called by Bukkit when the plugin is disabled. Calling [onStop] and removes the plugin from the main registry.
+	 */
+	@ApiStatus.NonExtendable
+	final override fun onDisable() {
 		try {
 			onStop()
 		} catch (e: Exception) {
-			main.logger.warning("[ERROR] Plugin - " + id + " in onStop error message: " + e.message + " stack track:")
-			e.printStackTrace()
+			e.bukkitSevere(main, "Plugin - $pluginId in the 'onStop' method caused an error.")
+//			main.logger.warning("[ERROR] Plugin - $pluginId in the 'onStop' method caused an error, stack track:")
+//			e.printStackTrace()
 		}
 		destroyAll(this)
 		api.plugins.disable(id)
 	}
-	
 	// </editor-fold>
 	
 }

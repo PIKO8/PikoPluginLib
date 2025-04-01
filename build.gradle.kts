@@ -11,7 +11,7 @@ plugins {
 
 // Основные параметры проекта
 group = "ru.piko"
-version = "0.1.17-beta.4"
+version = "0.1.18-beta.1"
 val minecraftVersion = "1.21.4"
 val kotlinVersion = "2.1.0"
 val targetJavaVersion by extra(21)
@@ -45,6 +45,8 @@ dependencies {
 	implementation("org.jetbrains:annotations:24.0.1")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	
+	implementation("org.reflections:reflections:0.10.2")
 }
 
 afterEvaluate {

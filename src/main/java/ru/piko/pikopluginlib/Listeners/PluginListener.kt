@@ -5,8 +5,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.plugin.java.JavaPlugin
-import ru.piko.pikopluginlib.Functions.FunctionTimer
-import ru.piko.pikopluginlib.Api.PikoPlugin
+import ru.piko.pikopluginlib.Api.PikoPluginAny
 import ru.piko.pikopluginlib.Utils.InternalObject.main
 
 class PluginListener : Listener {
@@ -14,7 +13,7 @@ class PluginListener : Listener {
 	@EventHandler
 	fun onDisablePlugin(e: PluginDisableEvent) {
 		val plugin = e.plugin
-		if (plugin is JavaPlugin && plugin is PikoPlugin) {
+		if (plugin is JavaPlugin && plugin is PikoPluginAny) {
 			
 			// Проверка, что плагин не в процессе первичной загрузки
 			if (plugin.pluginLoadingInProgress) return

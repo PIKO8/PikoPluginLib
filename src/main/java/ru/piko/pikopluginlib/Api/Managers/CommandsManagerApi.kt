@@ -1,6 +1,7 @@
-package ru.piko.pikopluginlib.Api
+package ru.piko.pikopluginlib.Api.Managers
 
 import org.bukkit.Bukkit
+import ru.piko.pikopluginlib.Api.PikoPluginAny
 import ru.piko.pikopluginlib.Commands.AbstractHelper
 import ru.piko.pikopluginlib.Commands.CommandManager
 import ru.piko.pikopluginlib.Commands.DefaultHelper
@@ -22,7 +23,7 @@ class CommandsManagerApi {
 		)
 		val plugin = command.plugin
 		
-		if (plugin !is PikoPlugin) throw IllegalArgumentException(
+		if (plugin !is PikoPluginAny) throw IllegalArgumentException(
 			"Failed to create command manager: command '$mainCommand' is registered in a plugin that is not a PikoPlugin."
 		)
 		
@@ -67,7 +68,7 @@ class CommandsManagerApi {
 		)
 		
 		val plugin = command.plugin
-		if (plugin !is PikoPlugin) throw IllegalArgumentException(
+		if (plugin !is PikoPluginAny) throw IllegalArgumentException(
 			"Failed to remove command manager: command '$mainCommand' is registered in a plugin that is not a PikoPlugin."
 		)
 		

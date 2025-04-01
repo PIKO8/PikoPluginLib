@@ -1,5 +1,8 @@
-package ru.piko.pikopluginlib.Api
+package ru.piko.pikopluginlib.Api.Managers
 
+import ru.piko.pikopluginlib.Api.EStatusPlugin
+import ru.piko.pikopluginlib.Api.PikoPluginAny
+import ru.piko.pikopluginlib.Api.PikoPluginData
 import ru.piko.pikopluginlib.Utils.InternalObject.main
 
 class PikoPluginsManagerApi internal constructor() {
@@ -24,12 +27,12 @@ class PikoPluginsManagerApi internal constructor() {
 		}
 	}
 	
-	fun add(id: String, pikoPlugin: PikoPlugin, blocked: Boolean = false) {
+	fun add(id: String, pikoPlugin: PikoPluginAny) {
 		(pikoPluginDataMap[id]).let { data ->
 			val status = data?.status ?: EStatusPlugin.UNREGISTERED
 			when {
 				data == null || status.isUnregistered -> {
-					pikoPluginDataMap[id] = PikoPluginData(id, pikoPlugin, blocked)
+					pikoPluginDataMap[id] = PikoPluginData(id, pikoPlugin, pikoPlugin.blocked)
 				}
 				status.isEnable -> {
 					println("PikoPlugin with ID: $id already registered.")
@@ -40,7 +43,7 @@ class PikoPluginsManagerApi internal constructor() {
 				}
 				status.isDisable -> {
 					println("PikoPlugin with ID: $id is enabled")
-					data.activate(pikoPlugin, blocked)
+					data.activate(pikoPlugin, pikoPlugin.blocked)
 				}
 			}
 		}

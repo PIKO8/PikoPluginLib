@@ -9,6 +9,7 @@ commands:
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.1.0
   - org.jetbrains.kotlin:kotlin-reflect:2.1.0
+  - org.reflections:reflections:0.10.2
 permissions :
   piko.commands.admin:
     description: "admin commands"

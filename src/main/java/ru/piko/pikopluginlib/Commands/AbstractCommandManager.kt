@@ -1,6 +1,6 @@
 package ru.piko.pikopluginlib.Commands
 
-import ru.piko.pikopluginlib.Api.PikoPlugin
+import ru.piko.pikopluginlib.Api.PikoPluginAny
 import ru.piko.pikopluginlib.Api.PikoPluginData
 import ru.piko.pikopluginlib.Utils.InternalObject.main
 
@@ -31,7 +31,7 @@ abstract class AbstractCommandManager(
 	val pluginData: PikoPluginData?
 		get() = main.api.plugins.get(namePikoPlugin)
 	
-	val plugin: PikoPlugin?
+	val plugin: PikoPluginAny?
 		get() = pluginData?.plugin
 	
 	fun addCommand(command: AbstractCommand) {

@@ -1,9 +1,13 @@
 package ru.piko.pikopluginlib.Api
 
+import ru.piko.pikopluginlib.Api.Managers.CommandsManagerApi
+import ru.piko.pikopluginlib.Api.Managers.PikoPluginsManagerApi
+import ru.piko.pikopluginlib.Api.Managers.PlayerDataManagerApi
+
 object PikoPluginLibApi {
 	
-	internal var init = false
-	val isInit get() = init
+	var isInit = false
+		internal set
 	
 	lateinit var plugins: PikoPluginsManagerApi
 	
@@ -12,7 +16,7 @@ object PikoPluginLibApi {
 	lateinit var commands: CommandsManagerApi
 	
 	internal fun init() {
-		init = true
+		isInit = true
 		
 		plugins = PikoPluginsManagerApi()
 		
@@ -20,7 +24,5 @@ object PikoPluginLibApi {
 		
 		commands = CommandsManagerApi()
 	}
-	
-	
 	
 }

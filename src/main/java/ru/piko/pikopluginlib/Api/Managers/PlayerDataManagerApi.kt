@@ -1,4 +1,4 @@
-package ru.piko.pikopluginlib.Api
+package ru.piko.pikopluginlib.Api.Managers
 
 import org.bukkit.Bukkit
 import ru.piko.pikopluginlib.PlayersData.APlayerData
