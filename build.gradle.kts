@@ -4,16 +4,16 @@ plugins {
 	java                                               // Базовая поддержка Java
 	`maven-publish`                                    // Публикация в Maven репозиторий
 	id("com.github.johnrengelman.shadow") version "7.1.2"  // Сборка JAR с зависимостями
-	kotlin("jvm") version "2.1.0"                      // Поддержка Kotlin
-	id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
+	kotlin("jvm") version "2.2.0"                      // Поддержка Kotlin
+	id("io.papermc.paperweight.userdev") version "2.0.0-beta.17"
 }
 
 
 // Основные параметры проекта
 group = "ru.piko"
-version = "0.1.18"
-val minecraftVersion = "1.21.4"
-val kotlinVersion = "2.1.0"
+version = "0.1.19"
+val minecraftVersion = "1.21.7"
+val kotlinVersion = "2.2.0"
 val targetJavaVersion by extra(21)
 
 // Группы библиотек для разных сборок
@@ -39,9 +39,9 @@ repositories {
 
 // Зависимости проекта
 dependencies {
-	paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
+	paperweight.paperDevBundle("1.21.7-R0.1-SNAPSHOT")
 	
-	implementation("de.tr7zw:item-nbt-api-plugin:2.14.1")
+	implementation("de.tr7zw:item-nbt-api-plugin:2.15.1")
 	implementation("org.jetbrains:annotations:24.0.1")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
